@@ -1,0 +1,25 @@
+{
+  "name": "rnt-tel",
+  "version": "1.0.0",
+  "description": "API para consultar RNT para tramites en linea",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipemunozm/rnt-tel.git"
+  },
+  "keywords": [
+    "rnt"
+  ],
+  "author": "",
+  "license": "GPL-2.0-only",
+  "bugs": {
+    "url": "https://github.com/felipemunozm/rnt-tel/issues"
+  },
+  "homepage": "https://github.com/felipemunozm/rnt-tel#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
