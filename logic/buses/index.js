@@ -5,7 +5,10 @@ module.exports = {
         console.log("queryOut= " + queryOut)
         return {mensaje: "ejecucion de logica buses exiosa", code: "OK", ppus: queryOut }
     },
-    getAutorizadosParaInscripcionServicios: (rut) => {
-        return busesRepository.getAutorizadosParaInscripcionServicios(rut)
+    getAutorizadosParaInscripcionServiciosBuses: (rut) => {
+        return busesRepository.getAutorizadosParaInscripcionServiciosBuses(rut)
+    },
+    getAutorizadoPorEmpresaParaInscripcionServicioBuses: (rut,rut_empresa) => {
+        return busesRepository.getAutorizadoPorEmpresaParaInscripcionServicioBuses(rut,rut_empresa)
     }
 }
