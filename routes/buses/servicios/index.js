@@ -1,9 +1,8 @@
 const routes = require("express").Router()
+const logicBuses = require('../../../logic/buses')
 
 routes.get('/personas/:RUT/', (req, res) => {
-    console.log(req.params.RUT)
-    console.log(req.path)
-    res.send({message: "ver log file"})
+    res.send(logicBuses.getAutorizadosParaInscripcionServicios(req.params.RUT))
 })
 
 module.exports = routes;
