@@ -1,12 +1,13 @@
-const routes = require("express").Router()
+const Router = require('koa-router')
+const router = new Router({prefix: '/buses'})
 const busesLogic = require("../../logic/buses")
 const serviciosRoute = require("./servicios")
 const vehiculosRoute = require("./vehiculos")
 
-routes.get('/', (req,res) => {
-    // res.status(200).json({message: "route de buses"})
-    res.send(busesLogic.getTest())
+router.get('/', (ctx) => {
+    ctx.body = busesLogic.getTest()
 })
-routes.use('/servicios',serviciosRoute)
-routes.use('/vehiculos',vehiculosRoute)
-module.exports = routes
+router.use(serviciosRoute)
+router.use(vehiculosRoute)
+
+module.exports = router.routes()

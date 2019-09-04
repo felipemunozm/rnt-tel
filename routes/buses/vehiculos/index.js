@@ -1,7 +1,8 @@
-const routes = require("express").Router()
+const Router = require('koa-router')
+const router = new Router({prefix: '/vehiculos'})
 
-routes.get('/personas/:RUT/', (req, res) => {
-    res.send({message: "ver en LOG" + req.params.RUT})
+router.get('/personas/:RUT/', (ctx) => {
+    ctx.body = {message: "ver en LOG" + ctx.params.RUT}
 })
 
-module.exports = routes
+module.exports = router.routes()

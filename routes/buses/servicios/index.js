@@ -1,12 +1,14 @@
 const routes = require("express").Router()
+const Router = require('koa-router')
+const router = new Router({prefix: '/servicios'})
 const logicBuses = require('../../../logic/buses')
 
-routes.get('/personas/:RUT/', (req, res) => {
-    res.send(logicBuses.getAutorizadosParaInscripcionServiciosBuses (req.params.RUT))
+router.get('/personas/:RUT', (ctx) => {
+    ctx.body = logicBuses.getAutorizadosParaInscripcionServiciosBuses(ctx.params.RUT)
 })
 
-routes.get('/personas/:RUT/empresas/:RUT_EMPRESA', (req,res) => {
-    res.send(logicBuses.getAutorizadoPorEmpresaParaInscripcionServicioBuses(req.params.RUT, req.params.RUT_EMPRESA))
+router.get('/personas/:RUT/empresas/:RUT_EMPRESA', (ctx) => {
+    ctx.body = logicBuses.getAutorizadoPorEmpresaParaInscripcionServicioBuses(ctx.params.RUT, ctx.params.RUT_EMPRESA)
 })
 
-module.exports = routes;
+module.exports = router.routes()

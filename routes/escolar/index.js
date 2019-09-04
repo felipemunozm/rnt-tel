@@ -1,8 +1,9 @@
-const routes = require("express").Router()
+const Router = require('koa-router')
+const router = new Router({prefix: '/escolares'})
 const escolarLogic = require("../../logic/escolar")
 
-routes.get('/', (req,res) => {
+router.get('/', (ctx) => {
     // res.status(200).json({message: "route de escolar"})
-    res.send(escolarLogic.getTest())
+    ctx.body = escolarLogic.getTest()
 })
-module.exports = routes
+module.exports = router.routes()

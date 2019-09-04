@@ -1,8 +1,9 @@
-const routes = require("express").Router()
+const Router = require('koa-router')
+const router = new Router({prefix: "/privados"})
 const privadoLogic = require("../../logic/privado")
 
-routes.get('/', (req,res) => {
+router.get('/', (ctx) => {
     // res.status(200).json({message: "route de privado"})
-    res.send(privadoLogic.getTest())
+    ctx.body = privadoLogic.getTest()
 })
-module.exports = routes
+module.exports = router.routes()
