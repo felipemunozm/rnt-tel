@@ -1,5 +1,5 @@
 const Router = require('koa-router')
-const router = new Router({prefix: '/buses'})
+const router = new Router()
 const busesLogic = require("../../logic/buses")
 const serviciosRoute = require("./servicios")
 const vehiculosRoute = require("./vehiculos")
@@ -7,7 +7,7 @@ const vehiculosRoute = require("./vehiculos")
 router.get('/', (ctx) => {
     ctx.body = busesLogic.getTest()
 })
-router.use(serviciosRoute)
-router.use(vehiculosRoute)
+router.use('/servicios',serviciosRoute)
+router.use('/vehiculos',vehiculosRoute)
 
 module.exports = router.routes()

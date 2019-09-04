@@ -1,5 +1,5 @@
 const Router = require('koa-router')
-const router = new Router({prefix: "/privados"})
+const router = new Router()
 const privadoLogic = require("../../logic/privado")
 
 router.get('/', (ctx) => {

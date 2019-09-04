@@ -1,6 +1,5 @@
-const routes = require("express").Router()
 const Router = require('koa-router')
-const router = new Router({prefix: '/taxis'})
+const router = new Router()
 const taxisLogic = require("../../logic/taxis")
 
 router.get('/', (ctx) => {
