@@ -2,8 +2,8 @@ const Router = require('koa-router')
 const router = new Router()
 const logicBuses = require('../../../logic/buses')
 
-router.get('/personas/:RUT', (ctx) => {
-    ctx.body = logicBuses.getAutorizadosParaInscripcionServiciosBuses(ctx.params.RUT)
+router.get('/personas/:RUT', async (ctx) => {
+    ctx.body = await logicBuses.getAutorizadosParaInscripcionServiciosBuses(ctx.params.RUT)
 })
 
 router.get('/personas/:RUT/empresas/:RUT_EMPRESA', (ctx) => {

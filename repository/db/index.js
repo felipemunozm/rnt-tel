@@ -1,5 +1,6 @@
 const ibmdb = require("ibm_db")
-let cn = "DATABASE=RNT5;HOSTNAME=alamo.mtt.cl;UID=db2admin;PWD=**db2admin;PORT=50000;PROTOCOL=TCPIP"
+const conf = require('../../config')
+let cn = conf.db2ConectionString
 
 module.exports.query = (sql, params) => {
     try {
