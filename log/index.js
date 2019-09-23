@@ -16,7 +16,9 @@ log4js.configure({
             level: 'debug',
             enableCallStack: true
         }
-    }
+    },
+    pm2: true,
+    pm2InstanceVar: 'INSTANCE_ID'
 })
 const logger = log4js.getLogger()
 logger.level = 'debug'

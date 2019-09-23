@@ -10,7 +10,7 @@ const port = 3000
 const app = new koa()
 const router = new Router()
 router.use('/buses',busesRoute)
-router.use('/colectivos',colectivosRoute)
+router.use('/taxis_colectivos',colectivosRoute)
 router.use('/escolares',escolarRoute)
 router.use('/privados',privadoRoute)
 router.use('/taxis',taxisRoute)
