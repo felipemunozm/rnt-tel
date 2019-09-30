@@ -7,7 +7,7 @@ const escolarRoute = require('./routes/escolar')
 const privadoRoute = require('./routes/privado')
 const taxisRoute = require('./routes/taxis')
 const logger = require('./log')
-const port = 3000
+const port = 3001
 const app = new koa()
 app.use(bodyParser())
 const router = new Router()
