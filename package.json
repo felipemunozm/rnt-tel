@@ -4,7 +4,8 @@
   "description": "API para consultar RNT para tramites en linea",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   "dependencies": {
     "ibm_db": "^2.6.0",
     "koa": "^2.8.1",
+    "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "log4js": "^5.1.0"
   }

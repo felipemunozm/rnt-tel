@@ -1,4 +1,6 @@
 const ibmdb = require("../db")
+const commons = require('../commons')
+const log = require('../../log')
 module.exports = {
     getTest: () => {
         return ibmdb.query("SELECT PPU FROM NULLID.RNT_VEHICULO FETCH FIRST 10 ROWS ONLY", [])
@@ -23,5 +25,8 @@ module.exports = {
         "INNER JOIN NULLID.RNT_TIPO_SERVICIO_AREA tsa ON ts.ID_TIPO_SERVICIO_AREA = tsa.id " +
         "INNER JOIN NULLID.RNT_TRAMITE tram ON tram.id = 1 " +
         "WHERE per2.RUT = ? AND per.RUT = ?", [rut, rut_empresa])
+    },
+    findRepresentanteLegalByEmpresa: (rut_empresa, rut_representante_legal) => {
+        return commons.findRepresentanteLegalByEmpresaAndTipoServicioList(rut_empresa, rut_representante_legal, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
     }
 }

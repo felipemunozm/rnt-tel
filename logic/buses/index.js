@@ -10,5 +10,8 @@ module.exports = {
     },
     getAutorizadoPorEmpresaParaInscripcionServicioBuses: async (rut,rut_empresa) => {
         return busesRepository.getAutorizadoPorEmpresaParaInscripcionServicioBuses(rut,rut_empresa)
+    },
+    findRepresentanteLegalByEmpresa: async (rut_empresa, rut_representante_legal) => {
+        return busesRepository.findRepresentanteLegalByEmpresa(rut_empresa, rut_representante_legal)
     }
 }
