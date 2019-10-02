@@ -2,19 +2,19 @@ module.exports = {
     db2ConectionString: "DATABASE=RNT5;HOSTNAME=alamo.mtt.cl;UID=db2admin;PWD=**db2admin;PORT=50000;PROTOCOL=TCPIP",
     rntTramitesMap: {
         buses: {
-            IdsTramites: []
+            IdsTramites: [1]
         },
         colectivos: {
-            IdsTramites: []
+            IdsTramites: [2]
         },
         escolares: {
-            IdsTramites: []
+            IdsTramites: [21]
         },
         privados: {
-            IdsTramites: []
+            IdsTramites: [23]
         },
         taxis: {
-            IdsTramites: []
+            IdsTramites: [24]
         }
     }
 }

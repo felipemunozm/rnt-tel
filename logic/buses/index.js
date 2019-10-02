@@ -13,5 +13,11 @@ module.exports = {
     },
     findRepresentanteLegalByEmpresa: async (rut_empresa, rut_representante_legal) => {
         return busesRepository.findRepresentanteLegalByEmpresa(rut_empresa, rut_representante_legal)
+    },
+    getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses: async (rut,rut_empresa) => {
+        return busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(rut,rut_empresa)
     }
+ //   getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses: async (rut,rut_empresa) => {
+  //      return busesRepository.getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses(rut,rut_empresa)
+   // },
 }
