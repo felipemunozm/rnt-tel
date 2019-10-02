@@ -19,10 +19,12 @@ router.get('/regiones/:ID_REGION/empresas/:RUT_EMPRESA/representante/:RUT_REPRES
 })
 
 router.get('/regiones/:ID_REGION/personas/:RUT_SOLICITANTE', (ctx) => {
-    ctx.body = {test: ctx.url}
+    //ctx.body = {test: ctx.url }
+    ctx.body =  logicBuses.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(ctx.params.REGION,ctx.params.RUT)
+    //{test:'asdasdasd' }
 })
 router.get('/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', (ctx) => {
-    ctx.body = {test: ctx.url}
+    ctx.body = {test: ctx.url }
 })
 router.get('/tipos_servicios', (ctx) => {
     ctx.body = {test: ctx.url}
