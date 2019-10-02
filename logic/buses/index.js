@@ -40,6 +40,19 @@ module.exports = {
             servicios: []
         }
         let servicios = busesRepository.findServiciosByMandatarioAndRepresentanteAndEmpresa(rut_empresa, rut_representante, rut_solicitante)
+        servicios.forEach((servicioDB) => {
+            //Extraer Recorridos
+            let recorridos = busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO, servicioDB.REGION)
+            response.push({
+                folio:servicioDB.FOLIO,
+                region: servicioDB.REGION,
+                rut_responsable: servicioDB.RUT_RESPONSABLE,
+                rut_representante: servicioDB.RUT_REPRESENTANTE,
+                rut_mandatario: servicioDB.RUT_MANDATARIO,
+                recorridos: recorridos
+            })
+        })
+        return response
     }
  //   getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses: async (rut,rut_empresa) => {
   //      return busesRepository.getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses(rut,rut_empresa)

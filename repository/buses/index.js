@@ -59,5 +59,8 @@ module.exports = {
     },
     findRecorridosByFolioRegion: (folio, region) => {
         return commons.findRecorridosByFolioRegionAndTipoServicio(folio,region,[2,3,5,7,9,11,12,13,14,15,16,17,18,26])
-    }    
+    },
+    findServiciosByMandatarioAndRepresentanteAndEmpresa: (rut_empresa, rut_representante, rut_solicitante) => {
+        return commons.findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios(rut_empresa, rut_representante, rut_solicitante, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
+    }
 }
