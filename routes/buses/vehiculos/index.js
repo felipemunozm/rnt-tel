@@ -9,7 +9,10 @@ router.get('/empresas/:RUT_EMPRESA/representantes/:RUT_SOLICITANTE', async (ctx)
     ctx.body = await busesLogic.findServiciosByRepresentanteLegalAndEmpresa(ctx.params.RUT_EMPRESA, ctx.params.RUT_SOLICITANTE)
 })
 router.get('/empresas/:RUT_EMPRESA/representantes/:RUT_REPRESENTANTE/mandatarios/:RUT_SOLICITANTE', (ctx) => {
-    ctx.body = {test: ctx.url}
+    log.debug("RUT_EMPRESA: " + ctx.params.RUT_EMPRESA)
+    log.debug("RUT_REPRESENTANTE: " + ctx.params.RUT_EMPRESA)
+    log.debug("RUT_SOLICITANTE:" + ctx.params.RUT_SOLICITANTE)
+    ctx.body = busesLogic.findServiciosByMandatarioAndRepresentanteAndEmpresa(ctx.params.RUT_EMPRESA, ctx.params.RUT_REPRESENTANTE, ctx.params.RUT_SOLICITANTE)
 })
 router.get('/personas/:RUT_SOLICITANTE', (ctx) => {
     ctx.body = {test: ctx.url}
