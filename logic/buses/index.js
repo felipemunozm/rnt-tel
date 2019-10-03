@@ -43,7 +43,7 @@ module.exports = {
         servicios.forEach((servicioDB) => {
             //Extraer Recorridos
             let recorridos = busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO, servicioDB.REGION)
-            response.push({
+            response.servicios.push({
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
                 rut_responsable: servicioDB.RUT_RESPONSABLE,
