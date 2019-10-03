@@ -14,8 +14,11 @@ module.exports = {
     findRepresentanteLegalByEmpresa: async (rut_empresa, rut_representante_legal) => {
         return busesRepository.findRepresentanteLegalByEmpresa(rut_empresa, rut_representante_legal)
     },
-    getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:   (ID_REGION,RUT_SOLICITANTE) => {
-        return  busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(ID_REGION,RUT_SOLICITANTE)
+    getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:   (id_region,rut_solicitante) => {
+        return  busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(id_region,rut_solicitante)
+    },
+    getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses:  (rut,rut_empresa) => {
+        return busesRepository.getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses(rut,rut_empresa)
     },
     findServiciosByRepresentanteLegalAndEmpresa: async (rut_empresa, rut_representante_legal) => {
         let response = {
@@ -41,7 +44,5 @@ module.exports = {
         }
         let servicios = busesRepository.findServiciosByMandatarioAndRepresentanteAndEmpresa(rut_empresa, rut_representante, rut_solicitante)
     }
- //   getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses: async (rut,rut_empresa) => {
-  //      return busesRepository.getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses(rut,rut_empresa)
-   // },
+   
 }

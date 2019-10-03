@@ -33,7 +33,7 @@ module.exports = {
         log.debug(id_region)
         log.debug(rut_solicitante)
         
-        return  ibmdb.query("select   per.RUT, per.NOMBRE,aut.CODIGO_REGION FROM tel.TEL_PERSONA per INNER JOIN  tel.TEL_RESPONSABLE resp  ON resp.ID_PERSONA = per.ID   " +
+        return  ibmdb.query("select   per.RUT, per.NOMBRE,aut.CODIGO_REGION ,tram.NOMBRE AS NOMBRE_TRAMITE FROM tel.TEL_PERSONA per INNER JOIN  tel.TEL_RESPONSABLE resp  ON resp.ID_PERSONA = per.ID   " +
         "and  per.TIPO_PERSONA_ID = 1  " +
         "INNER JOIN tel.TEL_RESPONSABLE_AUTORIZACION resp_aut  ON resp_aut.ID_RESPONSABLE = resp.ID   " +
         "INNER JOIN tel.TEL_AUTORIZACION aut  ON aut.id  = RESP_AUT.ID_AUTORIZACION   and aut.TIPO_AUTORIZACION =1 " +
@@ -55,7 +55,6 @@ module.exports = {
         "and tram.ID= autt.ID_TRAMITE  "  +
         "WHERE     aut.CODIGO_REGION   = ?  and   per.RUT = ?", [id_region, rut_solicitante])
     },
-    
     findServiciosByRepresentanteLegalAndEmpresa: (rut_empresa, rut_representante_legal) => {
         return commons.findServiciosByRepresentanteLegalAndEmpresaAndTipoServicioList(rut_empresa, rut_representante_legal, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
     },
