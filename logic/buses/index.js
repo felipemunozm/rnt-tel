@@ -14,8 +14,8 @@ module.exports = {
     findRepresentanteLegalByEmpresa: async (rut_empresa, rut_representante_legal) => {
         return busesRepository.findRepresentanteLegalByEmpresa(rut_empresa, rut_representante_legal)
     },
-    getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses: async (rut,rut_empresa) => {
-        return busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(rut,rut_empresa)
+    getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:   (ID_REGION,RUT_SOLICITANTE) => {
+        return  busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(ID_REGION,RUT_SOLICITANTE)
     },
     findServiciosByRepresentanteLegalAndEmpresa: async (rut_empresa, rut_representante_legal) => {
         let response = {
