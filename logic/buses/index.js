@@ -45,7 +45,7 @@ module.exports = {
         let servicios = busesRepository.findServiciosByRepresentanteLegalAndEmpresa(rut_empresa, rut_representante_legal)
         servicios.forEach( async (servicioDB) => {
             //Extraer recorridos de los servicios asociados
-            let recorridos = await busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO,servicioDB.REGION) 
+            let recorridos = await busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO,servicioDB.COD_REGION) 
             response.servicios.push({
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
@@ -63,7 +63,7 @@ module.exports = {
         let servicios = busesRepository.findServiciosByMandatarioAndRepresentanteAndEmpresa(rut_empresa, rut_representante, rut_solicitante)
         servicios.forEach((servicioDB) => {
             //Extraer Recorridos
-            let recorridos = busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO, servicioDB.REGION)
+            let recorridos = busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO, servicioDB.COD_REGION)
             response.servicios.push({
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
