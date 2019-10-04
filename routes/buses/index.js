@@ -1,6 +1,5 @@
 const Router = require('koa-router')
 const router = new Router()
-const busesLogic = require("../../logic/buses")
 const serviciosRoute = require("./servicios")
 const vehiculosRoute = require("./vehiculos")
 
