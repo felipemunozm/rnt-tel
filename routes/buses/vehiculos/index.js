@@ -15,7 +15,8 @@ router.get('/empresas/:RUT_EMPRESA/representantes/:RUT_REPRESENTANTE/mandatarios
     ctx.body = busesLogic.findServiciosByMandatarioAndRepresentanteAndEmpresa(ctx.params.RUT_EMPRESA, ctx.params.RUT_REPRESENTANTE, ctx.params.RUT_SOLICITANTE)
 })
 router.get('/personas/:RUT_SOLICITANTE', (ctx) => {
-    ctx.body = {test: ctx.url}
+    log.debug("RUT_SOLICITANTE: " + ctx.params.RUT_SOLICITANTE)
+    ctx.body = busesLogic.getServiciosVigentesInscritosPorRutResponsable(ctx.params.RUT_SOLICITANTE)
 })
 router.get('/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', (ctx) => {
     ctx.body = {test: ctx.url}

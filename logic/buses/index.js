@@ -20,6 +20,9 @@ module.exports = {
     getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses:  (rut,rut_empresa) => {
         return busesRepository.getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses(rut,rut_empresa)
     },
+    getServiciosVigentesInscritosPorRutResponsable:  (rut) => {
+        return busesRepository.getServiciosVigentesInscritosPorRutResponsable(rut)
+    },
     findServiciosByRepresentanteLegalAndEmpresa: async (rut_empresa, rut_representante_legal) => {
         let response = {
             servicios: []
