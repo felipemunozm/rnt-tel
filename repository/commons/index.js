@@ -37,7 +37,7 @@ module.exports = {
         'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND MANDATARIOPERSONA.RUT = ? AND s.ACTIVO = 1 AND ts.id in (' + lstTipoServicios.toString() + ')', [rut_empresa, rut_representante, rut_solicitante])
     },
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable,lstTipoServicios) =>{
-        return ibmdb.query("SELECT REGION.NOMBRE, T_VEHICULO_SERV.NOMBRE || ' ' || MODALIDAD.NOMBRE || ' ' || T_SERV_AREA.NOMBRE, VISTA.IDENT_SERVICIO, PERSONA.NOMBRE " +
+        return ibmdb.query("SELECT REGION.ID ID_REGION, REGION.NOMBRE REGION, T_VEHICULO_SERV.NOMBRE || ' ' || MODALIDAD.NOMBRE || ' ' || T_SERV_AREA.NOMBRE, VISTA.IDENT_SERVICIO FOLIO, PERSONA.NOMBRE " +
         "FROM NULLID.RNT_SERVICIO AS VISTA " +
 		"INNER JOIN NULLID.RNT_TIPO_SERVICIO AS T_SERV ON T_SERV.ID = VISTA.ID_TIPO_SERVICIO " +
 		"INNER JOIN NULLID.RNT_SERVICIO_REPRESENTANTE SR ON VISTA.ID = SR.ID_SERVICIO " +

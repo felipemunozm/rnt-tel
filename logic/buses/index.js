@@ -21,7 +21,22 @@ module.exports = {
         return busesRepository.getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses(rut,rut_empresa)
     },
     getServiciosVigentesInscritosPorRutResponsable:  (rut) => {
-        return busesRepository.getServiciosVigentesInscritosPorRutResponsable(rut)
+        let response = {
+            servicios: []
+        }
+        let servicios = busesRepository.getServiciosVigentesInscritosPorRutResponsable(rut)
+        servicios.forEach( async (servicioDB) => {
+            //Extraer recorridos de los servicios asociados
+            let recorridos = await busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO,servicioDB.ID_REGION) 
+            response.servicios.push({
+                folio:servicioDB.FOLIO,
+                region: servicioDB.REGION,
+                rut_responsable: servicioDB.RUT_RESPONSABLE,
+                rut_representante: servicioDB.RUT_REPRESENTANTE,
+                recorridos: recorridos
+            })
+        })
+        return response
     },
     findServiciosByRepresentanteLegalAndEmpresa: async (rut_empresa, rut_representante_legal) => {
         let response = {
