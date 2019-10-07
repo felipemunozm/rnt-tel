@@ -8,7 +8,8 @@ module.exports = {
         'INNER JOIN NULLID.RNT_RESPONSABLE_SERVICIO rs ON s.ID_RESPONSABLE_SERVICIO = rs.ID ' +
         'INNER JOIN NULLID.RNT_PERSONA pJuridica ON pJuridica.id = rs.ID_PERSONA AND PJURIDICA.TIPO_PERSONA = 2 ' +
         'INNER JOIN NULLID.RNT_SERVICIO_REPRESENTANTE sr ON sr.ID_SERVICIO = s.ID ' +
-        'INNER JOIN NULLID.RNT_PERSONA pNatural ON PNATURAL.id = sr.ID_REPRESENTANTE_SERVICIO AND pNatural.TIPO_PERSONA = 1 ' +
+        'INNER JOIN nullid.RNT_REPRESENTATE_LEGAL rl ON rl.id = sr.ID_REPRESENTANTE_SERVICIO  ' +
+        'INNER JOIN NULLID.RNT_PERSONA pNatural ON PNATURAL.id = rl.ID_PERSONA AND pNatural.TIPO_PERSONA = 1  ' +
         'LEFT JOIN NULLID.rnt_modalidad mo ON mo.id = ts.id_modalidad ' +
         'LEFT JOIN NULLID.rnt_categoria_transporte ct ON ct.id = ts.id_categoria_transporte ' +
         'LEFT JOIN NULLID.rnt_medio_transporte mt ON mt.id = ts.id_medio_transporte ' +
@@ -16,7 +17,7 @@ module.exports = {
         'LEFT JOIN NULLID.rnt_tipo_vehiculo_servicio tvs ON tvs.id = ts.id_tipo_vehiculo_servicio ' +
         'LEFT JOIN NULLID.rnt_tipo_servicio_area tsa ON ts.id_tipo_servicio_area = tsa.id ' +
         'INNER JOIN NULLID.UTILSQA_REGION r ON r.ID = s.CODIGO_REGION ' +
-        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ACTIVO = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
+        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ACTIVO = 1 AND rl.AUTORIZADO_TRAMITE = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
     },
     findRecorridosByFolioRegionAndTipoServicio: (folio,region, lstTipoServicios) => {
         return ibmdb.query('SELECT r.NOMBRE AS NOMBRE_RECORRIDO, p.nombre AS ORIGEN, c.NOMBRE AS COMUNA_ORIGEN, p2.NOMBRE AS DESTINO, c2.NOMBRE AS COMUNA_DESTINO ' +
@@ -55,7 +56,7 @@ module.exports = {
         'LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO tvs ON tvs.ID = ts.ID_TIPO_VEHICULO_SERVICIO ' +
         'LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA tsa ON ts.ID_tipo_servicio_area = tsa.ID ' +
         'INNER JOIN NULLID.UTILSQA_REGION r ON r.ID = s.CODIGO_REGION ' +
-        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND MANDATARIOPERSONA.RUT = ? AND s.ACTIVO = 1 AND ts.id in (' + lstTipoServicios.toString() + ')', [rut_empresa, rut_representante, rut_solicitante])
+        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND MANDATARIOPERSONA.RUT = ? AND rl.AUTORIZADO_TRAMITES = 1 AND man.AUTORIZADO_TRAMITES = 1 AND s.ACTIVO = 1 AND ts.id in (' + lstTipoServicios.toString() + ')', [rut_empresa, rut_representante, rut_solicitante])
     },
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable,lstTipoServicios) =>{
         return ibmdb.query("SELECT DISTINCT REGION.ID AS ID_REGION, REGION.NOMBRE AS REGION, T_VEHICULO_SERV.NOMBRE || ' ' || MODALIDAD.NOMBRE || ' ' || T_SERV_AREA.NOMBRE AS TIPO_SERVICIO, VISTA.IDENT_SERVICIO AS FOLIO, RESPONSABLE.NOMBRE AS NOMBRE " +

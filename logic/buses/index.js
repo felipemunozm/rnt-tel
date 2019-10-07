@@ -1,5 +1,6 @@
 const busesRepository = require("../../repository/buses")
 const log = require('../../log')
+const rntTramitesMap= require('../../config')
 module.exports = {
     getTest: () => {
         queryOut = busesRepository.getTest();
@@ -17,11 +18,13 @@ module.exports = {
     },
     //psalas empresa -solicitante
     getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses:   (id_region,rut_representante,rut_solicitante) => {
-        return  busesRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses(id_region,rut_representante,rut_solicitante)
+        let idtramite =rntTramitesMap.rntTramitesMap.buses.IdsTramites[0]
+        return  busesRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses(id_region,rut_representante,rut_solicitante,idtramite)
     },
     //psalas persona - solicitante
     getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:   (id_region,rut_solicitante,rut_solicitante2) => {
-        return  busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(id_region,rut_solicitante,rut_solicitante2)
+        let idtramite =rntTramitesMap.rntTramitesMap.buses.IdsTramites[0]
+        return  busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(id_region,rut_solicitante,rut_solicitante2,idtramite)
     },
     getServiciosVigentesInscritosPorRutResponsableAndRutMandatario:  (rut_responsable, rut_mandatario) => {
         let response = {
