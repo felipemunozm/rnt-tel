@@ -17,7 +17,7 @@ module.exports = {
         'LEFT JOIN NULLID.rnt_tipo_vehiculo_servicio tvs ON tvs.id = ts.id_tipo_vehiculo_servicio ' +
         'LEFT JOIN NULLID.rnt_tipo_servicio_area tsa ON ts.id_tipo_servicio_area = tsa.id ' +
         'INNER JOIN NULLID.UTILSQA_REGION r ON r.ID = s.CODIGO_REGION ' +
-        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ACTIVO = 1 AND rl.AUTORIZADO_TRAMITE = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
+        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ACTIVO = 1 AND rl.AUTORIZADO_TRAMITES = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
     },
     findRecorridosByFolioRegionAndTipoServicio: (folio,region, lstTipoServicios) => {
         return ibmdb.query('SELECT r.NOMBRE AS NOMBRE_RECORRIDO, p.nombre AS ORIGEN, c.NOMBRE AS COMUNA_ORIGEN, p2.NOMBRE AS DESTINO, c2.NOMBRE AS COMUNA_DESTINO ' +
