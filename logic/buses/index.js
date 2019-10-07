@@ -15,12 +15,15 @@ module.exports = {
     findRepresentanteLegalByEmpresa: async (rut_empresa, rut_representante_legal) => {
         return busesRepository.findRepresentanteLegalByEmpresa(rut_empresa, rut_representante_legal)
     },
-    getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:   (id_region,rut_solicitante) => {
-        return  busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(id_region,rut_solicitante)
+    //psalas empresa -solicitante
+    getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses:   (id_region,rut_representante,rut_solicitante) => {
+        return  busesRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses(id_region,rut_representante,rut_solicitante)
     },
-    getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses:  (rut,rut_empresa) => {
-        return busesRepository.getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses(rut,rut_empresa)
+    //psalas persona - solicitante
+    getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:   (id_region,rut_solicitante,rut_solicitante2) => {
+        return  busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(id_region,rut_solicitante,rut_solicitante2)
     },
+  
     getServiciosVigentesInscritosPorRutResponsable:  (rut) => {
         let response = {
             estado: '',
