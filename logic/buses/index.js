@@ -47,6 +47,7 @@ module.exports = {
             response.servicios.push({
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
+                cod_region: servicioDB.ID_REGION,
                 rut_responsable: servicioDB.RUT_RESPONSABLE,
                 rut_representante: servicioDB.RUT_REPRESENTANTE,
                 recorridos: recorridos
@@ -78,6 +79,7 @@ module.exports = {
             response.servicios.push({
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
+                cod_region: servicioDB.ID_REGION,
                 rut_responsable: servicioDB.RUT_RESPONSABLE,
                 rut_representante: servicioDB.RUT_REPRESENTANTE,
                 recorridos: recorridos
