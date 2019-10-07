@@ -14,7 +14,7 @@ router.get('/personas/:RUT/empresas/:RUT_EMPRESA', (ctx) => {
 //psalas empresa
 router.get('/regiones/:ID_REGION/empresas/:RUT_EMPRESA/representante/:RUT_SOLICITANTE',async (ctx) => {
     log.debug("ID_REGION: " + ctx.params.ID_REGION)
-    log.debug("RUT_EMPRESA: " + ctx.params.RUT_REPRESENTANTE)
+    log.debug("RUT_EMPRESA: " + ctx.params.RUT_EMPRESA)
     log.debug("RUT_SOLICITANTE: " + ctx.params.RUT_SOLICITANTE)
     ctx.body = await logicBuses.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses(ctx.params.ID_REGION,ctx.params.RUT_EMPRESA,ctx.params.RUT_SOLICITANTE)
 })

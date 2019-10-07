@@ -31,13 +31,12 @@ module.exports = {
     },
    
        //psalas
-       getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:  (id_region, rut_solicitante,rut_representante) => {
+       getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:  (id_region, rut_solicitante,rut_representante,idtramite) => {
     
         log.debug(id_region)
         log.debug(rut_solicitante)
         //crear logica de respuesta
         //1 Empresa indicada no se encuentra habilitada para realizar tramites en linea
-        
         //2 Usted no se encuentra habilitado para realizar este tramite en la empresa indicada
         //3 Usted no se encuentra habilitado para realizar este tramite en la region indicada
         //4 Usted no se encuentra habilitado para realizar este tramite en linea
@@ -90,7 +89,7 @@ module.exports = {
                             "INNER JOIN   NULLID.RNT_TIPO_SERVICIO_AREA tsa 		  ON ts.ID_TIPO_SERVICIO_AREA = tsa.id " +
                             "INNER JOIN   NULLID.rnt_tipo_vehiculo_servicio tsv       on tsv.ID=ts.ID_TIPO_VEHICULO_SERVICIO " +
                             "INNER JOIN   NULLID.rnt_modalidad moda                   on moda.ID=ts.ID_MODALIDAD " +
-                            "INNER JOIN NULLID.RNT_TRAMITE tram                    ON tram.id = 1  and tram.ID= autt.ID_TRAMITE " +
+                            "INNER JOIN NULLID.RNT_TRAMITE tram                    ON tram.id = "+ idtramite +  " and tram.ID= autt.ID_TRAMITE " +
                             "where aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  "
                             let hab_persona_tramite =  ibmdb.query( query,[id_region, rut_representante, rut_solicitante])
                             if  (hab_persona_tramite.length>0 ) 
@@ -103,7 +102,7 @@ module.exports = {
                                 "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
                                 "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
                                 "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +                    
-                                "INNER JOIN NULLID.RNT_TRAMITE tram                      ON tram.id = 1  and tram.ID= autt.ID_TRAMITE " +
+                                "INNER JOIN NULLID.RNT_TRAMITE tram                      ON tram.id = "+ idtramite +  "   and tram.ID= autt.ID_TRAMITE " +
                                 "WHERE  current date between aut.FECHA_VIGENCIA_DESDE and aut.FECHA_VIGENCIA_HASTA " +
                                 "and   aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  "
                                 let hab_persona_tramite =  ibmdb.query( query,[id_region, rut_representante, rut_solicitante])
@@ -126,7 +125,7 @@ module.exports = {
                                     "INNER JOIN   NULLID.RNT_TIPO_SERVICIO_AREA tsa 		  ON ts.ID_TIPO_SERVICIO_AREA = tsa.id " +
                                     "INNER JOIN   NULLID.rnt_tipo_vehiculo_servicio tsv       on tsv.ID=ts.ID_TIPO_VEHICULO_SERVICIO " +
                                     "INNER JOIN   NULLID.rnt_modalidad moda                   on moda.ID=ts.ID_MODALIDAD " +
-                                    "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = 1  and tram.ID= autt.ID_TRAMITE " +
+                                    "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = "+ idtramite +  "   and tram.ID= autt.ID_TRAMITE " +
                                     "WHERE  current date between aut.FECHA_VIGENCIA_DESDE and aut.FECHA_VIGENCIA_HASTA " +
                                     "and aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  " ,[id_region, rut_representante, rut_solicitante])
                                 }
@@ -168,7 +167,7 @@ module.exports = {
       
     },
     //psalas
-    getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses:  (id_region, rut_representante, rut_solicitante) => {
+    getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses:  (id_region, rut_representante, rut_solicitante,idtramite) => {
         log.debug(id_region)
         log.debug(rut_representante)
         log.debug(rut_solicitante)
@@ -220,7 +219,7 @@ module.exports = {
                             "INNER JOIN   NULLID.RNT_TIPO_SERVICIO_AREA tsa 		  ON ts.ID_TIPO_SERVICIO_AREA = tsa.id " +
                             "INNER JOIN   NULLID.rnt_tipo_vehiculo_servicio tsv       on tsv.ID=ts.ID_TIPO_VEHICULO_SERVICIO " +
                             "INNER JOIN   NULLID.rnt_modalidad moda                   on moda.ID=ts.ID_MODALIDAD " +
-                            "INNER JOIN NULLID.RNT_TRAMITE tram                    ON tram.id = 1  and tram.ID= autt.ID_TRAMITE " +
+                            "INNER JOIN NULLID.RNT_TRAMITE tram                    ON tram.id = "+ idtramite +  "  and tram.ID= autt.ID_TRAMITE " +
                             "where aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  "
                             let hab_persona_tramite =  ibmdb.query( query,[id_region, rut_representante, rut_solicitante])
                             if  (hab_persona_tramite.length>0 ) 
@@ -233,7 +232,7 @@ module.exports = {
                                 "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
                                 "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
                                 "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +                    
-                                "INNER JOIN NULLID.RNT_TRAMITE tram                      ON tram.id = 1  and tram.ID= autt.ID_TRAMITE " +
+                                "INNER JOIN NULLID.RNT_TRAMITE tram                      ON tram.id = "+ idtramite +  "  and tram.ID= autt.ID_TRAMITE " +
                                 "WHERE  current date between aut.FECHA_VIGENCIA_DESDE and aut.FECHA_VIGENCIA_HASTA " +
                                 "and   aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  "
                                 let hab_persona_tramite =  ibmdb.query( query,[id_region, rut_representante, rut_solicitante])
@@ -256,7 +255,7 @@ module.exports = {
                                     "INNER JOIN   NULLID.RNT_TIPO_SERVICIO_AREA tsa 		  ON ts.ID_TIPO_SERVICIO_AREA = tsa.id " +
                                     "INNER JOIN   NULLID.rnt_tipo_vehiculo_servicio tsv       on tsv.ID=ts.ID_TIPO_VEHICULO_SERVICIO " +
                                     "INNER JOIN   NULLID.rnt_modalidad moda                   on moda.ID=ts.ID_MODALIDAD " +
-                                    "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = 1  and tram.ID= autt.ID_TRAMITE " +
+                                    "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = "+ idtramite +  " and tram.ID= autt.ID_TRAMITE " +
                                     "WHERE  current date between aut.FECHA_VIGENCIA_DESDE and aut.FECHA_VIGENCIA_HASTA " +
                                     "and aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  " ,[id_region, rut_representante, rut_solicitante])
                                 }
