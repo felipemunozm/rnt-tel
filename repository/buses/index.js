@@ -195,6 +195,10 @@ module.exports = {
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable) => {
         return commons.getServiciosVigentesInscritosPorRutResponsable(rut_responsable, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
     },
+    //por rmason
+    getServiciosVigentesInscritosPorRutResponsableAndRutMandatario: (rut_responsable, rut_mandatario) => {
+        return commons.getServiciosVigentesInscritosPorRutResponsableAndRutMandatario(rut_responsable, rut_mandatario, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
+    },
     findServiciosByRepresentanteLegalAndEmpresa: (rut_empresa, rut_representante_legal) => {
         return commons.findServiciosByRepresentanteLegalAndEmpresaAndTipoServicioList(rut_empresa, rut_representante_legal, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
     },
