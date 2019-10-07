@@ -1,4 +1,5 @@
 const busesRepository = require("../../repository/buses")
+const log = require('../../log')
 module.exports = {
     getTest: () => {
         queryOut = busesRepository.getTest();
@@ -14,20 +15,33 @@ module.exports = {
     findRepresentanteLegalByEmpresa: async (rut_empresa, rut_representante_legal) => {
         return busesRepository.findRepresentanteLegalByEmpresa(rut_empresa, rut_representante_legal)
     },
-    getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:   (id_region,rut_solicitante) => {
-        return  busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(id_region,rut_solicitante)
+    //psalas empresa -solicitante
+    getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses:   (id_region,rut_representante,rut_solicitante) => {
+        return  busesRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses(id_region,rut_representante,rut_solicitante)
     },
-    getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses:  (rut,rut_empresa) => {
-        return busesRepository.getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses(rut,rut_empresa)
+    //psalas persona - solicitante
+    getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:   (id_region,rut_solicitante,rut_solicitante2) => {
+        return  busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(id_region,rut_solicitante,rut_solicitante2)
     },
+  
     getServiciosVigentesInscritosPorRutResponsable:  (rut) => {
         let response = {
+            estado: '',
+            mensaje: '',
             servicios: []
         }
         let servicios = busesRepository.getServiciosVigentesInscritosPorRutResponsable(rut)
-        servicios.forEach( async (servicioDB) => {
+        if(servicios.length == 0 ) {
+            response.estado = 'RECHAZADO'
+            response.mensaje = 'Usted no se encuentra habilitado en el Registro Nacional de Transportes para realizar este Trámite, dirígase a la Seremitt mas cercana.'
+            delete response.servicios
+            return response
+        }
+        response.estado = 'APROBADO'
+        response.mensaje = 'Habilitado en el Registro Nacional de Transportes'
+        servicios.forEach((servicioDB) => {
             //Extraer recorridos de los servicios asociados
-            let recorridos = await busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO,servicioDB.ID_REGION) 
+            let recorridos = busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO,servicioDB.ID_REGION) 
             response.servicios.push({
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
@@ -36,31 +50,61 @@ module.exports = {
                 recorridos: recorridos
             })
         })
+        if(response.servicios.length == 0) {
+            delete response.servicios
+        }
         return response
     },
     findServiciosByRepresentanteLegalAndEmpresa: async (rut_empresa, rut_representante_legal) => {
         let response = {
+            estado: '',
+            mensaje: '',
             servicios: []
         }
         let servicios = busesRepository.findServiciosByRepresentanteLegalAndEmpresa(rut_empresa, rut_representante_legal)
-        servicios.forEach( async (servicioDB) => {
+        if(servicios.length == 0 ) {
+            response.estado = 'RECHAZADO'
+            response.mensaje = 'Usted no se encuentra habilitado en el Registro Nacional de Transportes para realizar este Trámite, dirígase a la Seremitt mas cercana.'
+            delete response.servicios
+            return response
+        }
+        response.estado = 'APROBADO'
+        response.mensaje = 'Habilitado en el Registro Nacional de Transportes'
+        log.debug('Servicios: ' + JSON.stringify(servicios))
+        servicios.forEach( (servicioDB) => {
             //Extraer recorridos de los servicios asociados
-            let recorridos = await busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO,servicioDB.COD_REGION) 
+            let recorridos = busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO,servicioDB.COD_REGION) 
+            log.debug('recorridos: ' + JSON.stringify(recorridos))
             response.servicios.push({
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
                 rut_responsable: servicioDB.RUT_RESPONSABLE,
+                nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                 rut_representante: servicioDB.RUT_REPRESENTANTE,
+                tipo_servicio: servicioDB.TIPOSERVICIO,
                 recorridos: recorridos
             })
         })
+        if(response.servicios.length == 0) {
+            delete response.servicios
+        }
         return response
     },
     findServiciosByMandatarioAndRepresentanteAndEmpresa: (rut_empresa, rut_representante, rut_solicitante) => {
         let response = {
+            estado: '',
+            mensaje: '',
             servicios: []
         }
         let servicios = busesRepository.findServiciosByMandatarioAndRepresentanteAndEmpresa(rut_empresa, rut_representante, rut_solicitante)
+        if(servicios.length == 0 ) {
+            response.estado = 'RECHAZADO'
+            response.mensaje = 'Usted no se encuentra habilitado en el Registro Nacional de Transportes para realizar este Trámite, dirígase a la Seremitt mas cercana.'
+            delete response.servicios
+            return response
+        }
+        response.estado = 'APROBADO'
+        response.mensaje = 'Habilitado en el Registro Nacional de Transportes'
         servicios.forEach((servicioDB) => {
             //Extraer Recorridos
             let recorridos = busesRepository.findRecorridosByFolioRegion(servicioDB.FOLIO, servicioDB.COD_REGION)
@@ -68,11 +112,15 @@ module.exports = {
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
                 rut_responsable: servicioDB.RUT_RESPONSABLE,
+                nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                 rut_representante: servicioDB.RUT_REPRESENTANTE,
                 rut_mandatario: servicioDB.RUT_MANDATARIO,
                 recorridos: recorridos
             })
         })
+        if(response.servicios.length == 0) {
+            delete response.servicios
+        }
         return response
     }
    
