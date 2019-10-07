@@ -280,4 +280,10 @@ module.exports = {
          }
 
     },
+    getServiciosVigentesInscritosPorRutResponsable: (rut_responsable) => {
+        return commons.getServiciosVigentesInscritosPorRutResponsable(rut_responsable, [19,20,21,22,23,24])
+    },
+    getServiciosVigentesInscritosPorRutResponsableAndRutMandatario: (rut_responsable, rut_mandatario) => {
+        return commons.getServiciosVigentesInscritosPorRutResponsableAndRutMandatario(rut_responsable, rut_mandatario, [19,20,21,22,23,24])
+    },
 }
