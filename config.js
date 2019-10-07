@@ -14,7 +14,7 @@ module.exports = {
             IdsTramites: [23]
         },
         taxis: {
-            IdsTramites: [24]
+            IdsTramites: [2]
         }
     }
 }
