@@ -25,6 +25,7 @@ module.exports = {
             response.servicios.push({
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
+                cod_region: servicioDB.COD_REGION,
                 rut_responsable: servicioDB.RUT_RESPONSABLE,
                 nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                 rut_representante: servicioDB.RUT_REPRESENTANTE,
@@ -56,6 +57,7 @@ module.exports = {
             response.servicios.push({
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
+                cod_region: servicioDB.COD_REGION,
                 rut_responsable: servicioDB.RUT_RESPONSABLE,
                 nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                 rut_representante: servicioDB.RUT_REPRESENTANTE,
