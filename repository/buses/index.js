@@ -159,34 +159,36 @@ module.exports = {
                                 }
                                 else
                                 {
-                                    return ibmdb.query("select  'Ha expirado su vigencia de habilitacion para realizar entre tramite. Dirijase a la Seremitt correspondiente para actualizar su documentacion'  from sysIbm.dual" )
+                                    return  {mensaje:'Ha expirado su vigencia de habilitacion para realizar entre tramite. Dirijase a la Seremitt correspondiente para actualizar su documentacion' ,estado:'RECHAZADO'}
+                                    
                                 }
 
                             }
                             else
                             {
-                                return ibmdb.query("select  'Usted no se encuentra habilitado para realizar este tramite en linea'  from sysIbm.dual" )
+
+                                return  {mensaje:'Usted no se encuentra habilitado para realizar este tramite en linea' ,estado:'RECHAZADO'}
                             }
 
 
                         }
                         else
-                        {
-                            return ibmdb.query("select  'Usted no se encuentra habilitado para realizar este tramite en la region indicada'  from sysIbm.dual" )
+                        {        return  {mensaje:'Usted no se encuentra habilitado para realizar este tramite en la region indicada' ,estado:'RECHAZADO'}
+                           
                         }
 
             }
             else
-            {
-                return ibmdb.query("select  'Usted no se encuentra habilitado para realizar este tramite en la empresa indicada'  from sysIbm.dual" )
-
+            {  return  {mensaje:'Usted no se encuentra habilitado para realizar este tramite en la empresa indicada' ,estado:'RECHAZADO'}
+               
             }
 
            
          }  
          else
          {
-             return ibmdb.query("select  'Empresa indicada no se encuentra habilitada para realizar tramites en linea'  from sysIbm.dual" )
+
+             return  {mensaje:'Empresa indicada no se encuentra habilitada para realizar tramites en linea' ,estado:'RECHAZADO'}
 
          }
 
