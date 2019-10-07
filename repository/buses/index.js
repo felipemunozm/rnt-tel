@@ -42,18 +42,38 @@ module.exports = {
         "and tram.ID= autt.ID_TRAMITE  "  +
         "WHERE     aut.CODIGO_REGION   = ?  and   per.RUT = ?", [id_region, rut_solicitante])
     },
-    getAutorizadoPorMandatarioParaTramiteInscripcionServicioBuses:  (id_region, rut_solicitante) => {
+       //psalas
+       getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:  (id_region, rut_solicitante,rut_solicitante2) => {
         log.debug(id_region)
         log.debug(rut_solicitante)
+        //crear logica de respuesta
+        //1 Empresa indicada no se encuentra habilitada para realizar tramites en linea
         
-        return  ibmdb.query("select   per.RUT, per.NOMBRE,aut.CODIGO_REGION FROM tel.TEL_PERSONA per INNER JOIN  tel.TEL_RESPONSABLE resp  ON resp.ID_PERSONA = per.ID   " +
-        "and  per.TIPO_PERSONA_ID = 1  " +
-        "INNER JOIN tel.TEL_RESPONSABLE_AUTORIZACION resp_aut  ON resp_aut.ID_RESPONSABLE = resp.ID   " +
-        "INNER JOIN tel.TEL_AUTORIZACION aut  ON aut.id  = RESP_AUT.ID_AUTORIZACION   and aut.TIPO_AUTORIZACION =1 " +
-        "INNER JOIN tel.TEL_AUTORIZACION_TRAMITE autt          ON autt.ID_AUTORIZACION     = aut.ID   " +
-        "INNER JOIN NULLID.RNT_TRAMITE tram                    ON tram.id = 1   " +
-        "and tram.ID= autt.ID_TRAMITE  "  +
-        "WHERE     aut.CODIGO_REGION   = ?  and   per.RUT = ?", [id_region, rut_solicitante])
+        //2 Usted no se encuentra habilitado para realizar este tramite en la empresa indicada
+        //3 Usted no se encuentra habilitado para realizar este tramite en la region indicada
+        //4 Usted no se encuentra habilitado para realizar este tramite en linea
+        //5 Ha expirado su vigencia de habilitacion para realizar entre tramite. Dirijase a la Seremitee correspondiente para actualizar su documentacion
+
+        return ibmdb.query("select  aut.ID_CATEGORIA ,aut.ID_TIPO_SERVICIO ," +
+        "cat.NOMBRE AS categoria," +
+        " tsa.NOMBRE  AS tiposervicio , " +
+        "tsv.NOMBRE AS tipovehiculo  ," +
+        "moda.NOMBRE as modalidad  ," +
+        " tsa.NOMBRE ||' '|| tsv.NOMBRE ||' '|| moda.NOMBRE  as tiposervicio " +
+        "FROM    tel.TEL_PERSONA per 	" +
+        "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 1 " +
+        "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
+        "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
+        "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
+        "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +
+        "INNER JOIN   NULLID.RNT_CATEGORIA_TRANSPORTE cat 		  ON cat.ID=aut.ID_CATEGORIA " +
+        "INNER JOIN   nullid.RNT_TIPO_SERVICIO ts 				  ON ts.id = aut.ID_TIPO_SERVICIO " +
+        "INNER JOIN   NULLID.RNT_TIPO_SERVICIO_AREA tsa 		  ON ts.ID_TIPO_SERVICIO_AREA = tsa.id " +
+        "INNER JOIN   NULLID.rnt_tipo_vehiculo_servicio tsv       on tsv.ID=ts.ID_TIPO_VEHICULO_SERVICIO " +
+        "INNER JOIN   NULLID.rnt_modalidad moda                   on moda.ID=ts.ID_MODALIDAD " +
+        "INNER JOIN NULLID.RNT_TRAMITE tram                    ON tram.id = 1  and tram.ID= autt.ID_TRAMITE " +
+        "WHERE  current date between aut.FECHA_VIGENCIA_DESDE and aut.FECHA_VIGENCIA_HASTA " +
+        "and aut.CODIGO_REGION   = ? and per2.RUT = ? AND per.RUT = ? " ,[id_region, rut_solicitante,rut_solicitante2])
     },
     //por fpavez
     getautorizacionPorRegionAndRutRepresentanteAndRutSolicitanteBuses: (region, rut_representante, rut_solicitante) => {
