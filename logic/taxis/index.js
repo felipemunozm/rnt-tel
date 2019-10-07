@@ -6,20 +6,35 @@ module.exports = {
     },
     findServiciosByRepresentanteLegalAndEmpresa: (rut_empresa, rut_representante_legal) => {
         let response = {
+            estado: '',
+            mensaje: '',
             servicios: []
         }
         let servicios = taxisRepository.findServiciosByRepresentanteLegalAndEmpresa(rut_empresa, rut_representante_legal)
-        servicios.forEach( async (servicioDB) => {
+        if(servicios.length == 0 ) {
+            response.estado = 'RECHAZADO'
+            response.mensaje = 'Usted no se encuentra habilitado en el Registro Nacional de Transportes para realizar este Trámite, dirígase a la Seremitt mas cercana.'
+            delete response.servicios
+            return response
+        }
+        response.estado = 'APROBADO'
+        response.mensaje = 'Habilitado en el Registro Nacional de Transportes'
+        servicios.forEach( (servicioDB) => {
             //Extraer recorridos de los servicios asociados
-            let recorridos = await taxisRepository.findRecorridosByFolioRegion(servicioDB.FOLIO,servicioDB.COD_REGION) 
+            let recorridos = taxisRepository.findRecorridosByFolioRegion(servicioDB.FOLIO,servicioDB.COD_REGION) 
             response.servicios.push({
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
                 rut_responsable: servicioDB.RUT_RESPONSABLE,
+                nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                 rut_representante: servicioDB.RUT_REPRESENTANTE,
+                tipo_servicio: servicioDB.TIPOSERVICIO,
                 recorridos: recorridos
             })
         })
+        if(response.servicios.length == 0) {
+            delete response.servicios
+        }
         return response
     },
     findServiciosByMandatarioAndRepresentanteAndEmpresa: (rut_empresa, rut_representante, rut_solicitante) => {
@@ -27,6 +42,14 @@ module.exports = {
             servicios: []
         }
         let servicios = taxisRepository.findServiciosByMandatarioAndRepresentanteAndEmpresa(rut_empresa, rut_representante, rut_solicitante)
+        if(servicios.length == 0 ) {
+            response.estado = 'RECHAZADO'
+            response.mensaje = 'Usted no se encuentra habilitado en el Registro Nacional de Transportes para realizar este Trámite, dirígase a la Seremitt mas cercana.'
+            delete response.servicios
+            return response
+        }
+        response.estado = 'APROBADO'
+        response.mensaje = 'Habilitado en el Registro Nacional de Transportes'
         servicios.forEach((servicioDB) => {
             //Extraer Recorridos
             let recorridos = taxisRepository.findRecorridosByFolioRegion(servicioDB.FOLIO, servicioDB.COD_REGION)
@@ -34,11 +57,15 @@ module.exports = {
                 folio:servicioDB.FOLIO,
                 region: servicioDB.REGION,
                 rut_responsable: servicioDB.RUT_RESPONSABLE,
+                nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                 rut_representante: servicioDB.RUT_REPRESENTANTE,
                 rut_mandatario: servicioDB.RUT_MANDATARIO,
                 recorridos: recorridos
             })
         })
+        if(response.servicios.length == 0) {
+            delete response.servicios
+        }
         return response
     }
 }
