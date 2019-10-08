@@ -29,5 +29,5 @@ module.exports = {
     },
     getServiciosVigentesInscritosPorRutResponsableAndRutMandatario: (rut_responsable, rut_mandatario) => {
         return commons.getServiciosVigentesInscritosPorRutResponsableAndRutMandatario(rut_responsable, rut_mandatario, [19,20,21,22,23,24])
-    },
+    }
 }
