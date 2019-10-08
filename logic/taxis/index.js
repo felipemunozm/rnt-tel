@@ -22,13 +22,22 @@ module.exports = {
         servicios.forEach( (servicioDB) => {
             //Extraer recorridos de los servicios asociados
             let recorridos = taxisRepository.findRecorridosByFolioRegion(servicioDB.FOLIO, servicioDB.ID_REGION) 
-            response.servicios.push({
-                folio:servicioDB.FOLIO,
-                region: servicioDB.REGION,
-                rut_responsable: servicioDB.RUT_RESPONSABLE,
-                rut_representante: servicioDB.RUT_REPRESENTANTE,
-                recorridos: recorridos
-            })
+            if(recorridos.length > 0){
+                response.servicios.push({
+                    folio:servicioDB.FOLIO,
+                    region: servicioDB.REGION,
+                    rut_responsable: servicioDB.RUT_RESPONSABLE,
+                    rut_representante: servicioDB.RUT_REPRESENTANTE,
+                    recorridos: recorridos
+                })
+            }else{
+                response.servicios.push({
+                    folio:servicioDB.FOLIO,
+                    region: servicioDB.REGION,
+                    rut_responsable: servicioDB.RUT_RESPONSABLE,
+                    rut_representante: servicioDB.RUT_REPRESENTANTE
+                }) 
+            }
         })
         if(response.servicios.length == 0) {
             delete response.servicios
@@ -52,14 +61,23 @@ module.exports = {
         response.mensaje = 'Habilitado en el Registro Nacional de Transportes'
         servicios.forEach( (servicioDB) => {
             //Extraer recorridos de los servicios asociados
-            let recorridos = taxisRepository.findRecorridosByFolioRegion(servicioDB.FOLIO, servicioDB.ID_REGION) 
-            response.servicios.push({
-                folio:servicioDB.FOLIO,
-                region: servicioDB.REGION,
-                rut_responsable: servicioDB.RUT_RESPONSABLE,
-                rut_representante: servicioDB.RUT_REPRESENTANTE,
-                recorridos: recorridos
-            })
+            let recorridos = taxisRepository.findRecorridosByFolioRegion(servicioDB.FOLIO, servicioDB.ID_REGION)
+            if(recorridos.length > 0){
+                response.servicios.push({
+                    folio:servicioDB.FOLIO,
+                    region: servicioDB.REGION,
+                    rut_responsable: servicioDB.RUT_RESPONSABLE,
+                    rut_representante: servicioDB.RUT_REPRESENTANTE,
+                    recorridos: recorridos
+                })
+            }else{
+                response.servicios.push({
+                    folio:servicioDB.FOLIO,
+                    region: servicioDB.REGION,
+                    rut_responsable: servicioDB.RUT_RESPONSABLE,
+                    rut_representante: servicioDB.RUT_REPRESENTANTE
+                })
+            }
         })
         if(response.servicios.length == 0) {
             delete response.servicios
@@ -84,16 +102,28 @@ module.exports = {
         servicios.forEach( (servicioDB) => {
             //Extraer recorridos de los servicios asociados
             let recorridos = taxisRepository.findRecorridosByFolioRegion(servicioDB.FOLIO,servicioDB.COD_REGION) 
-            response.servicios.push({
-                folio:servicioDB.FOLIO,
-                region: servicioDB.REGION,
-                cod_region: servicioDB.COD_REGION,
-                rut_responsable: servicioDB.RUT_RESPONSABLE,
-                nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
-                rut_representante: servicioDB.RUT_REPRESENTANTE,
-                tipo_servicio: servicioDB.TIPOSERVICIO,
-                recorridos: recorridos
-            })
+            if(recorridos.length > 0){
+                response.servicios.push({
+                    folio:servicioDB.FOLIO,
+                    region: servicioDB.REGION,
+                    cod_region: servicioDB.COD_REGION,
+                    rut_responsable: servicioDB.RUT_RESPONSABLE,
+                    nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
+                    rut_representante: servicioDB.RUT_REPRESENTANTE,
+                    tipo_servicio: servicioDB.TIPOSERVICIO,
+                    recorridos: recorridos
+                })
+            }else{
+                response.servicios.push({
+                    folio:servicioDB.FOLIO,
+                    region: servicioDB.REGION,
+                    cod_region: servicioDB.COD_REGION,
+                    rut_responsable: servicioDB.RUT_RESPONSABLE,
+                    nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
+                    rut_representante: servicioDB.RUT_REPRESENTANTE,
+                    tipo_servicio: servicioDB.TIPOSERVICIO
+                })
+            }
         })
         if(response.servicios.length == 0) {
             delete response.servicios
@@ -116,16 +146,28 @@ module.exports = {
         servicios.forEach((servicioDB) => {
             //Extraer Recorridos
             let recorridos = taxisRepository.findRecorridosByFolioRegion(servicioDB.FOLIO, servicioDB.COD_REGION)
-            response.servicios.push({
-                folio:servicioDB.FOLIO,
-                region: servicioDB.REGION,
-                cod_region: servicioDB.COD_REGION,
-                rut_responsable: servicioDB.RUT_RESPONSABLE,
-                nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
-                rut_representante: servicioDB.RUT_REPRESENTANTE,
-                rut_mandatario: servicioDB.RUT_MANDATARIO,
-                recorridos: recorridos
-            })
+            if(recorridos.length > 0){
+                response.servicios.push({
+                    folio:servicioDB.FOLIO,
+                    region: servicioDB.REGION,
+                    cod_region: servicioDB.COD_REGION,
+                    rut_responsable: servicioDB.RUT_RESPONSABLE,
+                    nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
+                    rut_representante: servicioDB.RUT_REPRESENTANTE,
+                    rut_mandatario: servicioDB.RUT_MANDATARIO,
+                    recorridos: recorridos
+                })
+            }else{
+                response.servicios.push({
+                    folio:servicioDB.FOLIO,
+                    region: servicioDB.REGION,
+                    cod_region: servicioDB.COD_REGION,
+                    rut_responsable: servicioDB.RUT_RESPONSABLE,
+                    nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
+                    rut_representante: servicioDB.RUT_REPRESENTANTE,
+                    rut_mandatario: servicioDB.RUT_MANDATARIO
+                })
+            }
         })
         if(response.servicios.length == 0) {
             delete response.servicios
