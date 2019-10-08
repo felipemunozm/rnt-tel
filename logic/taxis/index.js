@@ -136,10 +136,11 @@ module.exports = {
     getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioTaxis:   (id_region,rut_representante,rut_solicitante) => {
         let idtramite =rntTramitesMap.rntTramitesMap.taxis.IdsTramites[0]
         return  taxisRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioTaxis(id_region,rut_representante,rut_solicitante,idtramite)
+                                
     },
     //psalas persona - solicitante
     getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis:   (id_region,rut_solicitante,rut_solicitante2) => {
         let idtramite =rntTramitesMap.rntTramitesMap.taxis.IdsTramites[0]
-        return  taxisRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis(id_region,rut_solicitante,rut_solicitante2,idtramite)
+        return  taxisRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis(id_region,rut_solicitante,idtramite)
     },
 }

@@ -21,7 +21,7 @@ module.exports = {
     },
      //psalas
     getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioTaxis:  (id_region, rut_representante, rut_solicitante,idtramite) => {
-        return commons.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicio (id_region, rut_solicitante,rut_representante,idtramite) 
+        return commons.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicio (id_region, rut_representante,rut_solicitante,idtramite) 
     },
   
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable) => {

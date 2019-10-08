@@ -30,12 +30,13 @@ module.exports = {
         return commons.findRepresentanteLegalByEmpresaAndTipoServicioList(rut_empresa, rut_representante_legal, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
     },
          //psalas
-     getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:  (id_region, rut_solicitante,idtramite) => {
-        return commons.getAutorizadoPorPersonaParaTramiteInscripcionServicio (id_region, rut_solicitante,idtramite) 
+    getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses:  (id_region,rut_representante,rut_solicitante,idtramite) => {
+       return commons.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicio (id_region, rut_representante,rut_solicitante,idtramite) 
     },
          //psalas
-      getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:  (id_region, rut_solicitante,idtramite) => {
-            return commons.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicio (id_region, rut_solicitante,idtramite) 
+    getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:  (id_region, rut_solicitante,idtramite) => {
+        return commons.getAutorizadoPorPersonaParaTramiteInscripcionServicio (id_region, rut_solicitante,idtramite) 
+            
         },
   
     //por rmason
