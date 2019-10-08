@@ -17,7 +17,7 @@ router.get('/regiones/:ID_REGION/personas/:RUT_SOLICITANTE', async (ctx) => {
 
     log.debug("ID_REGION: " + ctx.params.ID_REGION)
     log.debug("RUT_SOLICITANTE: " + ctx.params.RUT_SOLICITANTE)
-    ctx.body = await logicTaxis.getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis(ctx.params.ID_REGION,ctx.params.RUT_SOLICITANTE,ctx.params.RUT_SOLICITANTE)
+    ctx.body = await logicTaxis.getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis(ctx.params.ID_REGION,ctx.params.RUT_SOLICITANTE)
   
 })
 

@@ -139,8 +139,8 @@ module.exports = {
                                 
     },
     //psalas persona - solicitante
-    getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis:   (id_region,rut_solicitante,rut_solicitante2) => {
+    getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis:   (id_region,rut_solicitante) => {
         let idtramite =rntTramitesMap.rntTramitesMap.taxis.IdsTramites[0]
         return  taxisRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis(id_region,rut_solicitante,idtramite)
-    },
+    }
 }
