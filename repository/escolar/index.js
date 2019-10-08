@@ -6,8 +6,8 @@ const log = require('../../log')
 
 module.exports = {
      //psalas
-    getAutorizadoPorPersonaParaTramiteInscripcionServicioEscolar:  (id_region, rut_solicitante,rut_representante,idtramite) => {
-        return commons.getAutorizadoPorPersonaParaTramiteInscripcionServicio (id_region, rut_solicitante,rut_representante,idtramite) 
+    getAutorizadoPorPersonaParaTramiteInscripcionServicioEscolar:  (id_region, rut_solicitante,idtramite) => {
+        return commons.getAutorizadoPorPersonaParaTramiteInscripcionServicio (id_region, rut_solicitante,idtramite) 
     },
      //psalas
     getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioEscolar:  (id_region, rut_representante, rut_solicitante,idtramite) => {
