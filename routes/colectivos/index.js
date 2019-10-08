@@ -9,5 +9,5 @@ router.get('/', (ctx) => {
     ctx.body = colectivosLogic.getTest()
 })
 router.use('/servicios',serviciosRoute)
-router.use('/vehiculos',vehiculosRoute)
+//router.use('/vehiculos',vehiculosRoute)
 module.exports = router.routes()
