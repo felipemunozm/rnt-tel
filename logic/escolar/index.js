@@ -8,7 +8,7 @@ module.exports = {
     },
      //psalas empresa -solicitante
      getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioEscolar:   (id_region,rut_representante,rut_solicitante) => {
-        let idtramite =rntTramitesMap.rntTramitesMap.escolar.IdsTramites[0]
+        let idtramite =rntTramitesMap.rntTramitesMap.escolares.IdsTramites[0]
         return  escolarRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioEscolar(id_region,rut_representante,rut_solicitante,idtramite)
                                 
     },
