@@ -8,7 +8,7 @@ module.exports = {
     getAutorizacionPorEmpresaAndPersonaTramiteInscripcionTaxiColectivo: (id_region,rut_empresa,rut_solicitante, idtramite)=>{
         return colectivosRepository.getAutorizacionPorEmpresaAndPersonaTramiteInscripcionTaxiColectivo(id_region,rut_empresa,rut_solicitante,idtramite)
     },
-    getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo: (id_region,rut_solicitante, rut_representante, idtramite)=>{
-        return colectivosRepository.getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo(id_region,rut_solicitante,rut_representante,idtramite)
+    getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo: (id_region,rut_solicitante, idtramite)=>{
+        return colectivosRepository.getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo(id_region,rut_solicitante,idtramite)
     }
 }

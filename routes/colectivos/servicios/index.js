@@ -15,8 +15,7 @@ router.get('/regiones/:ID_REGION/empresas/:RUT_EMPRESA/representante/:RUT_SOLICI
 
 router.get('/regiones/:ID_REGION/personas/:RUT_SOLICITANTE', (ctx) => {
     let idtramite =rntTramitesMap.rntTramitesMap.colectivos.IdsTramites[0]
-    let rut_representante=ctx.params.RUT_SOLICITANTE
-    ctx.body = logicColectivos.getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo(ctx.params.ID_REGION,ctx.params.RUT_SOLICITANTE,rut_representante,idtramite)
+    ctx.body = logicColectivos.getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo(ctx.params.ID_REGION,ctx.params.RUT_SOLICITANTE,idtramite)
 })
 
 /*router.get('/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', (ctx) => {
