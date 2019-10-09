@@ -5,7 +5,7 @@ module.exports = {
             IdsTramites: [22]
         },
         colectivos: {
-            IdsTramites: [2]
+            IdsTramites: [7]
         },
         escolares: {
             IdsTramites: [21]
@@ -14,7 +14,7 @@ module.exports = {
             IdsTramites: [23]
         },
         taxis: {
-            IdsTramites: [2]
+            IdsTramites: [24]
         }
     }
 }
