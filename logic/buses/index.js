@@ -103,7 +103,7 @@ module.exports = {
                     region: servicioDB.REGION,
                     cod_region: servicioDB.ID_REGION,
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
-                    rut_representante: servicioDB.RUT_REPRESENTANTE,
+                    rut_mandatario: servicioDB.RUT_MANDATARIO,
                     recorridos: recorridos
                 })
             }else{
@@ -112,7 +112,7 @@ module.exports = {
                     region: servicioDB.REGION,
                     cod_region: servicioDB.ID_REGION,
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
-                    rut_representante: servicioDB.RUT_REPRESENTANTE
+                    rut_mandatario: servicioDB.RUT_MANDATARIO
                 })
             }
         })
@@ -145,7 +145,6 @@ module.exports = {
                     region: servicioDB.REGION,
                     cod_region: servicioDB.ID_REGION,
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
-                    rut_representante: servicioDB.RUT_REPRESENTANTE,
                     recorridos: recorridos
                 })
             }else{
@@ -154,7 +153,6 @@ module.exports = {
                     region: servicioDB.REGION,
                     cod_region: servicioDB.ID_REGION,
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
-                    rut_representante: servicioDB.RUT_REPRESENTANTE
                 })
             }
         })
