@@ -167,9 +167,11 @@ module.exports = {
                                     let hab_persona_tramite =  ibmdb.query( query,[id_region, rut_solicitante, rut_solicitante])
                                     if  (hab_persona_tramite[0].TOTAL>0)
                                     {
-                                        return ibmdb.query("select  aut.ID_CATEGORIA ,aut.ID_TIPO_SERVICIO ," +
+                                        return ibmdb.query("select  " +
+                                        "aut.ID_CATEGORIA ," +
+                                        "aut.ID_TIPO_SERVICIO ," +
                                         "cat.NOMBRE AS categoria," +
-                                        " tsa.NOMBRE  AS tipo_servicio , " +
+                                        "tsa.NOMBRE  AS tipo_servicio , " +
                                         "tsv.NOMBRE AS tipovehiculo  ," +
                                         "moda.NOMBRE as modalidad  ," +
                                         "tsa.NOMBRE ||' '|| tsv.NOMBRE ||' '|| moda.NOMBRE  as tiposervicio " +
