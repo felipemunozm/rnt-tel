@@ -1,4 +1,54 @@
-var soap = require('soap');
+const soap = require('soap');
+
+const urlPpu = '../wsdl/ppu.wsdl'
+const urlRT = '../wsdl/revisionTecnica.wsdl'
+
+let getPPUSRCeI = (ppu) => {
+     soap.createClient(urlPpu, (error,client) => {
+        if(error) {
+            throw new Error("Error consultando PPU")
+        }
+        if(!client) {
+            throw new Error("Error instanciando cliente para consultar PPU")
+        }
+        client.getPlaca({ppu:ppu}, (error,result) => {
+            if(error) {
+                throw new Error("Error consultando metodo getPlaca")
+            }
+            if(result != null) {
+                return result
+            }
+            else {
+                return {return: {ppu: ppu, status: false}}
+            }
+        })
+     })
+}
+let getPPURT = (ppu) => {
+    soap.createClient(urlRT, (error, client) => {
+        if(error) {
+            throw new Error("Error consultando RT")
+        }
+        if(!client) {
+            throw new Error("Error instanciando cliente para consultar RT")
+        }
+        client.consultaRevisionTecnica({ ppu: ppu },(error, result) => {
+            if(error) {
+                throw new Error("Error consultando metodo getPlaca")
+            }
+            if(result != null) {
+                return result
+            }
+            else {
+                return {return: {ppu: ppu, status: false}}
+            }
+        })
+    })
+}
+module.exports = {
+    getPPURT: getPPURT,
+    getPPUSRCeI: getPPUSRCeI
+}
 var ServiciosGateway = (function () {
     function ServiciosGateway() {
         this.urlPpu = '../wsdl/ppu.wsdl';
@@ -66,4 +116,4 @@ var ServiciosGateway = (function () {
     };
     return ServiciosGateway;
 })();
-exports.ServiciosGateway = ServiciosGateway;
+//exports.ServiciosGateway = ServiciosGateway;
