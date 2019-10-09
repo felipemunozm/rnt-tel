@@ -67,7 +67,7 @@ module.exports = {
                     folio:servicioDB.FOLIO,
                     region: servicioDB.REGION,
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
-                    rut_representante: servicioDB.RUT_REPRESENTANTE,
+                    rut_mandatario: servicioDB.RUT_MANDATARIO,
                     recorridos: recorridos
                 })
             }else{
@@ -75,7 +75,7 @@ module.exports = {
                     folio:servicioDB.FOLIO,
                     region: servicioDB.REGION,
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
-                    rut_representante: servicioDB.RUT_REPRESENTANTE
+                    rut_mandatario: servicioDB.RUT_MANDATARIO
                 })
             }
         })
