@@ -221,7 +221,7 @@ module.exports = {
              else
              {
     
-                 return  {mensaje:'Responsable del Servicio indicado no se encuentra habilitada para realizar tramites en linea' ,estado:'RECHAZADO'}
+                 return  {mensaje:'Solicitante del Servicio indicado no se encuentra habilitada para realizar tramites en linea' ,estado:'RECHAZADO'}
     
              }
     
