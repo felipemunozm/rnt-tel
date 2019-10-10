@@ -5,6 +5,7 @@ const taxisLogic = require('../logic/taxis')
 const colectivosLogic = require('../logic/colectivos')
 const escolaresLogic = require('../logic/escolar')
 const privadosLogic = require('../logic/privado')
+const config = require('../config')
 const log = require('../log')
 
 describe('Test Buses Logic',() => {
@@ -21,10 +22,10 @@ describe('Test Buses Logic',() => {
         assert.typeOf(busesLogic.getServiciosVigentesInscritosPorRutResponsableAndRutMandatario('6171162-7','12563016-2'),'Object')
     })
     it('Inscripcion de Servicios Empresa',() => {
-        assert.typeOf(busesLogic.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses('01','99531590-4','12630194-4'),'Object')
+        assert.typeOf(busesLogic.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses('01','99531590-4','12630194-4',config.rntTramitesMap.buses.IdsTramites[0]),'Object')
     })
     it('Inscripcion de Servicios Persona',() => {
-        assert.typeOf(busesLogic.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses('01','4180282-0'),'Object')
+        assert.typeOf(busesLogic.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses('01','4180282-0',config.rntTramitesMap.buses.IdsTramites[0]),'Object')
     })
 })
 describe('Test Taxis Logic',() => {
@@ -41,34 +42,34 @@ describe('Test Taxis Logic',() => {
         assert.typeOf(taxisLogic.getServiciosVigentesInscritosPorRutResponsableAndRutMandatario('7540299-6','13919487-K'),'Object')
     })
     it('Inscripcion de Servicios Empresa',() => {
-        assert.typeOf(taxisLogic.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioTaxis('01','99531590-4','12630194-4'),'Object')
+        assert.typeOf(taxisLogic.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioTaxis('01','99531590-4','12630194-4',config.rntTramitesMap.taxis.IdsTramites[0]),'Object')
     })
     it('Inscripcion de Servicios Persona',() => {
-        assert.typeOf(taxisLogic.getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis('01','12630194-4'),'Object')
+        assert.typeOf(taxisLogic.getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis('01','12630194-4',config.rntTramitesMap.taxis.IdsTramites[0]),'Object')
     })
 })
 describe('Test Colectivos Logic',() => {
     it('Inscripcion de Servicios Empresa',() => {
-        assert.typeOf(colectivosLogic.getAutorizacionPorEmpresaAndPersonaTramiteInscripcionTaxiColectivo('01','96866510-3','12630194-4','Object'),'Object')
+        assert.typeOf(colectivosLogic.getAutorizacionPorEmpresaAndPersonaTramiteInscripcionTaxiColectivo('01','96866510-3','12630194-4',config.rntTramitesMap.colectivos.IdsTramites[0]),'Object')
     })
     it('Inscripcion de Servicios Persona',() => {
-        assert.typeOf(colectivosLogic.getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo('01','1103851-4'),'Object')
+        assert.typeOf(colectivosLogic.getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo('01','1103851-4',config.rntTramitesMap.colectivos.IdsTramites[0]),'Object')
     })
 })
 describe('Test Escolares Logic',() => {
     it('Inscripcion de Servicios Empresa',() => {
-        assert.typeOf(escolaresLogic.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioEscolar('01','99531590-4','12630194-4'),'Object')
+        assert.typeOf(escolaresLogic.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioEscolar('01','99531590-4','12630194-4',config.rntTramitesMap.escolares.IdsTramites[0]),'Object')
     })
     it('Inscripcion de Servicios Persona',() => {
-        assert.typeOf(escolaresLogic.getAutorizadoPorPersonaParaTramiteInscripcionServicioEscolar('01','12630194-4'),'Object')
+        assert.typeOf(escolaresLogic.getAutorizadoPorPersonaParaTramiteInscripcionServicioEscolar('01','12630194-4',config.rntTramitesMap.escolares.IdsTramites[0]),'Object')
     })
 })
 describe('Test Privados Logic',() => {
     it('Inscripcion de Servicios Empresa',() => {
-        assert.typeOf(privadosLogic.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioPrivado('01','99531590-4','12630194-4'),'Object')
+        assert.typeOf(privadosLogic.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioPrivado('01','99531590-4','12630194-4',config.rntTramitesMap.privados.IdsTramites[0]),'Object')
     })
     it('Inscripcion de Servicios Persona',() => {
-        assert.typeOf(privadosLogic.getAutorizadoPorPersonaParaTramiteInscripcionServicioPrivado('01','12630194-4'),'Object')
+        assert.typeOf(privadosLogic.getAutorizadoPorPersonaParaTramiteInscripcionServicioPrivado('01','12630194-4',config.rntTramitesMap.privados.IdsTramites[0]),'Object')
     })
 })
 
