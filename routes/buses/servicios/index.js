@@ -2,15 +2,6 @@ const Router = require('koa-router')
 const router = new Router()
 const log = require('../../../log')
 const  logicBuses = require('../../../logic/buses')
-
-router.get('/personas/:RUT', async (ctx) => {
-    ctx.body = await logicBuses.getAutorizadosParaInscripcionServiciosBuses(ctx.params.RUT)
-})
-
-router.get('/personas/:RUT/empresas/:RUT_EMPRESA', (ctx) => {
-    ctx.body = logicBuses.getAutorizadoPorEmpresaParaInscripcionServicioBuses(ctx.params.RUT, ctx.params.RUT_EMPRESA)
-})
-
 //psalas empresa
 router.get('/regiones/:ID_REGION/empresas/:RUT_EMPRESA/representante/:RUT_SOLICITANTE',async (ctx) => {
     log.debug("ID_REGION: " + ctx.params.ID_REGION)
