@@ -4,7 +4,7 @@
   "description": "API para consultar RNT para tramites en linea",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node index.js"
   },
   "repository": {
@@ -27,5 +27,9 @@
     "koa-router": "^7.4.0",
     "log4js": "^5.1.0",
     "soap": "^0.29.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.1"
   }
 }

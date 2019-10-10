@@ -1,11 +1,12 @@
 const soap = require('soap');
-
-const urlPpu = '../wsdl/ppu.wsdl'
+const log = require('../log')
+const urlPpu = 'http://ws.mtt.cl/services/PPUService_API_Tramites?wsdl'
 const urlRT = '../wsdl/revisionTecnica.wsdl'
 
 let getPPUSRCeI = (ppu) => {
      soap.createClient(urlPpu, (error,client) => {
         if(error) {
+            log.debug(JSON.stringify(error))
             throw new Error("Error consultando PPU")
         }
         if(!client) {
@@ -16,6 +17,7 @@ let getPPUSRCeI = (ppu) => {
                 throw new Error("Error consultando metodo getPlaca")
             }
             if(result != null) {
+                log.debug(JSON.stringify(result))
                 return result
             }
             else {
@@ -117,3 +119,4 @@ var ServiciosGateway = (function () {
     return ServiciosGateway;
 })();
 //exports.ServiciosGateway = ServiciosGateway;
+JSON.stringify(getPPUSRCeI('RV8188'))
