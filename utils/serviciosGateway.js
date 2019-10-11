@@ -1,47 +1,64 @@
 const soap = require('soap');
-
-const urlPpu = '../wsdl/ppu.wsdl'
-const urlRT = '../wsdl/revisionTecnica.wsdl'
+const log = require('../log')
+const urlPpu = 'http://ws.mtt.cl/services/PPUService_API_Tramites?wsdl'
+const urlRT = 'http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites?wsdl'
 
 let getPPUSRCeI = (ppu) => {
-     soap.createClient(urlPpu, (error,client) => {
-        if(error) {
-            throw new Error("Error consultando PPU")
-        }
-        if(!client) {
-            throw new Error("Error instanciando cliente para consultar PPU")
-        }
-        client.getPlaca({ppu:ppu}, (error,result) => {
+    log.debug("Entrando a consultar PPU")
+    return new Promise((resolve,reject)=> {
+        soap.createClient(urlPpu, (error,client) => {
+            log.debug('Creando Cliente')
             if(error) {
-                throw new Error("Error consultando metodo getPlaca")
+                log.debug(JSON.stringify(error))
+                reject(new Error("Error consultando PPU"))
+                return
             }
-            if(result != null) {
-                return result
+            if(!client) {
+                reject(new Error("Error instanciando cliente para consultar PPU"))
+                return
             }
-            else {
-                return {return: {ppu: ppu, status: false}}
-            }
+            client.getPlaca({ppu:ppu}, (error2,result) => {
+  
+                if(error2) {
+                    reject(new Error("Error consultando metodo getPlaca"))
+                    return
+                }
+                if(result != null) {
+                    log.debug(JSON.stringify(result))
+                    resolve(result)
+                }
+                else {
+                    resolve({return: {ppu: ppu, status: false}})
+                }
+            })
         })
-     })
+    })
 }
 let getPPURT = (ppu) => {
-    soap.createClient(urlRT, (error, client) => {
-        if(error) {
-            throw new Error("Error consultando RT")
-        }
-        if(!client) {
-            throw new Error("Error instanciando cliente para consultar RT")
-        }
-        client.consultaRevisionTecnica({ ppu: ppu },(error, result) => {
+    return new Promise((resolve,reject) => {
+        log.debug("Consultando RT para ppu: " + ppu)
+        soap.createClient(urlRT, (error, client) => {
             if(error) {
-                throw new Error("Error consultando metodo getPlaca")
+                log.error("Error creando cliente: " + JSON.stringify(error))
+                reject(new Error("Error consultando RT"))
             }
-            if(result != null) {
-                return result
+            if(!client) {
+                log.error("Error creando cliente: " + JSON.stringify(client))
+                reject(new Error("Error instanciando cliente para consultar RT"))
             }
-            else {
-                return {return: {ppu: ppu, status: false}}
-            }
+            client.consultaRevisionTecnica({ ppu: ppu },(error2, result) => {
+                if(error2) {
+                    log.error('Error: '  + JSON.stringify(error2))
+                    reject(new Error("Error consultando metodo getPlaca"))
+                }
+                if(result != null) {
+                    log.debug("Retornando: " + JSON.stringify(result))
+                    resolve(result)
+                }
+                else {
+                    resolve({return: {ppu: ppu, status: false}})
+                }
+            })
         })
     })
 }
@@ -116,4 +133,3 @@ var ServiciosGateway = (function () {
     };
     return ServiciosGateway;
 })();
-//exports.ServiciosGateway = ServiciosGateway;

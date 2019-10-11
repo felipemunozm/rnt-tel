@@ -1,6 +1,7 @@
 const ibmdb = require("../db")
 const commons = require('../commons')
 const log = require('../../log')
+const config = require('../../config')
 module.exports = {
     getTest: () => {
         return ibmdb.query("SELECT PPU FROM NULLID.RNT_VEHICULO FETCH FIRST 10 ROWS ONLY", [])
@@ -27,7 +28,7 @@ module.exports = {
         "WHERE per2.RUT = ? AND per.RUT = ?", [rut, rut_empresa])
     },
     findRepresentanteLegalByEmpresa: (rut_empresa, rut_representante_legal) => {
-        return commons.findRepresentanteLegalByEmpresaAndTipoServicioList(rut_empresa, rut_representante_legal, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
+        return commons.findRepresentanteLegalByEmpresaAndTipoServicioList(rut_empresa, rut_representante_legal, config.rntTipoServicioMap.buses.IdsTiposServicios)
     },
          //psalas
     getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses:  (id_region,rut_representante,rut_solicitante,idtramite) => {
@@ -41,19 +42,19 @@ module.exports = {
   
     //por rmason
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable) => {
-        return commons.getServiciosVigentesInscritosPorRutResponsable(rut_responsable, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
+        return commons.getServiciosVigentesInscritosPorRutResponsable(rut_responsable, config.rntTipoServicioMap.buses.IdsTiposServicios)
     },
     //por rmason
     getServiciosVigentesInscritosPorRutResponsableAndRutMandatario: (rut_responsable, rut_mandatario) => {
-        return commons.getServiciosVigentesInscritosPorRutResponsableAndRutMandatario(rut_responsable, rut_mandatario, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
+        return commons.getServiciosVigentesInscritosPorRutResponsableAndRutMandatario(rut_responsable, rut_mandatario, config.rntTipoServicioMap.buses.IdsTiposServicios)
     },
     findServiciosByRepresentanteLegalAndEmpresa: (rut_empresa, rut_representante_legal) => {
-        return commons.findServiciosByRepresentanteLegalAndEmpresaAndTipoServicioList(rut_empresa, rut_representante_legal, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
+        return commons.findServiciosByRepresentanteLegalAndEmpresaAndTipoServicioList(rut_empresa, rut_representante_legal, config.rntTipoServicioMap.buses.IdsTiposServicios)
     },
     findRecorridosByFolioRegion: (folio, region) => {
-        return commons.findRecorridosByFolioRegionAndTipoServicio(folio,region,[2,3,5,7,9,11,12,13,14,15,16,17,18,26])
+        return commons.findRecorridosByFolioRegionAndTipoServicio(folio,region,config.rntTipoServicioMap.buses.IdsTiposServicios)
     },
     findServiciosByMandatarioAndRepresentanteAndEmpresa: (rut_empresa, rut_representante, rut_solicitante) => {
-        return commons.findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios(rut_empresa, rut_representante, rut_solicitante, [2,3,5,7,9,11,12,13,14,15,16,17,18,26])
+        return commons.findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios(rut_empresa, rut_representante, rut_solicitante, config.rntTipoServicioMap.buses.IdsTiposServicios)
     }
 }

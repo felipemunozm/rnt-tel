@@ -114,7 +114,7 @@ module.exports = {
                 "FROM    tel.TEL_PERSONA per 	" +
                 "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 1 " +
                 "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
-                "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
+                "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION  and aut.AUTORIZADO=1 " +
                 "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
                 "where  per.RUT = ? AND per2.RUT = ?  " ,[rut_solicitante, rut_solicitante])
     
@@ -212,7 +212,7 @@ module.exports = {
     
                 }
                 else
-                {  return  {mensaje:'Usted no se encuentra habilitado para realizar este tramite como responsable del servicio ' ,estado:'RECHAZADO'}
+                {  return  {mensaje:'Usted no se encuentra habilitado para realizar este tramite como solicitante' ,estado:'RECHAZADO'}
                    
                 }
     
@@ -221,7 +221,7 @@ module.exports = {
              else
              {
     
-                 return  {mensaje:'Responsable del Servicio indicado no se encuentra habilitada para realizar tramites en linea' ,estado:'RECHAZADO'}
+                 return  {mensaje:'Solicitante del Servicio indicado no se encuentra habilitada para realizar tramites en linea' ,estado:'RECHAZADO'}
     
              }
     
@@ -272,7 +272,7 @@ module.exports = {
                                 "FROM    tel.TEL_PERSONA per 	" +
                                 "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 2 " +
                                 "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
-                                "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
+                                "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION and aut.AUTORIZADO=1 " +
                                 "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
                                 "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +
                                 "INNER JOIN   NULLID.RNT_CATEGORIA_TRANSPORTE cat 		  ON cat.ID=aut.ID_CATEGORIA " +
