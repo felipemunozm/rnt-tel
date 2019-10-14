@@ -293,7 +293,7 @@ module.exports = {
                                 else
                                 {
     
-                                    return  {mensaje:'Usted no se encuentra habilitado para realizar este tramite en linea' ,estado:'RECHAZADO'}
+                                    return  {mensaje:'Usted no se encuentra Autorizado para realizar este tramite en linea' ,estado:'RECHAZADO'}
                                 }
     
     
@@ -435,7 +435,7 @@ module.exports = {
     
                 }
                 else
-                {  return  {mensaje:'Usted no se encuentra habilitado para realizar este tramite en la empresa indicada' ,estado:'RECHAZADO'}
+                {  return  {mensaje:'Usted no se encuentra Autorizado para realizar este tramite en la empresa indicada' ,estado:'RECHAZADO'}
                    
                 }
     
