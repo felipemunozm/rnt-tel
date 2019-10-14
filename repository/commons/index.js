@@ -110,7 +110,7 @@ module.exports = {
                             "WHERE per.RUT = ? " +
                             "union    " +
                             "select count(*) as tot FROM   tel.TEL_PERSONA per  " +
-                            "INNER JOIN    tel.TEL_AUTORIZACION aut                   ON aut.ID_PERSONA = per.id and aut.AUTORIZADO =1 and per.TIPO_PERSONA_ID = 1 " +
+                            "INNER JOIN    tel.TEL_AUTORIZACION aut                   ON aut.ID_PERSONA = per.id and per.TIPO_PERSONA_ID = 1 " +
                             "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   on RESP_AUT.ID_AUTORIZACION = aut.id  " +
                             "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID= resp_aut.ID_RESPONSABLE " +
                             "INNER JOIN   tel.TEL_PERSONA per2 					      ON  per2.id= resp.ID_PERSONA  AND per2.TIPO_PERSONA_ID = 1 " +
@@ -151,7 +151,7 @@ module.exports = {
                             "FROM    tel.TEL_PERSONA per 	" +
                             "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 1 " +
                             "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
-                            "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
+                            "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION and aut.AUTORIZADO =1 " +
                             "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +
                            // "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = "+ idtramite +  " and tram.ID= autt.ID_TRAMITE " +
                             "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
@@ -159,7 +159,7 @@ module.exports = {
                             "union    " +
                             "select CASE  " + id_region + " WHEN aut.CODIGO_REGION THEN 1  else 0 END as resul  " +
                             "FROM   tel.TEL_PERSONA per   " +
-                            "INNER JOIN    tel.TEL_AUTORIZACION aut                   ON aut.ID_PERSONA = per.id   AND per.TIPO_PERSONA_ID = 1 " +
+                            "INNER JOIN    tel.TEL_AUTORIZACION aut                   ON aut.ID_PERSONA = per.id   AND per.TIPO_PERSONA_ID = 1 and aut.AUTORIZADO =1 " +
                             "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   on RESP_AUT.ID_AUTORIZACION = aut.id    " +
                             "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID= resp_aut.ID_RESPONSABLE   " +
                             "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID    " +
