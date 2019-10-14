@@ -11,7 +11,7 @@ const logger = require('./log')
 const port = 3001
 const app = new koa()
 app.use(bodyParser())
-app.use(koaStatic(__dirname + './static'))
+app.use(koaStatic(__dirname + '/static'))
 const router = new Router()
 router.use('/buses',busesRoute)
 router.use('/taxis_colectivos',colectivosRoute)
