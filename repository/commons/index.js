@@ -89,8 +89,8 @@ module.exports = {
         "LEFT JOIN NULLID.UTILSQA_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
         "WHERE RESPONSABLE.RUT = ? AND MANDATARIO.RUT = ? AND SERVICIO.ACTIVO = 1 AND RESPONSABLE.TIPO_PERSONA = 1 AND MAND.AUTORIZADO_TRAMITES = 1 AND T_SERV.ID IN (" + lstTipoServicios.toString() + ")",[rut_responsable, rut_mandatario])
     },
-        //psalas
-        getAutorizadoPorPersonaParaTramiteInscripcionServicio:  (id_region, rut_solicitante,idtramite) => {
+           //psalas
+           getAutorizadoPorPersonaParaTramiteInscripcionServicio:  (id_region, rut_solicitante,idtramite) => {
     
             log.debug(id_region)
             log.debug(rut_solicitante)
@@ -102,45 +102,81 @@ module.exports = {
             //5 Ha expirado su vigencia de habilitacion para realizar entre tramite. Dirijase a la Seremitee correspondiente para actualizar su documentacion
     
             //1 Empresa indicada no se encuentra habilitada para realizar tramites en linea
-           
-            let hab_empresa_tram =  ibmdb.query("select count(*) as total FROM   tel.TEL_PERSONA per 	 " +
+            let query=" select sum(tot) as total from ( " +
+                        "select count(*) as tot FROM   tel.TEL_PERSONA per 	 " +
                             "INNER JOIN   tel.TEL_RESPONSABLE resp  ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 1 " +
-                           "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID   " +
-                            "WHERE per.RUT = ?  " , [rut_solicitante])
+                            "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID   "  +
+                            
+                            "WHERE per.RUT = ? " +
+                            "union    " +
+                            "select count(*) as tot FROM   tel.TEL_PERSONA per  " +
+                            "INNER JOIN    tel.TEL_AUTORIZACION aut                   ON aut.ID_PERSONA = per.id and aut.AUTORIZADO =1 and per.TIPO_PERSONA_ID = 1 " +
+                            "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   on RESP_AUT.ID_AUTORIZACION = aut.id  " +
+                            "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID= resp_aut.ID_RESPONSABLE " +
+                            "INNER JOIN   tel.TEL_PERSONA per2 					      ON  per2.id= resp.ID_PERSONA  AND per2.TIPO_PERSONA_ID = 1 " +
+                            "WHERE per.RUT = ?  "  +
+                        ") "
+
+            let hab_empresa_tram =  ibmdb.query(query , [rut_solicitante,rut_solicitante])
              if  (hab_empresa_tram[0].TOTAL>0)
              {
                   //2 Usted no se encuentra habilitado para realizar este tramite en la empresa indicada
-                let hab_persona_tram =  ibmdb.query("select count(*) as total " + 
-                "FROM    tel.TEL_PERSONA per 	" +
-                "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 1 " +
-                "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
-                "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION  and aut.AUTORIZADO=1 " +
-                "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
-                "where  per.RUT = ? AND per2.RUT = ?  " ,[rut_solicitante, rut_solicitante])
+                  let query="select sum(tot) as total from (select count(*) as tot " + 
+                  "FROM    tel.TEL_PERSONA per 	" +
+                  "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 1 " +
+                  "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
+                  "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION  " +
+                  "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
+                  "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +
+                //  "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = "+ idtramite +  " and tram.ID= autt.ID_TRAMITE " +
+                  "where  per.RUT = ? AND per2.RUT = ?  " +
+                  "union    " +
+                  "select count(*) as tot FROM   tel.TEL_PERSONA per  " +
+                  "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.ID_PERSONA = per.id  and per.TIPO_PERSONA_ID = 1   " +
+                  "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   on RESP_AUT.ID_AUTORIZACION = aut.id  " +
+                  "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID= resp_aut.ID_RESPONSABLE " +
+                  "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +
+                  "INNER JOIN   tel.TEL_PERSONA per2 					    ON per2.id= resp.ID_PERSONA  AND per2.TIPO_PERSONA_ID = 1 " +
+                 // "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = "+ idtramite +  " and tram.ID= autt.ID_TRAMITE " +
+                  "WHERE per.RUT =?  )" 
+
+                let hab_persona_tram =  ibmdb.query(query,[rut_solicitante, rut_solicitante,rut_solicitante])
     
                 if  (hab_persona_tram[0].TOTAL>0)
                 {
                       //3 Usted no se encuentra habilitado para realizar este tramite en la region indicada
-                      let query="select CASE  " + id_region +
+                      let query=" select sum(resul) as total from ( select CASE  " + id_region +
                             " WHEN aut.CODIGO_REGION THEN 1 " +
                             " else 0 END as resul "+
                             "FROM    tel.TEL_PERSONA per 	" +
                             "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 1 " +
                             "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
                             "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
+                            "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +
+                           // "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = "+ idtramite +  " and tram.ID= autt.ID_TRAMITE " +
                             "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
-                            "where per.RUT = ? AND per2.RUT = ?  "
-                        let hab_persona_region =  ibmdb.query( query,[rut_solicitante, rut_solicitante])
+                            "where per.RUT = ? AND per2.RUT = ?  " +
+                            "union    " +
+                            "select CASE  " + id_region + " WHEN aut.CODIGO_REGION THEN 1  else 0 END as resul  " +
+                            "FROM   tel.TEL_PERSONA per   " +
+                            "INNER JOIN    tel.TEL_AUTORIZACION aut                   ON aut.ID_PERSONA = per.id   AND per.TIPO_PERSONA_ID = 1 " +
+                            "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   on RESP_AUT.ID_AUTORIZACION = aut.id    " +
+                            "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID= resp_aut.ID_RESPONSABLE   " +
+                            "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID    " +
+                            "INNER JOIN   tel.TEL_PERSONA per2 					    ON per2.id= resp.ID_PERSONA  AND per2.TIPO_PERSONA_ID = 1 " +
+                          //  "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = 22 and tram.ID= autt.ID_TRAMITE   " +
+                            "WHERE per.RUT = ?  ) "
+                        let hab_persona_region =  ibmdb.query( query,[rut_solicitante, rut_solicitante,rut_solicitante])
     
                           
-                        if  (hab_persona_region[0].RESUL==1)
+                        if  (hab_persona_region[0].TOTAL>0)
                             {
                                 //4 Usted no se encuentra habilitado para realizar este tramite en linea
-                                let query="select tram.id as id_tram " +
+                                let query="   select sum(tot) as total from ( select count(1) as tot  " +
                                 "FROM    tel.TEL_PERSONA per 	" +
                                 "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 1 " +
                                 "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
-                                "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
+                                "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION  and aut.AUTORIZADO=1 " +
                                 "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
                                 "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +
                                 "INNER JOIN   NULLID.RNT_CATEGORIA_TRANSPORTE cat 		  ON cat.ID=aut.ID_CATEGORIA " +
@@ -149,25 +185,53 @@ module.exports = {
                                 "INNER JOIN   NULLID.rnt_tipo_vehiculo_servicio tsv       on tsv.ID=ts.ID_TIPO_VEHICULO_SERVICIO " +
                                 "INNER JOIN   NULLID.rnt_modalidad moda                   on moda.ID=ts.ID_MODALIDAD " +
                                 "INNER JOIN NULLID.RNT_TRAMITE tram                    ON tram.id = "+ idtramite +  " and tram.ID= autt.ID_TRAMITE " +
-                                "where aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  "
-                                let hab_persona_tramite =  ibmdb.query( query,[id_region, rut_solicitante, rut_solicitante])
-                                if  (hab_persona_tramite.length>0 ) 
+                                "where aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  " +
+                                "union    " +
+                                "select count(1) as tot  " +
+                                "FROM   tel.TEL_PERSONA per   " +
+                                "INNER JOIN    tel.TEL_AUTORIZACION aut                   ON aut.ID_PERSONA = per.id and aut.AUTORIZADO =1 AND per.TIPO_PERSONA_ID = 1   " +
+                                "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   on RESP_AUT.ID_AUTORIZACION = aut.id   " +
+                                "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID= resp_aut.ID_RESPONSABLE  " +
+                                "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID   " +
+                               
+                                "INNER JOIN   NULLID.RNT_CATEGORIA_TRANSPORTE cat 		  ON cat.ID=aut.ID_CATEGORIA  " +
+                                "INNER JOIN   nullid.RNT_TIPO_SERVICIO ts 				  ON ts.id = aut.ID_TIPO_SERVICIO  " +
+                                "INNER JOIN   NULLID.RNT_TIPO_SERVICIO_AREA tsa 		  ON ts.ID_TIPO_SERVICIO_AREA = tsa.id  " +
+                                "INNER JOIN   NULLID.rnt_tipo_vehiculo_servicio tsv       on tsv.ID=ts.ID_TIPO_VEHICULO_SERVICIO  " +
+                                "INNER JOIN   NULLID.rnt_modalidad moda                   on moda.ID=ts.ID_MODALIDAD  " +
+                                "INNER JOIN   tel.TEL_PERSONA per2 					    ON per2.id= resp.ID_PERSONA  AND per2.TIPO_PERSONA_ID = 1 " +
+                                "INNER JOIN NULLID.RNT_TRAMITE tram                    ON tram.id = "+ idtramite +  " and tram.ID= autt.ID_TRAMITE " +
+                                "WHERE per.RUT =? and aut.CODIGO_REGION   = ?)"
+
+                                let hab_persona_tramite =  ibmdb.query( query,[id_region, rut_solicitante, rut_solicitante,rut_solicitante,id_region])
+                                if  (hab_persona_tramite[0].TOTAL>0 ) 
                                 {
                                     //5 Ha expirado su vigencia de habilitacion para realizar entre tramite. Dirijase a la Seremitee correspondiente para actualizar su documentacion
-                                    let query="select count(1) as total " +
+                                    let query="select sum(tot) as total from ( select count(1) as tot " +
                                     "FROM    tel.TEL_PERSONA per 	" +
                                     "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 1 " +
                                     "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
-                                    "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
+                                    "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION and aut.AUTORIZADO=1 " +
                                     "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
                                     "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +                    
                                     "INNER JOIN NULLID.RNT_TRAMITE tram                      ON tram.id = "+ idtramite +  "   and tram.ID= autt.ID_TRAMITE " +
                                     "WHERE  current date between aut.FECHA_VIGENCIA_DESDE and aut.FECHA_VIGENCIA_HASTA " +
-                                    "and   aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  "
-                                    let hab_persona_tramite =  ibmdb.query( query,[id_region, rut_solicitante, rut_solicitante])
+                                    "and   aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  " +
+                                    "union    " +
+                                    "select count(1) as tot  " +
+                                    "FROM   tel.TEL_PERSONA per   " +
+                                    "INNER JOIN    tel.TEL_AUTORIZACION aut                   ON aut.ID_PERSONA = per.id and aut.AUTORIZADO =1  AND per.TIPO_PERSONA_ID = 1 " +
+                                    "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   on RESP_AUT.ID_AUTORIZACION = aut.id   " +
+                                    "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID= resp_aut.ID_RESPONSABLE  " +
+                                    "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID   " +
+                                    "INNER JOIN   tel.TEL_PERSONA per2 					    ON per2.id= resp.ID_PERSONA  AND per2.TIPO_PERSONA_ID = 1 " +
+                                    "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = "+ idtramite +  " and tram.ID= autt.ID_TRAMITE  " +
+                                    "WHERE  current date between aut.FECHA_VIGENCIA_DESDE and aut.FECHA_VIGENCIA_HASTA " +
+                                    "and  per.RUT =? and aut.CODIGO_REGION   = ? )"
+                                    let hab_persona_tramite =  ibmdb.query( query,[id_region, rut_solicitante, rut_solicitante,rut_solicitante,id_region])
                                     if  (hab_persona_tramite[0].TOTAL>0)
                                     {
-                                        return ibmdb.query("select  " +
+                                        let queryfin="select  " +
                                         "aut.ID_CATEGORIA ," +
                                         "aut.ID_TIPO_SERVICIO ," +
                                         "cat.NOMBRE AS categoria," +
@@ -178,7 +242,7 @@ module.exports = {
                                         "FROM    tel.TEL_PERSONA per 	" +
                                         "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 1 " +
                                         "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
-                                        "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
+                                        "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION and aut.AUTORIZADO=1 " +
                                         "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
                                         "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID  " +
                                         "INNER JOIN   NULLID.RNT_CATEGORIA_TRANSPORTE cat 		  ON cat.ID=aut.ID_CATEGORIA " +
@@ -188,7 +252,36 @@ module.exports = {
                                         "INNER JOIN   NULLID.rnt_modalidad moda                   on moda.ID=ts.ID_MODALIDAD " +
                                         "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = "+ idtramite +  "   and tram.ID= autt.ID_TRAMITE " +
                                         "WHERE  current date between aut.FECHA_VIGENCIA_DESDE and aut.FECHA_VIGENCIA_HASTA " +
-                                        "and aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  " ,[id_region, rut_solicitante, rut_solicitante])
+                                        "and aut.CODIGO_REGION   = ? and per.RUT = ? AND per2.RUT = ?  " +
+                                        "union    " +
+                                        "select  aut.ID_CATEGORIA ," +
+                                        "aut.ID_TIPO_SERVICIO ," +
+                                        "cat.NOMBRE AS categoria," +
+                                        "tsa.NOMBRE  AS tipo_servicio , " +
+                                        "tsv.NOMBRE AS tipovehiculo  ," +
+                                        "moda.NOMBRE as modalidad  ," +
+                                        "tsa.NOMBRE ||' '|| tsv.NOMBRE ||' '|| moda.NOMBRE  as tiposervicio " +
+                                        "FROM   tel.TEL_PERSONA per   " +
+                                        "INNER JOIN    tel.TEL_AUTORIZACION aut                   ON aut.ID_PERSONA = per.id and aut.AUTORIZADO =1  AND per.TIPO_PERSONA_ID = 1 " +
+                                        "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   on RESP_AUT.ID_AUTORIZACION = aut.id   " +
+                                        "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID= resp_aut.ID_RESPONSABLE  " +
+                                        "INNER JOIN   tel.TEL_AUTORIZACION_TRAMITE autt           ON autt.ID_AUTORIZACION     = aut.ID   " +
+                                        "INNER JOIN   NULLID.RNT_CATEGORIA_TRANSPORTE cat 		  ON cat.ID=aut.ID_CATEGORIA " +
+                                        "INNER JOIN   nullid.RNT_TIPO_SERVICIO ts 				  ON ts.id = aut.ID_TIPO_SERVICIO " +
+                                        "INNER JOIN   NULLID.RNT_TIPO_SERVICIO_AREA tsa 		  ON ts.ID_TIPO_SERVICIO_AREA = tsa.id " +
+                                        "INNER JOIN   NULLID.rnt_tipo_vehiculo_servicio tsv       on tsv.ID=ts.ID_TIPO_VEHICULO_SERVICIO " +
+                                        "INNER JOIN   NULLID.rnt_modalidad moda                   on moda.ID=ts.ID_MODALIDAD " +
+                                        "INNER JOIN   tel.TEL_PERSONA per2 					    ON per2.id= resp.ID_PERSONA  AND per2.TIPO_PERSONA_ID = 1 " +
+                                        "INNER JOIN NULLID.RNT_TRAMITE tram                       ON tram.id = "+ idtramite +  " and tram.ID= autt.ID_TRAMITE  " +
+                                        "WHERE  current date between aut.FECHA_VIGENCIA_DESDE and aut.FECHA_VIGENCIA_HASTA " +
+                                        "and  per.RUT =? and aut.CODIGO_REGION   = ? "
+
+                                        let tip_serv =  ibmdb.query( queryfin,[id_region, rut_solicitante, rut_solicitante,rut_solicitante,id_region])
+                                        if  (tip_serv.length>0)
+                                        {
+                                            return tip_serv
+                                        }
+                                      
                                     }
                                     else
                                     {
