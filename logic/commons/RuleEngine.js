@@ -44,6 +44,11 @@ module.exports = {
                 if(!resultadoRNTCanceladoCategoria && !resultadoRNTCanceladoTipoCategoria && !resultadoRNTCanceladoCategoriaAnterior) {
                     continua.estado = false
                 }
+                let resultadoRNTTaxiReemplazoPPU = ruleResult.conditions.all[5].any[0].all[0].result
+                let resultadoRNTTaxiTipoCancelacion = ruleResult.conditions.all[5].any[0].all[1].result
+                if(!resultadoRNTTaxiReemplazoPPU && !resultadoRNTTaxiTipoCancelacion) {
+                    continua.estado = false
+                }
             }
             catch (e) {
                 log.error("Error evaluando rechazos en evento failure:\n" + JSON.stringify(e))
