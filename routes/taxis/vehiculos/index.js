@@ -20,7 +20,7 @@ router.get('/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', (ctx) => {
     ctx.body = taxisLogic.getServiciosVigentesInscritosPorRutResponsableAndRutMandatario(ctx.params.RUT_RESPONSABLE, ctx.params.RUT_SOLICITANTE)
 })
 
-router.post('/ppus/validaciones', (ctx) => {
+router.post('/ppus/validaciones', async (ctx) => {
     log.debug(JSON.stringify(ctx.request.body))
     let inputParams = ctx.request.body
     let inputValidarFlota = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.cantidadRecorridos)
