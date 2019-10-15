@@ -1,3 +1,5 @@
+const log = require('../../log')
+
 module.exports = {
     cargarRevisionRechazoVehiculo: (ruleEngine) => {
         ruleEngine.on('failure', (event,almanac, ruleResult) => {
@@ -41,14 +43,14 @@ module.exports = {
                     && condition.operator == 'equal'
                     && condition.fact == 'registrocivil'
                     && condition.path == '.leasing') {
-                    log.debug('Imprimiendo condicion fallida: ' + JSON.stringify(condition))
+                    log.debug('Imprimiendo condicion Exitosa: ' + JSON.stringify(condition))
                     docs.push('V05')
                 }
                 if(condition.result == true 
                     && condition.operator == 'equal'
                     && condition.fact == 'registrocivil'
                     && condition.path == '.comunidad') {
-                    log.debug('Imprimiendo condicion fallida: ' + JSON.stringify(condition))
+                    log.debug('Imprimiendo condicion Exitosa: ' + JSON.stringify(condition))
                     docs.push('V06')
                 }
             })
