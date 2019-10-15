@@ -266,7 +266,7 @@ module.exports = {
                 rutPropietario: '12-9',
                 antiguedad: 5,
                 tipoVehiculo: 'BUS',
-                leasing: true,
+                leasing: false,
                 rutMerotenedor: '1-9',
                 comunidad: false
             },
@@ -275,9 +275,9 @@ module.exports = {
                 fechaVencimientoRT: '10/12/2020'
             },
             rnt: {
-                estado: 'Cancelado', //No Encontrado
+                estado: 'Cancelado', //No Encontrado, Cancelado Definitivo
                 tipoCancelacion: 'Cancelado por Traslado',
-                regionOrigen: '01',
+                regionOrigen: '04',
                 antiguedadMaxima: 10,
                 lstTipoVehiculoPermitidos: ['BUS','MINIBUS'],
                 categoria: 'Publico'
@@ -285,16 +285,19 @@ module.exports = {
             solicitud: {
                 rutPropietario: '1-9',
                 regionInscripcion: '01',
-                ppu: 'BBCC12'
+                ppu: 'BBCC12',
+                ppureemplaza: 'AABB12'
             }
         }
         let validacionInscripcionBuses = config.rntRules.inscripcionVehiculo.validacionInscripcionBuses
         let ruleEngine = new RuleEngine()
         ruleEngine.addRule(validacionInscripcionBuses)
-        let continua = true;
+        //continua no es bool solo para ser pasado por referencia a la funcion que realiza los eventos
+        let continua = {estado:true}
         let docs = []
+        let docsOpcionales = []
         //verificar si no valido todo OK, hay casos en los que debe continuar y otros en los que no
-        ruleEngineCommons.cargarRevisionRechazoVehiculo(ruleEngine)
+        ruleEngineCommons.cargarRevisionRechazoVehiculo(ruleEngine, docs, continua)
         let lstFlotaValidada = []
         let lstFlotaRechazada = []
         for(let i = 0; i< inputValidarFlota.lstPpuRut.length; i++) {
@@ -308,20 +311,21 @@ module.exports = {
                 })
             })
              //documentos obligatorios para todos los casos: V04,V09
-            docs.push('V04','V09')
+            docs.push({codigo: 'V04',descripcion: 'Adjunte copia de "Título que habilita al vehículo a prestar servicios" (Formulario N°3)'},{codigo: 'V09',descripcion: 'Adjunte copia de "Permiso de Circulación" del vehiculo'})
+            docsOpcionales.push({codigo: 'V08', descripcion: 'Adjunte copia de "Otorgamiento de Subsidio" o "Adjudicacion de Condiciones de Operación"'})
             //se revisa si procede la PPU para añadirla a lista de flota validada
-            if(continua == true) {
-                lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs})
+            if(continua.estado == true) {
+                lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs, documentosOpcionales: docsOpcionales})
                 
             } else {
                 lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada"})
             }
-            continua = true
+            continua = {estado: true}
             docs = []
+            docsOpcionales = []
         }
         let monto = (inputValidarFlota.cantidadRecorridos * lstFlotaValidada.length ) * 400
         let response = {listaFlotaValidada: lstFlotaValidada, listaFlotaRechazada: lstFlotaRechazada, monto: monto}
-        log.debug(JSON.stringify(docs))
         return response
     }
    

@@ -160,7 +160,30 @@ module.exports = {
                                         }
                                     ]
                                 }
-                                
+                            ]
+                        },//revisar si es taxi colectivo y que el vehiculo saliente este cancelado por reemplazo
+                        {
+                            any: [
+                                {all: [ 
+                                    {
+                                        fact: 'solicitud',
+                                        path: '.ppureemplaza',
+                                        operator: 'notEqual',
+                                        value: undefined
+                                    },
+                                    {
+                                        fact: 'rnt',
+                                        path: '.estado',
+                                        operator: 'equal',
+                                        value: 'Cancelado Definitivo'
+                                    }
+                                ]},
+                                {
+                                    fact: 'solicitud',
+                                    path: '.ppureemplaza',
+                                    operator: 'equal',
+                                    value: undefined
+                                }
                             ]
                         }
                     ]
