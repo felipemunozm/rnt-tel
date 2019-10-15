@@ -1,6 +1,8 @@
 const Router = require('koa-router')
 const router = new Router()
 const taxisLogic = require('../../../logic/taxis')
+const log = require('../../../log')
+const InputValidarFlota = require('../../../model/InputValidaFlota')
 
 router.get('/empresas/:RUT_EMPRESA/representantes/:RUT_SOLICITANTE', (ctx) => {
     ctx.body = taxisLogic.findServiciosByRepresentanteLegalAndEmpresa(ctx.params.RUT_EMPRESA, ctx.params.RUT_SOLICITANTE)
@@ -19,7 +21,12 @@ router.get('/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', (ctx) => {
 })
 
 router.post('/ppus/validaciones', (ctx) => {
-    ctx.body = {test: ctx.url}
+    log.debug(JSON.stringify(ctx.request.body))
+    let inputParams = ctx.request.body
+    let inputValidarFlota = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.cantidadRecorridos)
+    log.debug("inputParameters: " + JSON.stringify(inputValidarFlota))
+    ctx.body = await taxisLogic.validarFlota(inputValidarFlota)
+    log.debug("Saliendo de Routes")
 })
 
 router.post('/solicitudes', (ctx) => {

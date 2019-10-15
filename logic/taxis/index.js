@@ -1,5 +1,7 @@
 const taxisRepository = require('../../repository/taxis')
 const rntTramitesMap= require('../../config')
+const RuleEngine = require('json-rules-engine').Engine
+const ruleEngineCommons = require('../commons/RuleEngine')
 module.exports = {
     getTest: () => {
         return {mensaje: "ejecucion de logica taxis exiosa", code: "OK"}
@@ -237,5 +239,78 @@ module.exports = {
 
         }
        
+    },
+    validarFlota: async (inputValidarFlota) => {
+        let datosVehiculo = {
+            registrocivil: {
+                rutPropietario: '12-9',
+                antiguedad: 5,
+                tipoVehiculo: 'BUS',
+                leasing: false,
+                rutMerotenedor: '1-9',
+                comunidad: false
+            },
+            sgprt: {
+                resultadoRT: 'Aprobada',
+                fechaVencimientoRT: '10/12/2020'
+            },
+            rnt: {
+                estado: 'Cancelado', //No Encontrado
+                tipoCancelacion: 'Cancelado por Traslado',
+                regionOrigen: '01',
+                antiguedadMaxima: 10,
+                lstTipoVehiculoPermitidos: ['BUS','MINIBUS'],
+                categoria: 'Publico'
+            },
+            solicitud: {
+                rutPropietario: '1-9',
+                regionInscripcion: '01',
+                ppu: 'BBCC12'
+            }
+        }
+        let validacionInscripcionTaxis = {
+            conditions: {
+
+            },
+            event: {
+                type: 'aceptado',
+                params: {
+                    mensajes: 'Vehiculo Aceptado'
+                }
+            }
+        }
+        let ruleEngine = new RuleEngine()
+        ruleEngine.addRule(rntTramitesMap.rntRules.inscripcionVehiculo.validacionInscripcionBuses)
+        let continua = true
+        let docs = []
+        ruleEngineCommons.cargarRevisionRechazoVehiculo(RuleEngine)
+        let lstFlotaValidada = []
+        let lstFlotaRechazada = []
+        for(let i = 0; i < inputValidarFlota.lstPpuRut.lenght; i++) {
+            await ruleEngine //variar el objeto datosVehiculo, para cada PPU
+            .run(datosVehiculo)
+            .then( results => {
+                results.events.map(event => {
+                    log.debug(JSON.stringify(event))
+                    log.debug("Aprobadas reglas de negocio: " + event.params.mensaje)
+                    continua = true
+                })
+            })
+            //documentos obligatorios para todos los casos: V04,V09
+            docs.push('V04','V09')
+            //se revisa si procede la PPU para añadirla a lista de flota validada
+            if(continua == true) {
+                lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs})
+                
+            } else {
+                lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada"})
+            }
+            continua = true
+            docs = []
+        }
+        let monto = (inputValidarFlota.cantidadRecorridos * lstFlotaValidada.length ) * 400
+        let response = {listaFlotaValidada: lstFlotaValidada, listaFlotaRechazada: lstFlotaRechazada, monto: monto}
+        log.debug(JSON.stringify(docs))
+        return response
     }
 }
