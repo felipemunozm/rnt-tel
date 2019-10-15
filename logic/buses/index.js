@@ -266,7 +266,7 @@ module.exports = {
                 rutPropietario: '12-9',
                 antiguedad: 5,
                 tipoVehiculo: 'BUS',
-                leasing: false,
+                leasing: true,
                 rutMerotenedor: '1-9',
                 comunidad: false
             },

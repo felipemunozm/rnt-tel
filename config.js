@@ -33,7 +33,7 @@ module.exports = {
     },
     rntRules: {
         inscripcionVehiculo: {
-            validacionInscripcionBuses = {
+            validacionInscripcionBuses: {
                 conditions: {
                     all: [
                         {
