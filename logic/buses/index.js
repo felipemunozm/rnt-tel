@@ -307,7 +307,7 @@ module.exports = {
                 results.events.map(event => {
                     log.debug(JSON.stringify(event))
                     log.debug("Aprobadas reglas de negocio: " + event.params.mensaje)
-                    continua = true
+                    continua.estado = true
                 })
             })
              //documentos obligatorios para todos los casos: V04,V09

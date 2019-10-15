@@ -281,9 +281,10 @@ module.exports = {
         }
         let ruleEngine = new RuleEngine()
         ruleEngine.addRule(rntTramitesMap.rntRules.inscripcionVehiculo.validacionInscripcionBuses)
-        let continua = true
+        let continua = {estado:true}
         let docs = []
-        ruleEngineCommons.cargarRevisionRechazoVehiculo(RuleEngine)
+        let docsOpcionales = []
+        ruleEngineCommons.cargarRevisionRechazoVehiculo(RuleEngine,docs,continua)
         let lstFlotaValidada = []
         let lstFlotaRechazada = []
         for(let i = 0; i < inputValidarFlota.lstPpuRut.lenght; i++) {
@@ -297,20 +298,21 @@ module.exports = {
                 })
             })
             //documentos obligatorios para todos los casos: V04,V09
-            docs.push('V04','V09')
+            docs.push({codigo: 'V04',descripcion: 'Adjunte copia de "Título que habilita al vehículo a prestar servicios" (Formulario N°3)'},{codigo: 'V09',descripcion: 'Adjunte copia de "Permiso de Circulación" del vehiculo'})
+            docsOpcionales.push({codigo: 'V08', descripcion: 'Adjunte copia de "Otorgamiento de Subsidio" o "Adjudicacion de Condiciones de Operación"'})
             //se revisa si procede la PPU para añadirla a lista de flota validada
-            if(continua == true) {
-                lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs})
+            if(continua.estado == true) {
+                lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs, documentosOpcionales: docsOpcionales})
                 
             } else {
                 lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada"})
             }
-            continua = true
+            continua.estado = true
             docs = []
+            docsOpcionales = []
         }
         let monto = (inputValidarFlota.cantidadRecorridos * lstFlotaValidada.length ) * 400
         let response = {listaFlotaValidada: lstFlotaValidada, listaFlotaRechazada: lstFlotaRechazada, monto: monto}
-        log.debug(JSON.stringify(docs))
         return response
     }
 }
