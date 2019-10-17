@@ -4,7 +4,7 @@ const rntTramitesMap= require('../../config')
 const RuleEngine = require('json-rules-engine').Engine
 // const Rule = require('json-rules-engine').Rule
 const config = require('../../config')
-const ruleEngineCommons = require('../commons/RuleEngine')
+const ruleEngineEvents = require('./ruleEngineEvents')
 const services = require('../../utils/serviciosGateway')
 const srceiUtils = require('../../utils/SRCeIUtils')
 module.exports = {
@@ -31,7 +31,7 @@ module.exports = {
             servicios: []
         }
         let servicios = busesRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioBuses(id_region,rut_representante,rut_solicitante,idtramite)
-        if(servicios.estado == 'RECHAZADO' || servicios.estado=='undefined' ) {
+        if(servicios.estado == 'RECHAZADO' || servicios.estado==undefined ) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -62,7 +62,7 @@ module.exports = {
             servicios: []
         }
         let servicios = busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(id_region,rut_solicitante,idtramite)
-        if(servicios.estado == 'RECHAZADO' || servicios.estado=='undefined' ) {
+        if(servicios.estado == 'RECHAZADO' || servicios.estado==undefined ) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -281,7 +281,9 @@ module.exports = {
         let docs = []
         let docsOpcionales = []
         //verificar si no valido todo OK, hay casos en los que debe continuar y otros en los que no
-        ruleEngineCommons.cargarRevisionRechazoVehiculo(ruleEngine, docs, continua)
+        ruleEngineEvents.revisionRechazosBuses(ruleEngine, docs, continua)
+        ruleEngineEvents.revisionValidadosBuses(ruleEngine, docs, continua)
+        // ruleEngineCommons.cargarRevisionRechazoVehiculo(ruleEngine, docs, continua)
         let lstFlotaValidada = []
         let lstFlotaRechazada = []
         for(let i = 0; i< inputValidarFlota.lstPpuRut.length; i++) {
@@ -335,7 +337,7 @@ module.exports = {
                         comunidad: false
                     },
                     sgprt: {
-                        resultadoRT: 'Aprobada',
+                        resultadoRT: 'Rechazada',
                         fechaVencimientoRT: '10/12/2020'
                     },
                     rnt: {
