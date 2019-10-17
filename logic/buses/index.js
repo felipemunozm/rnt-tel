@@ -271,7 +271,7 @@ module.exports = {
         let validaInscripcionBusesRule = config.validacionRules.inscripcionVehiculo.buses.validaInscripcionRNTRule
         let ruleEngine = new RuleEngine()
         // ruleEngine.addRule(validacionInscripcionBuses)
-        log.trace("RULE: " + JSON.stringify(validaRTRule))
+        // log.trace("RULE: " + JSON.stringify(validaRTRule))
         ruleEngine.addRule(validaPropietarioRule)
         ruleEngine.addRule(validaAntiguedadRule)
         ruleEngine.addRule(validaRTRule)
