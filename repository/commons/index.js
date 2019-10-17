@@ -56,7 +56,7 @@ module.exports = {
         'LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO tvs ON tvs.ID = ts.ID_TIPO_VEHICULO_SERVICIO ' +
         'LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA tsa ON ts.ID_tipo_servicio_area = tsa.ID ' +
         'INNER JOIN NULLID.UTILSQA_REGION r ON r.ID = s.CODIGO_REGION ' +
-        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND MANDATARIOPERSONA.RUT = ? AND rl.AUTORIZADO_TRAMITES = 1 AND man.AUTORIZADO_TRAMITES = 1 AND s.ACTIVO = 1 AND ts.id in (' + lstTipoServicios.toString() + ')', [rut_empresa, rut_representante, rut_solicitante])
+        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND MANDATARIOPERSONA.RUT = ? AND man.AUTORIZADO_TRAMITES = 1 AND s.ACTIVO = 1 AND ts.id in (' + lstTipoServicios.toString() + ')', [rut_empresa, rut_representante, rut_solicitante])
     },
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable,lstTipoServicios) =>{
         return ibmdb.query("SELECT DISTINCT REGION.ID AS ID_REGION, REGION.NOMBRE AS REGION, T_VEHICULO_SERV.NOMBRE || ' ' || MODALIDAD.NOMBRE || ' ' || T_SERV_AREA.NOMBRE AS TIPO_SERVICIO, SERVICIO.IDENT_SERVICIO AS FOLIO, RESPONSABLE.NOMBRE AS NOMBRE, RESPONSABLE.RUT AS RUT_RESPONSABLE " +
@@ -449,7 +449,7 @@ module.exports = {
              }
     
         },
-    getVehiculoByPPU: (ppu) => {
+    checkVehiculoByPPU: (ppu) => {
         return ibmdb.query('SELECT v.PPU, v.TIPO_VEHICULO FROM NULLID.RNT_VEHICULO v  WHERE v.PPU = ?', [ppu])
     }
 }
