@@ -31,62 +31,71 @@ module.exports = {
             IdsTiposServicios: []
         }
     },
-    rntRules: {
+    validacionRules: {
         inscripcionVehiculo: {
-            validacionInscripcionBuses: {
+            validaPropietarioRule: {
                 conditions: {
-                    all: [
+                    any: [//validacion de propietario, considera casos de comunidad y leasing
                         {
-                            any: [//validacion de propietario, considera casos de comunidad y leasing
+                            fact: 'registrocivil',
+                            path: '.rutPropietario',
+                            operator: 'equal',
+                            value: {
+                                fact: 'solicitud',
+                                path: '.rutPropietario'
+                            }
+                        },
+                        {//valida si es leasing y busca el rut merotenedor para comparar con el rut propietario de la solicitud
+                            all: [
                                 {
                                     fact: 'registrocivil',
-                                    path: '.rutPropietario',
+                                    path: '.rutMerotenedor',
                                     operator: 'equal',
                                     value: {
                                         fact: 'solicitud',
                                         path: '.rutPropietario'
                                     }
                                 },
-                                {//valida si es leasing y busca el rut merotenedor para comparar con el rut propietario de la solicitud
-                                    all: [
-                                        {
-                                            fact: 'registrocivil',
-                                            path: '.rutMerotenedor',
-                                            operator: 'equal',
-                                            value: {
-                                                fact: 'solicitud',
-                                                path: '.rutPropietario'
-                                            }
-                                        },
-                                        {
-                                            fact: 'registrocivil',
-                                            path: '.leasing',
-                                            operator: 'equal',
-                                            value: true
-                                        }
-                                    ]
-                                },
-                                {//valida que exista el rutPropietario de la solicitud dentro de un array de ruts de civil, luego revisa que este indicado como comunidad.
-                                    all: [
-                                        {
-                                            fact: 'registrocivil',
-                                            path: '.rutPropietario',
-                                            operator: 'contains',
-                                            value: {
-                                                fact: 'solicitud',
-                                                path: '.rutPropietario'
-                                            }
-                                        },
-                                        {
-                                            fact: 'registrocivil',
-                                            path: '.comunidad',
-                                            operator: 'equal',
-                                            value: true
-                                        }
-                                    ]
+                                {
+                                    fact: 'registrocivil',
+                                    path: '.leasing',
+                                    operator: 'equal',
+                                    value: true
                                 }
                             ]
-                        }, {//validacion de antiguedad con antiguedad permitida por Norma del folio/region
+                        },
+                        {//valida que exista el rutPropietario de la solicitud dentro de un array de ruts de civil, luego revisa que este indicado como comunidad.
+                            all: [
+                                {
+                                    fact: 'registrocivil',
+                                    path: '.rutPropietario',
+                                    operator: 'contains',
+                                    value: {
+                                        fact: 'solicitud',
+                                        path: '.rutPropietario'
+                                    }
+                                },
+                                {
+                                    fact: 'registrocivil',
+                                    path: '.comunidad',
+                                    operator: 'equal',
+                                    value: true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                event: {
+                    type: 'propietario',
+                    params : {
+                        mensaje: 'Propietario Validado'
+                    }
+                }
+            },
+            validaAntiguedadRule: {
+                conditions: {
+                    all: [
+                        {//validacion de antiguedad con antiguedad permitida por Norma del folio/region
                             fact: 'registrocivil',
                             path: '.antiguedad',
                             operator: 'lessThanInclusive',
@@ -94,104 +103,125 @@ module.exports = {
                                 fact: 'rnt',
                                 path: '.antiguedadMaxima'
                             }
-                        }, {//validacion de tipo de vehiculo con tipo de vehiculo de la norma asociada al folio/region
-                            fact: 'rnt',
-                            path: '.lstTipoVehiculoPermitidos',
-                            operator: 'contains',
-                            value: {
-                                fact: 'registrocivil',
-                                path: '.tipoVehiculo'
-                            }
-                        }, {//validacion de resultado de RT
+                        }
+                    ]
+                },
+                event: {
+                    type: "antiguedad",
+                    params: {
+                        mensaje: "Antiguedad Validada"
+                    }
+                },
+                onFailure: (event, almanac) => {
+                    
+                }
+            },
+            validaRTRule: {
+                conditions: {
+                    all: [
+                        {//validacion de resultado de RT
                             fact: 'sgprt',
                             path: '.resultadoRT',
                             operator: 'equal',
                             value: 'Aprobada'
-                        }, {
-                            any : [
-                                {//valida que vehiculo no exista en RNT
+                        }
+                    ]
+                },
+                event: {
+                    type: "rt",
+                    params: {
+                        mensaje: "RT Validada"
+                    }
+                }
+            },
+            buses: {
+                validaInscripcionRNTRule: {
+                    conditions: {
+                        any : [
+                            {//valida que vehiculo no exista en RNT
+                                fact: 'rnt',
+                                path: '.estado',
+                                operator: 'equal',
+                                value: 'No Encontrado'
+                            },
+                            {//valida que si existe esté cancelado por traslado y que la region sea distinta a la region de cancelacion anterior
+                                all: [{
                                     fact: 'rnt',
                                     path: '.estado',
                                     operator: 'equal',
-                                    value: 'No Encontrado'
+                                    value: 'Cancelado' 
                                 },
-                                {//valida que si existe esté cancelado por traslado y que la region sea distinta a la region de cancelacion anterior
-                                    all: [{
+                                {
+                                    fact: 'rnt',
+                                    path: '.tipoCancelacion',
+                                    operator: 'equal',
+                                    value: 'Cancelado por Traslado'
+                                },
+                                {
+                                    fact: 'solicitud',
+                                    path: '.regionInscripcion',
+                                    operator: 'notEqual',
+                                    value: {
                                         fact: 'rnt',
-                                        path: '.estado',
+                                        path: 'regionOrigen'
+                                    }
+                                }]
+                            },
+                            {//valida si esta cancelado por cambio de categoria y que la categoria nueva no sea anterior no sea Publico
+                                all: [
+                                    {
+                                        fact: 'rnt',
+                                        path: 'estado',
                                         operator: 'equal',
-                                        value: 'Cancelado' 
+                                        value: 'Cancelado'
                                     },
                                     {
                                         fact: 'rnt',
                                         path: '.tipoCancelacion',
                                         operator: 'equal',
-                                        value: 'Cancelado por Traslado'
-                                    },
-                                    {
-                                        fact: 'solicitud',
-                                        path: '.regionInscripcion',
-                                        operator: 'notEqual',
-                                        value: {
-                                            fact: 'rnt',
-                                            path: 'regionOrigen'
-                                        }
-                                    }]
-                                },
-                                {//valida si esta cancelado por cambio de categoria y que la categoria nueva no sea anterior no sea Publico
-                                    all: [
-                                        {
-                                            fact: 'rnt',
-                                            path: 'estado',
-                                            operator: 'equal',
-                                            value: 'Cancelado'
-                                        },
-                                        {
-                                            fact: 'rnt',
-                                            path: '.tipoCancelacion',
-                                            operator: 'equal',
-                                            value: 'Cancelado por Cambio Categoria'
-                                        },
-                                        {
-                                            fact: 'rnt',
-                                            path: '.categoria',
-                                            operator: 'notEqual',
-                                            value: 'Publico'
-                                        }
-                                    ]
-                                }
-                            ]
-                        },//revisar si es taxi colectivo y que el vehiculo saliente este cancelado por reemplazo
-                        {
-                            any: [
-                                {all: [ 
-                                    {
-                                        fact: 'solicitud',
-                                        path: '.ppureemplaza',
-                                        operator: 'notEqual',
-                                        value: undefined
+                                        value: 'Cancelado por Cambio Categoria'
                                     },
                                     {
                                         fact: 'rnt',
-                                        path: '.estado',
-                                        operator: 'equal',
-                                        value: 'Cancelado Definitivo'
+                                        path: '.categoria',
+                                        operator: 'notEqual',
+                                        value: 'Publico'
                                     }
-                                ]},
-                                {
-                                    fact: 'solicitud',
-                                    path: '.ppureemplaza',
-                                    operator: 'equal',
-                                    value: undefined
-                                }
-                            ]
+                                ]
+                            }
+                        ]
+                    },
+                    event: {
+                        type: "BUSOK",
+                        params: {
+                            mensaje: "Bus Aceptado"
                         }
-                    ]
-                },
-                event: {
-                    type: 'aceptado',
-                    params : {
-                        mensaje: 'Vehiculo Aceptado'
+                    }
+                }
+            },
+            taxisColectivos: {
+                validaInscripcionRNTRule: {
+                    conditions: {
+                        all: [ 
+                            {
+                                fact: 'solicitud',
+                                path: '.ppureemplaza',
+                                operator: 'notEqual',
+                                value: undefined
+                            },
+                            {
+                                fact: 'rnt',
+                                path: '.estadoPPUReemplazo',
+                                operator: 'equal',
+                                value: 'Cancelado Definitivo'
+                            }
+                        ]
+                    },
+                    event: {
+                        type: "COLECTIVOOK",
+                        params: {
+                            mensaje: "Colectivo Aceptado"
+                        }
                     }
                 }
             }

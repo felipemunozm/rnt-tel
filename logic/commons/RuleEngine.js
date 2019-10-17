@@ -4,7 +4,7 @@ module.exports = {
     cargarRevisionRechazoVehiculo: (ruleEngine, docs, continua) => {
         ruleEngine.on('failure', (event,almanac, ruleResult) => {
             log.debug("Failure event trigger...")
-            log.debug('Failure RuleResult: ' + JSON.stringify(ruleResult))
+            log.trace('Failure RuleResult: ' + JSON.stringify(ruleResult))
             // ruleResult.conditions.all.forEach(condition => {
             try {
                 //buscar el rechazo por propietario
@@ -57,7 +57,7 @@ module.exports = {
         })
         ruleEngine.on("success", (event,almanac, ruleResult) => {
             log.debug("Success event trigger...")
-            log.debug("Success ruleResult: " + JSON.stringify(ruleResult))
+            log.trace("Success ruleResult: " + JSON.stringify(ruleResult))
             // ruleResult.conditions.all.forEach(condition => {
                 // log.debug("Condition: " + JSON.stringify(condition))
             //revisar meratenencia para agregar documentos a solicitar

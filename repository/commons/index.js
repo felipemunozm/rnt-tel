@@ -448,5 +448,8 @@ module.exports = {
     
              }
     
-        }
+        },
+    getVehiculoByPPU: (ppu) => {
+        return ibmdb.query('SELECT v.PPU, v.TIPO_VEHICULO FROM NULLID.RNT_VEHICULO v  WHERE v.PPU = ?', [ppu])
+    }
 }

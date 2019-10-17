@@ -9,7 +9,7 @@ let getPPUSRCeI = (ppu) => {
         soap.createClient(urlPpu, (error,client) => {
             log.debug('Creando Cliente')
             if(error) {
-                log.debug(JSON.stringify(error))
+                log.trace(JSON.stringify(error))
                 reject(new Error("Error consultando PPU"))
                 return
             }
@@ -24,7 +24,7 @@ let getPPUSRCeI = (ppu) => {
                     return
                 }
                 if(result != null) {
-                    log.debug(JSON.stringify(result))
+                    log.trace(JSON.stringify(result))
                     resolve(result)
                 }
                 else {
@@ -52,7 +52,7 @@ let getPPURT = (ppu) => {
                     reject(new Error("Error consultando metodo getPlaca"))
                 }
                 if(result != null) {
-                    log.debug("Retornando: " + JSON.stringify(result))
+                    log.trace("Retornando: " + JSON.stringify(result))
                     resolve(result)
                 }
                 else {

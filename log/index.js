@@ -13,7 +13,7 @@ log4js.configure({
     categories: {
         default: {
             appenders: ['out'],
-            level: 'debug',
+            level: 'trace',
             enableCallStack: true
         }
     },
@@ -21,5 +21,5 @@ log4js.configure({
     pm2InstanceVar: 'INSTANCE_ID'
 })
 const logger = log4js.getLogger()
-logger.level = 'debug'
+logger.level = 'trace'
 module.exports = logger

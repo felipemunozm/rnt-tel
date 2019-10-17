@@ -56,5 +56,24 @@ module.exports = {
     },
     findServiciosByMandatarioAndRepresentanteAndEmpresa: (rut_empresa, rut_representante, rut_solicitante) => {
         return commons.findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios(rut_empresa, rut_representante, rut_solicitante, config.rntTipoServicioMap.buses.IdsTiposServicios)
+    },
+    existePPU: (ppu) => {
+        let vehiculoExiste = commons.getVehiculoByPPU(ppu).length > 0 ? true : false
+        let response
+        if(vehiculoExiste) {
+            //diseñar response con tipos de cancelacion
+            //buscar info de vehiculo:
+
+        }
+        else {
+            //diseñar response con vehiculo no encontrado
+            response = {
+                estado: 'No Encontrado',
+                tipoCancelacion: undefined,
+                regionOrigen: undefined,
+                antiguedadMaxima: undefined
+            }
+        }
+        return response
     }
 }

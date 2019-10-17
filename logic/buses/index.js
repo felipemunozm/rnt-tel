@@ -2,8 +2,11 @@ const busesRepository = require("../../repository/buses")
 const log = require('../../log')
 const rntTramitesMap= require('../../config')
 const RuleEngine = require('json-rules-engine').Engine
+// const Rule = require('json-rules-engine').Rule
 const config = require('../../config')
 const ruleEngineCommons = require('../commons/RuleEngine')
+const services = require('../../utils/serviciosGateway')
+const srceiUtils = require('../../utils/SRCeIUtils')
 module.exports = {
     getTest: () => {
         queryOut = busesRepository.getTest();
@@ -260,38 +263,19 @@ module.exports = {
     }, 
     //@param: InputValidarFlota class
     validarFlota: async (inputValidarFlota ) => {
-        //implementar como extraer data para llenar objeto para evaluar condiciones
-        let datosVehiculo = {
-            registrocivil: {
-                rutPropietario: '12-9',
-                antiguedad: 5,
-                tipoVehiculo: 'BUS',
-                leasing: false,
-                rutMerotenedor: '1-9',
-                comunidad: false
-            },
-            sgprt: {
-                resultadoRT: 'Aprobada',
-                fechaVencimientoRT: '10/12/2020'
-            },
-            rnt: {
-                estado: 'Cancelado', //No Encontrado, Cancelado Definitivo
-                tipoCancelacion: 'Cancelado por Traslado',
-                regionOrigen: '04',
-                antiguedadMaxima: 10,
-                lstTipoVehiculoPermitidos: ['BUS','MINIBUS'],
-                categoria: 'Publico'
-            },
-            solicitud: {
-                rutPropietario: '1-9',
-                regionInscripcion: '01',
-                ppu: 'BBCC12',
-                ppureemplaza: 'AABB12'
-            }
-        }
-        let validacionInscripcionBuses = config.rntRules.inscripcionVehiculo.validacionInscripcionBuses
+        
+        // let validacionInscripcionBuses = config.rntRules.inscripcionVehiculo.validacionInscripcionBuses
+        let validaPropietarioRule = config.validacionRules.inscripcionVehiculo.validaPropietarioRule
+        let validaAntiguedadRule = config.validacionRules.inscripcionVehiculo.validaAntiguedadRule
+        let validaRTRule = config.validacionRules.inscripcionVehiculo.validaRTRule
+        let validaInscripcionBusesRule = config.validacionRules.inscripcionVehiculo.buses.validaInscripcionRNTRule
         let ruleEngine = new RuleEngine()
-        ruleEngine.addRule(validacionInscripcionBuses)
+        // ruleEngine.addRule(validacionInscripcionBuses)
+        log.trace("RULE: " + JSON.stringify(validaRTRule))
+        ruleEngine.addRule(validaPropietarioRule)
+        ruleEngine.addRule(validaAntiguedadRule)
+        ruleEngine.addRule(validaRTRule)
+        ruleEngine.addRule(validaInscripcionBusesRule)
         //continua no es bool solo para ser pasado por referencia a la funcion que realiza los eventos
         let continua = {estado:true}
         let docs = []
@@ -301,28 +285,101 @@ module.exports = {
         let lstFlotaValidada = []
         let lstFlotaRechazada = []
         for(let i = 0; i< inputValidarFlota.lstPpuRut.length; i++) {
-            await ruleEngine //variar el objeto datosVehiculo, para cada PPU
-            .run(datosVehiculo)
-            .then( results => {
-                results.events.map(event => {
-                    log.debug(JSON.stringify(event))
-                    log.debug("Aprobadas reglas de negocio: " + event.params.mensaje)
-                    continua.estado = true
+            //implementar como extraer data para llenar objeto para evaluar condiciones
+            try {
+                let srceiResponse = await services.getPPUSRCeI(inputValidarFlota.lstPpuRut[i].ppu)
+                log.trace('sreciResponse: ' + JSON.stringify(srceiResponse))
+                let sgprtResponse = await services.getPPURT(inputValidarFlota.lstPpuRut[i].ppu)
+                log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
+                //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
+                busesRepository.existePPU('RV8188')
+                busesRepository.existePPU('ZG8383')
+                //otra consulta para determinar la Antiguedad Maxima permitida por tipo de vehiculo en el folio donde se desea inscribir
+                log.trace('FechaPRT: ' + sgprtResponse.return.revisionTecnica.fechaVencimiento)
+                let datosVehiculo2 = {
+                    registrocivil: {
+                        rutPropietario: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? srceiUtils.getArrayPropietarioComunidad(srceiResponse.return.propieActual.propact.itemPropact) : srceiResponse.return.propieActual.propact.itemPropact[0].rut ,
+                        antiguedad: (srceiResponse.return.aaFabric > new Date().getFullYear) ? 0 : (Number((new Date()).getFullYear()) - Number(srceiResponse.return.aaFabric)),
+                        tipoVehiculo: srceiResponse.return.tipoVehi,
+                        leasing: srceiUtils.determinarLeasing(srceiResponse.return.limita),
+                        rutMerotenedor: srceiUtils.getRutMerotenedor(srceiResponse.return.limita),
+                        comunidad: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? true : false
+                    },
+                    sgprt: {
+                        resultadoRT: (sgprtResponse.return.revisionTecnica.resultado == 'A' && sgprtResponse.return.revisionesGases.revisionGas[sgprtResponse.return.revisionesGases.revisionGas.length - 1].resultado == 'A') ? 'Aprobada' : 'Rechazada',
+                        fechaVencimientoRT: sgprtResponse.return.revisionTecnica.fechaVencimiento
+                    },
+                    rnt: {
+                        estado: 'Cancelado', //No Encontrado, Cancelado Definitivo
+                        tipoCancelacion: 'Cancelado por Traslado',
+                        regionOrigen: '04',
+                        antiguedadMaxima: 10,
+                        lstTipoVehiculoPermitidos: ['BUS','MINIBUS'],
+                        categoria: 'Publico'
+                    },
+                    solicitud: {
+                        rutPropietario: inputValidarFlota.lstPpuRut[i].rut,
+                        regionInscripcion: inputValidarFlota.region,
+                        ppu: inputValidarFlota.lstPpuRut[i].ppu,
+                        ppureemplaza: inputValidarFlota.ppureemplaza
+                    }
+                }
+                log.trace("datosVehiculo2: " + JSON.stringify(datosVehiculo2))
+                let datosVehiculo = {
+                    registrocivil: {
+                        rutPropietario: '12-9',
+                        antiguedad: 5,
+                        tipoVehiculo: 'BUS',
+                        leasing: false,
+                        rutMerotenedor: '1-9',
+                        comunidad: false
+                    },
+                    sgprt: {
+                        resultadoRT: 'Aprobada',
+                        fechaVencimientoRT: '10/12/2020'
+                    },
+                    rnt: {
+                        estado: 'Cancelado', //No Encontrado, Cancelado Definitivo
+                        tipoCancelacion: 'Cancelado por Traslado',
+                        regionOrigen: '04',
+                        antiguedadMaxima: 10,
+                        lstTipoVehiculoPermitidos: ['BUS','MINIBUS'],
+                        estadoPPUReemplazo: 'Cancelado Definitivo',
+                        categoria: 'Publico'
+                    },
+                    solicitud: {
+                        rutPropietario: '1-9',
+                        regionInscripcion: '01',
+                        ppu: 'BBCC12',
+                        ppureemplaza: 'AABB12'
+                    }
+                }
+                await ruleEngine //variar el objeto datosVehiculo, para cada PPU
+                .run(datosVehiculo)
+                .then( results => {
+                    results.events.map(event => {
+                        log.trace(JSON.stringify(event))
+                        log.debug("Aprobadas reglas de negocio: " + event.params.mensaje)
+                        continua.estado = true
+                    })
                 })
-            })
-             //documentos obligatorios para todos los casos: V04,V09
-            docs.push({codigo: 'V04',descripcion: 'Adjunte copia de "Título que habilita al vehículo a prestar servicios" (Formulario N°3)'},{codigo: 'V09',descripcion: 'Adjunte copia de "Permiso de Circulación" del vehiculo'})
-            docsOpcionales.push({codigo: 'V08', descripcion: 'Adjunte copia de "Otorgamiento de Subsidio" o "Adjudicacion de Condiciones de Operación"'})
-            //se revisa si procede la PPU para añadirla a lista de flota validada
-            if(continua.estado == true) {
-                lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs, documentosOpcionales: docsOpcionales})
-                
-            } else {
-                lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada"})
+                //documentos obligatorios para todos los casos: V04,V09
+                docs.push({codigo: 'V04',descripcion: 'Adjunte copia de "Título que habilita al vehículo a prestar servicios" (Formulario N°3)'},{codigo: 'V09',descripcion: 'Adjunte copia de "Permiso de Circulación" del vehiculo'})
+                docsOpcionales.push({codigo: 'V08', descripcion: 'Adjunte copia de "Otorgamiento de Subsidio" o "Adjudicacion de Condiciones de Operación"'})
+                //se revisa si procede la PPU para añadirla a lista de flota validada
+                if(continua.estado == true) {
+                    lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs, documentosOpcionales: docsOpcionales})
+                    
+                } else {
+                    lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada"})
+                }
+                continua = {estado: true}
+                docs = []
+                docsOpcionales = []
+            } catch (e) {
+                log.error("Error en logica de negocio: " + e)
             }
-            continua = {estado: true}
-            docs = []
-            docsOpcionales = []
+                
         }
         let monto = (inputValidarFlota.cantidadRecorridos * lstFlotaValidada.length ) * 400
         let response = {listaFlotaValidada: lstFlotaValidada, listaFlotaRechazada: lstFlotaRechazada, monto: monto}

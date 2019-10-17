@@ -75,9 +75,26 @@ describe('Test Privados Logic',() => {
 
 describe('Test Consumo Servicios Web', () => {
     it('Retornar Objeto SRCeI', async () => {
-        assert.typeOf(await servicegateway.getPPUSRCeI('YB2215'),'Object')
+        assert.typeOf(await servicegateway.getPPUSRCeI('HSVG49'),'Object')
     })
     it('Retornar Objeto RT', async () => {
-        assert.typeOf(await servicegateway.getPPURT('YB2215'),'Object')
+        assert.typeOf(await servicegateway.getPPURT('HSVG49'),'Object')
+    })
+})
+describe('Test Validacion de Flota RNT', () => {
+    it('Retornar Objeto validacion Flota Buses', async () => {
+        assert.typeOf(await busesLogic.validarFlota({
+            rut_solicitante: "1-9",
+            rut_responsable: "2-9",
+            folio: "123",
+            region: "13",
+            lstPpuRut: [
+                    {
+                        ppu: "RV8188",
+                        rut: "3-9"
+                    }
+                ],
+            cantidadRecorridos: "12"
+        }),'Object')
     })
 })
