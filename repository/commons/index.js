@@ -476,13 +476,18 @@ module.exports = {
         }
     },
     findLstTipoVehiculoPermitidoByFolioRegion: (folio, region) => {
-        let idTipoServicio = ibmdb.query("SELECT s.ID_TIPO_SERVICIO FROM NULLID.RNT_SERVICIO s WHERE s.IDENT_SERVICIO = ? AND s.CODIGO_REGION = ?", [folio, region])
-        if (config.rntTipoServicioMap.buses.IdsTiposServicios.find((id) => {if(id === idTipoServicio) return true})) {
-            return ['BUS', 'MINIBUS']    
+        try {
+            let idTipoServicio = ibmdb.query("SELECT s.ID_TIPO_SERVICIO FROM NULLID.RNT_SERVICIO s WHERE s.IDENT_SERVICIO = ? AND s.CODIGO_REGION = ?", [folio, region])[0].ID_TIPO_SERVICIO
+            if (config.rntTipoServicioMap.buses.IdsTiposServicios.find((id) => { return id.toString() === idTipoServicio})) {
+                return ['BUS', 'MINIBUS']    
+            }
+            if (config.rntTipoServicioMap.taxis.IdsTiposServicios.find((id) =>{ return id.toString() === idTipoServicio})) {
+                return ['AUTOMOVIL']    
+            }
+            return []
+        } catch (e) {
+            log.error("Error obteniendo listado de tipo de vehiculos para Folio: " + folio + " y REGION: " + region)
+            return []
         }
-        if (config.rntTipoServicioMap.taxis.IdsTiposServicios.find((id) => {if(id === idTipoServicio) return true})) {
-            return ['AUTOMOVIL']    
-        }
-        return []
     }
 }

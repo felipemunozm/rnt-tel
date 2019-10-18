@@ -329,35 +329,6 @@ module.exports = {
                     }
                 }
                 log.trace("datosVehiculo: " + JSON.stringify(datosVehiculo))
-                let datosVehiculo2 = {
-                    registrocivil: {
-                        rutPropietario: '12-9',
-                        antiguedad: 5,
-                        tipoVehiculo: 'AUTOMOVIL',
-                        leasing: false,
-                        rutMerotenedor: '1-9',
-                        comunidad: false
-                    },
-                    sgprt: {
-                        resultadoRT: 'Rechazada',
-                        fechaVencimientoRT: '10/12/2020'
-                    },
-                    rnt: {
-                        estado: 'Cancelado', //No Encontrado, Cancelado Definitivo
-                        tipoCancelacion: 'Cancelado por Traslado',
-                        regionOrigen: '04',
-                        antiguedadMaxima: 10,
-                        lstTipoVehiculoPermitidos: ['BUS','MINIBUS'],
-                        estadoPPUReemplazo: 'Cancelado Definitivo',// solo taxis....
-                        categoria: 'Publico'
-                    },
-                    solicitud: {
-                        rutPropietario: '1-9',
-                        regionInscripcion: '01',
-                        ppu: 'BBCC12',
-                        ppureemplaza: 'AABB12'
-                    }
-                }
                 await ruleEngine //variar el objeto datosVehiculo, para cada PPU
                 .run(datosVehiculo)
                 .then( results => {
