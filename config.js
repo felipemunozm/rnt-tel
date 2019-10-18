@@ -111,9 +111,6 @@ module.exports = {
                     params: {
                         mensaje: "Antiguedad Validada"
                     }
-                },
-                onFailure: (event, almanac) => {
-                    
                 }
             },
             validaRTRule: {
@@ -134,6 +131,27 @@ module.exports = {
                     }
                 }
             },
+            validaTipoVehiculoNormaRule: {
+                conditions: {
+                    all: [
+                        {
+                            fact: 'rnt',
+                            path: '.lstTipoVehiculoPermitidos',
+                            operator: 'contains',
+                            value: {
+                                fact: 'registrocivil',
+                                path: '.tipoVehiculo'
+                            }
+                        }
+                    ]
+                },
+                event: {
+                    type: 'TVNORMA',
+                    params: {
+                        message: 'Tipo Vehiculo Norma Validado'
+                    }
+                }
+            },
             buses: {
                 validaInscripcionRNTRule: {
                     conditions: {
@@ -142,20 +160,20 @@ module.exports = {
                                 fact: 'rnt',
                                 path: '.estado',
                                 operator: 'equal',
-                                value: 'No Encontrado'
+                                value: '0'
                             },
                             {//valida que si existe esté cancelado por traslado y que la region sea distinta a la region de cancelacion anterior
                                 all: [{
                                     fact: 'rnt',
                                     path: '.estado',
                                     operator: 'equal',
-                                    value: 'Cancelado' 
+                                    value: '2'
                                 },
                                 {
                                     fact: 'rnt',
                                     path: '.tipoCancelacion',
                                     operator: 'equal',
-                                    value: 'Cancelado por Traslado'
+                                    value: 'TRASLADO DE REGIÓN'
                                 },
                                 {
                                     fact: 'solicitud',
@@ -173,19 +191,19 @@ module.exports = {
                                         fact: 'rnt',
                                         path: 'estado',
                                         operator: 'equal',
-                                        value: 'Cancelado'
+                                        value: '2'
                                     },
                                     {
                                         fact: 'rnt',
                                         path: '.tipoCancelacion',
                                         operator: 'equal',
-                                        value: 'Cancelado por Cambio Categoria'
+                                        value: 'CANCELACIÓN POR CAMBIO DE CATEGORÍA DE TRANSPORTE'
                                     },
                                     {
                                         fact: 'rnt',
                                         path: '.categoria',
                                         operator: 'notEqual',
-                                        value: 'Publico'
+                                        value: 'PÚBLICO'
                                     }
                                 ]
                             }
@@ -213,7 +231,7 @@ module.exports = {
                                 fact: 'rnt',
                                 path: '.estadoPPUReemplazo',
                                 operator: 'equal',
-                                value: 'Cancelado Definitivo'
+                                value: 3
                             }
                         ]
                     },

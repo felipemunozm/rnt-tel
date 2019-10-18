@@ -57,23 +57,37 @@ module.exports = {
     findServiciosByMandatarioAndRepresentanteAndEmpresa: (rut_empresa, rut_representante, rut_solicitante) => {
         return commons.findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios(rut_empresa, rut_representante, rut_solicitante, config.rntTipoServicioMap.buses.IdsTiposServicios)
     },
-    existePPU: (ppu) => {
-        let vehiculoExiste = commons.getVehiculoByPPU(ppu).length > 0 ? true : false
+    findInscripcionRNTData: (folio, region, ppu, tipoVehiculoSrcei) => {
+        let vehiculoExiste = commons.checkVehiculoByPPU(ppu).length > 0 ? true : false
         let response
         if(vehiculoExiste) {
             //diseñar response con tipos de cancelacion
             //buscar info de vehiculo:
-
+            let infoRNT = commons.findInfoVehiculoParaInscripcion(ppu)
+            response = {
+                estado: infoRNT.ESTADO,
+                tipoCancelacion: infoRNT.TIPO_CANCELACION,
+                regionOrigen: infoRNT.CODIGO_REGION,
+                antiguedadMaxima: undefined,//no se puede obtener por la PPU, s edebe agregar posterior
+                lstTipoVehiculoPermitidos: [],
+                categoria: infoRNT.CATEGORIA
+            }
+            
         }
         else {
             //diseñar response con vehiculo no encontrado
             response = {
-                estado: 'No Encontrado',
+                estado: 0,
                 tipoCancelacion: undefined,
                 regionOrigen: undefined,
-                antiguedadMaxima: undefined
+                antiguedadMaxima: undefined,
+                lstTipoVehiculoPermitidos: [],
+                categoria: undefined
             }
         }
+        //buscar antiguedad maxima para la norma del folio region tv
+        response.antiguedadMaxima = commons.findAntiguedadMaximaByFolioRegionTipoVehiculo(folio, region, tipoVehiculoSrcei)
+        response.lstTipoVehiculoPermitidos = commons.findLstTipoVehiculoPermitidoByFolioRegion(folio, region)
         return response
     }
 }

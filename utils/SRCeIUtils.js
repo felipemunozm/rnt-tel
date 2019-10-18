@@ -15,7 +15,7 @@ module.exports = {
             }
         }
         catch(e) {
-            log.error("fallo calculo de leasing")
+            log.debug("fallo calculo de leasing, retornando false")
             return false            
         }
     },
@@ -23,7 +23,7 @@ module.exports = {
         try {
             return limita.itemLimita[0].tenedores.itemTenedores[0].rut
         } catch(e) {
-            log.error("error obteniendo rut merotenedor")
+            log.debug("error obteniendo rut merotenedor, retornando false")
         }
     }
 }

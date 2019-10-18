@@ -269,6 +269,7 @@ module.exports = {
         let validaAntiguedadRule = config.validacionRules.inscripcionVehiculo.validaAntiguedadRule
         let validaRTRule = config.validacionRules.inscripcionVehiculo.validaRTRule
         let validaInscripcionBusesRule = config.validacionRules.inscripcionVehiculo.buses.validaInscripcionRNTRule
+        let validaTVNormaRule = config.validacionRules.inscripcionVehiculo.validaTipoVehiculoNormaRule
         let ruleEngine = new RuleEngine()
         // ruleEngine.addRule(validacionInscripcionBuses)
         // log.trace("RULE: " + JSON.stringify(validaRTRule))
@@ -276,8 +277,9 @@ module.exports = {
         ruleEngine.addRule(validaAntiguedadRule)
         ruleEngine.addRule(validaRTRule)
         ruleEngine.addRule(validaInscripcionBusesRule)
+        ruleEngine.addRule(validaTVNormaRule)
         //continua no es bool solo para ser pasado por referencia a la funcion que realiza los eventos
-        let continua = {estado:true}
+        let continua = {estado:true, lstRechazos: []}
         let docs = []
         let docsOpcionales = []
         //verificar si no valido todo OK, hay casos en los que debe continuar y otros en los que no
@@ -294,11 +296,11 @@ module.exports = {
                 let sgprtResponse = await services.getPPURT(inputValidarFlota.lstPpuRut[i].ppu)
                 log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
-                busesRepository.existePPU('RV8188')
-                busesRepository.existePPU('ZG8383')
+                let dataRNT = busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.srceiResponse.return.tipoVehi)
+                log.trace('DataRNT para PPU ' + inputValidarFlota.lstPpuRut[i].ppu + ": " + JSON.stringify(dataRNT))
                 //otra consulta para determinar la Antiguedad Maxima permitida por tipo de vehiculo en el folio donde se desea inscribir
                 log.trace('FechaPRT: ' + sgprtResponse.return.revisionTecnica.fechaVencimiento)
-                let datosVehiculo2 = {
+                let datosVehiculo = {
                     registrocivil: {
                         rutPropietario: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? srceiUtils.getArrayPropietarioComunidad(srceiResponse.return.propieActual.propact.itemPropact) : srceiResponse.return.propieActual.propact.itemPropact[0].rut ,
                         antiguedad: (srceiResponse.return.aaFabric > new Date().getFullYear) ? 0 : (Number((new Date()).getFullYear()) - Number(srceiResponse.return.aaFabric)),
@@ -312,12 +314,12 @@ module.exports = {
                         fechaVencimientoRT: sgprtResponse.return.revisionTecnica.fechaVencimiento
                     },
                     rnt: {
-                        estado: 'Cancelado', //No Encontrado, Cancelado Definitivo
-                        tipoCancelacion: 'Cancelado por Traslado',
-                        regionOrigen: '04',
-                        antiguedadMaxima: 10,
-                        lstTipoVehiculoPermitidos: ['BUS','MINIBUS'],
-                        categoria: 'Publico'
+                        estado: dataRNT.estado, //No Encontrado = 0, Cancelado Definitivo = 3, VIGENTE = 1, Cancelado Temporal = 2 
+                        tipoCancelacion: dataRNT.tipoCancelacion,
+                        regionOrigen: dataRNT.regionOrigen,
+                        antiguedadMaxima: dataRNT.antiguedadMaxima,
+                        lstTipoVehiculoPermitidos: dataRNT.lstTipoVehiculoPermitidos,
+                        categoria: dataRNT.categoria
                     },
                     solicitud: {
                         rutPropietario: inputValidarFlota.lstPpuRut[i].rut,
@@ -326,12 +328,12 @@ module.exports = {
                         ppureemplaza: inputValidarFlota.ppureemplaza
                     }
                 }
-                log.trace("datosVehiculo2: " + JSON.stringify(datosVehiculo2))
-                let datosVehiculo = {
+                log.trace("datosVehiculo: " + JSON.stringify(datosVehiculo))
+                let datosVehiculo2 = {
                     registrocivil: {
                         rutPropietario: '12-9',
                         antiguedad: 5,
-                        tipoVehiculo: 'BUS',
+                        tipoVehiculo: 'AUTOMOVIL',
                         leasing: false,
                         rutMerotenedor: '1-9',
                         comunidad: false
@@ -346,7 +348,7 @@ module.exports = {
                         regionOrigen: '04',
                         antiguedadMaxima: 10,
                         lstTipoVehiculoPermitidos: ['BUS','MINIBUS'],
-                        estadoPPUReemplazo: 'Cancelado Definitivo',
+                        estadoPPUReemplazo: 'Cancelado Definitivo',// solo taxis....
                         categoria: 'Publico'
                     },
                     solicitud: {
@@ -362,7 +364,7 @@ module.exports = {
                     results.events.map(event => {
                         log.trace(JSON.stringify(event))
                         log.debug("Aprobadas reglas de negocio: " + event.params.mensaje)
-                        continua.estado = true
+                        // continua.estado = true
                     })
                 })
                 //documentos obligatorios para todos los casos: V04,V09
@@ -373,9 +375,9 @@ module.exports = {
                     lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs, documentosOpcionales: docsOpcionales})
                     
                 } else {
-                    lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada"})
+                    lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada",listaRechazos: continua.lstRechazos})
                 }
-                continua = {estado: true}
+                continua = {estado: true, lstRechazos: []}
                 docs = []
                 docsOpcionales = []
             } catch (e) {

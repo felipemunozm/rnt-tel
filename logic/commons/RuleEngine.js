@@ -57,7 +57,10 @@ module.exports = {
         })
         ruleEngine.on("success", (event,almanac, ruleResult) => {
             log.debug("Success event trigger...")
-            log.trace("Success ruleResult: " + JSON.stringify(ruleResult))
+            // log.trace("Success ruleResult: " + JSON.stringify(ruleResult))
+            log.trace("Event: " + JSON.stringify(event))
+            log.trace("Almanac: " + JSON.stringify(almanac))
+            log.trace("RuleResult: " + JSON.stringify(ruleResult))
             // ruleResult.conditions.all.forEach(condition => {
                 // log.debug("Condition: " + JSON.stringify(condition))
             //revisar meratenencia para agregar documentos a solicitar

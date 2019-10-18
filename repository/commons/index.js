@@ -1,5 +1,6 @@
 const ibmdb = require('../db')
 const log = require('../../log')
+const config = require('../../config')
 
 module.exports = {
     findServiciosByRepresentanteLegalAndEmpresaAndTipoServicioList: (rut_empresa, rut_representante, lstTiposServicios) => {
@@ -451,5 +452,37 @@ module.exports = {
         },
     checkVehiculoByPPU: (ppu) => {
         return ibmdb.query('SELECT v.PPU, v.TIPO_VEHICULO FROM NULLID.RNT_VEHICULO v  WHERE v.PPU = ?', [ppu])
+    },
+    findInfoVehiculoParaInscripcion: (ppu) => {
+        return ibmdb.query('SELECT v.PPU,v.TIPO_VEHICULO,vs.ESTADO,tc.id AS ID_CANCELACION,tc.NOMBRE AS TIPO_CANCELACION, ct.NOMBRE AS CATEGORIA, s.CODIGO_REGION ' +
+        'FROM NULLID.RNT_VEHICULO v INNER JOIN NULLID.RNT_VEHICULO_SERVICIO vs ON vs.ID = ( ' +
+        '   SELECT vss.id ' +
+        '    FROM nullid.rnt_vehiculo_servicio VSS INNER JOIN nullid.rnt_servicio SS ON ss.id = vss.id_servicio ' +
+        '    INNER JOIN nullid.rnt_tipo_servicio TSS ON ss.id_tipo_servicio = tss.id ' +
+        '    INNER JOIN nullid.rnt_modalidad Ms ON ms.id = tss.id_modalidad AND ms.nombre <> \'ESPECIAL\' ' +
+        '   WHERE vss.id_vehiculo = v.id ORDER BY vss.fecha_estado DESC, vss.id DESC FETCH FIRST 1 ROWS ONLY ) ' +
+        'INNER JOIN NULLID.RNT_SERVICIO s ON s.ID = vs.ID_SERVICIO' + 
+        'INNER JOIN NULLID.RNT_TIPO_SERVICIO ts ON ts.id = s.ID_TIPO_SERVICIO' +
+        'INNER JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO tvs ON tvs.id = ts.ID_TIPO_VEHICULO_SERVICIO ' +
+        'INNER JOIN NULLID.RNT_TIPO_CANCELACION tc ON vs.ID_TIPO_CANCELACION = tc.ID ' +
+        'INNER JOIN NULLID.RNT_CATEGORIA_TRANSPORTE ct ON ct.id = ts.ID_CATEGORIA_TRANSPORTE ' +
+        'WHERE v.PPU = ?',[ppu])
+    },
+    findAntiguedadMaximaByFolioRegionTipoVehiculo: (folio, region, tipoVehiculo) => {
+        switch(tipoVehiculo) {
+            case 'BUS': return 23
+            case 'MINIBUS': return 18
+            default: return 0
+        }
+    },
+    findLstTipoVehiculoPermitidoByFolioRegion: (folio, region) => {
+        let idTipoServicio = ibmdb.query("SELECT s.ID_TIPO_SERVICIO FROM NULLID.RNT_SERVICIO s WHERE s.IDENT_SERVICIO = ? AND s.CODIGO_REGION = ?", [folio, region])
+        if (config.rntTipoServicioMap.buses.IdsTiposServicios.find((id) => {if(id === idTipoServicio) return true})) {
+            return ['BUS', 'MINIBUS']    
+        }
+        if (config.rntTipoServicioMap.taxis.IdsTiposServicios.find((id) => {if(id === idTipoServicio) return true})) {
+            return ['AUTOMOVIL']    
+        }
+        return []
     }
 }
