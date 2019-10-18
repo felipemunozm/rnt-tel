@@ -18,7 +18,7 @@ module.exports = {
         'LEFT JOIN NULLID.rnt_tipo_vehiculo_servicio tvs ON tvs.id = ts.id_tipo_vehiculo_servicio ' +
         'LEFT JOIN NULLID.rnt_tipo_servicio_area tsa ON ts.id_tipo_servicio_area = tsa.id ' +
         'INNER JOIN NULLID.UTILSQA_REGION r ON r.ID = s.CODIGO_REGION ' +
-        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ACTIVO = 1 AND rl.AUTORIZADO_TRAMITES = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
+        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ESTADO = 1 AND rl.AUTORIZADO_TRAMITES = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
     },
     findRecorridosByFolioRegionAndTipoServicio: (folio,region, lstTipoServicios) => {
         return ibmdb.query('SELECT r.NOMBRE AS NOMBRE_RECORRIDO, p.nombre AS ORIGEN, c.NOMBRE AS COMUNA_ORIGEN, p2.NOMBRE AS DESTINO, c2.NOMBRE AS COMUNA_DESTINO ' +
@@ -37,7 +37,7 @@ module.exports = {
         'LEFT JOIN NULLID.rnt_extremo_recorrido er2 ON er2.id = r.id_destino ' +
         'INNER JOIN NULLID.rnt_paradero p2 ON p2.id = er2.id_paradero ' +
         'LEFT JOIN NULLID.UTILSQA_COMUNA c2 ON c2.id = p2.codigo_comuna ' +
-        'WHERE s.IDENT_SERVICIO = ? AND s.CODIGO_REGION = ? AND s.ACTIVO = 1 AND r.ESTADO = 1 AND ts.id IN (' + lstTipoServicios.toString() +')',[folio,region])
+        'WHERE s.IDENT_SERVICIO = ? AND s.CODIGO_REGION = ? AND s.ESTADO = 1 AND r.ESTADO = 1 AND ts.id IN (' + lstTipoServicios.toString() +')',[folio,region])
     },
     findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios: (rut_empresa, rut_representante, rut_solicitante, lstTipoServicios) => {
         return ibmdb.query('SELECT pNatural.RUT AS "RUT_REPRESENTANTE", pJuridica.RUT AS "RUT_RESPONSABLE",pjuridica.NOMBRE AS NOMBRE_RESPONSABLE, MANDATARIOPERSONA.RUT AS "RUT_MANDATARIO", s.IDENT_SERVICIO AS "FOLIO", r.NOMBRE AS "REGION", s.codigo_region as COD_REGION  ' +
@@ -57,7 +57,7 @@ module.exports = {
         'LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO tvs ON tvs.ID = ts.ID_TIPO_VEHICULO_SERVICIO ' +
         'LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA tsa ON ts.ID_tipo_servicio_area = tsa.ID ' +
         'INNER JOIN NULLID.UTILSQA_REGION r ON r.ID = s.CODIGO_REGION ' +
-        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND MANDATARIOPERSONA.RUT = ? AND man.AUTORIZADO_TRAMITES = 1 AND s.ACTIVO = 1 AND ts.id in (' + lstTipoServicios.toString() + ')', [rut_empresa, rut_representante, rut_solicitante])
+        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND MANDATARIOPERSONA.RUT = ? AND man.AUTORIZADO_TRAMITES = 1 AND s.ESTADO = 1 AND ts.id in (' + lstTipoServicios.toString() + ')', [rut_empresa, rut_representante, rut_solicitante])
     },
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable,lstTipoServicios) =>{
         return ibmdb.query("SELECT DISTINCT REGION.ID AS ID_REGION, REGION.NOMBRE AS REGION, T_VEHICULO_SERV.NOMBRE || ' ' || MODALIDAD.NOMBRE || ' ' || T_SERV_AREA.NOMBRE AS TIPO_SERVICIO, SERVICIO.IDENT_SERVICIO AS FOLIO, RESPONSABLE.NOMBRE AS NOMBRE, RESPONSABLE.RUT AS RUT_RESPONSABLE " +
@@ -71,7 +71,7 @@ module.exports = {
 		"LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS T_VEHICULO_SERV ON T_VEHICULO_SERV.ID = T_SERV.ID_TIPO_VEHICULO_SERVICIO " +
 		"LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA AS T_SERV_AREA ON T_SERV.ID_TIPO_SERVICIO_AREA = T_SERV_AREA.ID " +
         "LEFT JOIN NULLID.UTILSQA_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
-        "WHERE RESPONSABLE.RUT = ? AND SERVICIO.ACTIVO = 1 AND RESPONSABLE.TIPO_PERSONA = 1 AND T_SERV.ID IN (" + lstTipoServicios.toString() + ")",[rut_responsable])
+        "WHERE RESPONSABLE.RUT = ? AND SERVICIO.ESTADO = 1 AND RESPONSABLE.TIPO_PERSONA = 1 AND T_SERV.ID IN (" + lstTipoServicios.toString() + ")",[rut_responsable])
     },
     getServiciosVigentesInscritosPorRutResponsableAndRutMandatario: (rut_responsable, rut_mandatario, lstTipoServicios) =>{
         return ibmdb.query("SELECT DISTINCT REGION.ID AS ID_REGION, REGION.NOMBRE AS REGION, T_VEHICULO_SERV.NOMBRE || ' ' || MODALIDAD.NOMBRE || ' ' || T_SERV_AREA.NOMBRE AS TIPO_SERVICIO, SERVICIO.IDENT_SERVICIO AS FOLIO, RESPONSABLE.NOMBRE AS NOMBRE, RESPONSABLE.RUT AS RUT_RESPONSABLE, MANDATARIO.RUT AS RUT_MANDATARIO " +
@@ -88,7 +88,7 @@ module.exports = {
         "LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS T_VEHICULO_SERV ON T_VEHICULO_SERV.ID = T_SERV.ID_TIPO_VEHICULO_SERVICIO " +
         "LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA AS T_SERV_AREA ON T_SERV.ID_TIPO_SERVICIO_AREA = T_SERV_AREA.ID " +
         "LEFT JOIN NULLID.UTILSQA_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
-        "WHERE RESPONSABLE.RUT = ? AND MANDATARIO.RUT = ? AND SERVICIO.ACTIVO = 1 AND RESPONSABLE.TIPO_PERSONA = 1 AND MAND.AUTORIZADO_TRAMITES = 1 AND T_SERV.ID IN (" + lstTipoServicios.toString() + ")",[rut_responsable, rut_mandatario])
+        "WHERE RESPONSABLE.RUT = ? AND MANDATARIO.RUT = ? AND SERVICIO.ESTADO = 1 AND RESPONSABLE.TIPO_PERSONA = 1 AND MAND.AUTORIZADO_TRAMITES = 1 AND T_SERV.ID IN (" + lstTipoServicios.toString() + ")",[rut_responsable, rut_mandatario])
     },
            //psalas
            getAutorizadoPorPersonaParaTramiteInscripcionServicio:  (id_region, rut_solicitante,idtramite) => {
@@ -321,7 +321,7 @@ module.exports = {
     
           
         },
-        //psalas
+        //psalasl
         getAutorizadoPorEmpresaAndSolicitanteInscripcionServicio:  (id_region, rut_representante, rut_solicitante,idtramite) => {
             log.debug(id_region)
             log.debug(rut_representante)

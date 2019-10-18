@@ -34,7 +34,7 @@ module.exports = {
                         let resultadoRNTNoEncontrado = ruleResult.conditions.any[0].result
                         if(!resultadoRNTNoEncontrado) {
                             continua.estado = false
-                            continua.lstRechazos.push('Rechazo por propietario')
+                            continua.lstRechazos.push('Rechazo por existir en RNT previamente')
                         }
                         let resultadoRNTCanceladoTraslado = ruleResult.conditions.any[1].all[0].result
                         let resultadoRNTCanceladoTipoTraslado = ruleResult.conditions.any[1].all[1].result

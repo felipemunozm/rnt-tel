@@ -181,7 +181,7 @@ module.exports = {
                                     operator: 'notEqual',
                                     value: {
                                         fact: 'rnt',
-                                        path: 'regionOrigen'
+                                        path: '.regionOrigen'
                                     }
                                 }]
                             },

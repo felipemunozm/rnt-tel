@@ -77,7 +77,7 @@ module.exports = {
         else {
             //diseñar response con vehiculo no encontrado
             response = {
-                estado: 0,
+                estado: '0',
                 tipoCancelacion: undefined,
                 regionOrigen: undefined,
                 antiguedadMaxima: undefined,
