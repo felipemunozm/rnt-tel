@@ -296,7 +296,7 @@ module.exports = {
                 let sgprtResponse = await services.getPPURT(inputValidarFlota.lstPpuRut[i].ppu)
                 log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
-                let dataRNT = busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.srceiResponse.return.tipoVehi)
+                let dataRNT = busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, inputValidarFlota.lstPpuRut[i].ppu, srceiResponse.return.tipoVehi)
                 log.trace('DataRNT para PPU ' + inputValidarFlota.lstPpuRut[i].ppu + ": " + JSON.stringify(dataRNT))
                 //otra consulta para determinar la Antiguedad Maxima permitida por tipo de vehiculo en el folio donde se desea inscribir
                 log.trace('FechaPRT: ' + sgprtResponse.return.revisionTecnica.fechaVencimiento)
