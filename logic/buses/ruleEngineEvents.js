@@ -2,7 +2,7 @@ const log = require('../../log')
 
 
 module.exports = {
-    revisionRechazosBuses: (ruleEngine, docs, continua) => {
+    revisionRechazosBuses: (ruleEngine, docs,docsOpcionales , continua) => {
         ruleEngine.on("failure", (event, almanac, ruleResult) => {
             log.debug("Rechazo Buses, Revisando...")
             log.trace("\tEvent: " + JSON.stringify(event))
@@ -21,6 +21,8 @@ module.exports = {
                         break
                     case 'rt':
                         log.debug("\tRechazo BUS RT")
+                        let resultadoRT = ruleResult.conditions.all[0].result
+                        let vigenciaRT = ruleResult.conditions.all[1].result
                         docs.push({codigo:'V07', descripcion: 'Adjunte copia de "Certificado de Revisión Técnica" o copia de "Certificado de Homologación" y "Certificado de Características Especiales", otorgado por una planta de revisión técnica'})
                         break
                     case 'TVNORMA':
@@ -52,7 +54,7 @@ module.exports = {
                         }
                         break
                     default:
-                        log.debug("\tRechazo no detectado, evneto: " + event.type)
+                        log.debug("\tRechazo no detectado, evento: " + event.type)
                    
 
                 }
@@ -62,7 +64,7 @@ module.exports = {
             }
         })
     },
-    revisionValidadosBuses: (ruleEngine, docs, continua) => {
+    revisionValidadosBuses: (ruleEngine, docs, docsOpcionales, continua) => {
         ruleEngine.on("success", (event, almanac, ruleResult) => {
             log.debug("Validacion Buses, Revisando...")
             log.trace("\tEvent: " + JSON.stringify(event))
