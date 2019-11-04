@@ -28,7 +28,30 @@ let getPPUSRCeI = (ppu) => {
                     resolve(result)
                 }
                 else {
-                    resolve({return: {ppu: ppu, status: false}})
+                    resolve( {
+                        return: {
+                            ppu: ppu, 
+                            status: false,
+                            propieActual: {
+                                propact: {
+                                    itemPropact: [
+                                        {
+                                            rut: '0-0'
+                                        }
+                                    ]
+                                }
+                            },
+                            aaFabric: 0,
+                            tipoVehi: '',
+                            limita: {
+                                itemLimita: [
+                                    {
+                                        empty: true
+                                    }
+                                ]
+                            }
+                        }
+                    })
                 }
             })
         })
@@ -40,7 +63,24 @@ let getPPURT = (ppu) => {
         soap.createClient(urlRT, (error, client) => {
             if(error) {
                 log.error("Error creando cliente: " + JSON.stringify(error))
-                reject(new Error("Error consultando RT"))
+                // reject(new Error("Error consultando RT"))
+                resolve( {
+                    return: {
+                        ppu: ppu, 
+                        status: false,
+                        revisionTecnica: {
+                            resultado: 'R',
+                            fechaVencimiento: undefined
+                        },
+                        revisionGases: {
+                            revisionGas: [
+                                {
+                                    resultado: 'R'
+                                }
+                            ]
+                        }
+                    }
+                })
             }
             if(!client) {
                 log.error("Error creando cliente: " + JSON.stringify(client))
@@ -49,14 +89,47 @@ let getPPURT = (ppu) => {
             client.consultaRevisionTecnica({ ppu: ppu },(error2, result) => {
                 if(error2) {
                     log.error('Error: '  + JSON.stringify(error2))
-                    reject(new Error("Error consultando metodo getPlaca"))
+                    // reject(new Error("Error consultando metodo getPlaca"))
+                    resolve( {
+                        return: {
+                            ppu: ppu, 
+                            status: false,
+                            revisionTecnica: {
+                                resultado: 'R',
+                                fechaVencimiento: undefined
+                            },
+                            revisionGases: {
+                                revisionGas: [
+                                    {
+                                        resultado: 'R'
+                                    }
+                                ]
+                            }
+                        }
+                    })
                 }
                 if(result != null) {
                     log.trace("Retornando: " + JSON.stringify(result))
                     resolve(result)
                 }
                 else {
-                    resolve({return: {ppu: ppu, status: false}})
+                    resolve( {
+                        return: {
+                            ppu: ppu, 
+                            status: false,
+                            revisionTecnica: {
+                                resultado: 'R',
+                                fechaVencimiento: undefined
+                            },
+                            revisionGases: {
+                                revisionGas: [
+                                    {
+                                        resultado: 'R'
+                                    }
+                                ]
+                            }
+                        }
+                    })
                 }
             })
         })
@@ -66,70 +139,4 @@ module.exports = {
     getPPURT: getPPURT,
     getPPUSRCeI: getPPUSRCeI
 }
-var ServiciosGateway = (function () {
-    function ServiciosGateway() {
-        this.urlPpu = '../wsdl/ppu.wsdl';
-        this.urlRT = '../wsdl/revisionTecnica.wsdl';
-        this.urlFirmador = '../wsdl/RecibeDocumentoFirma_Api_Tramites.wsdl';
-        this.async = obtenerVehiculo(ppu, string);
-        this.async = obtenerRevisionTecnica(ppu, string);
-        this.const = serviciosGateway = new ServiciosGateway();
-    }
-    ServiciosGateway.prototype.Promise = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            soap.createClient(_this.urlPpu, function (error1, client) {
-                if (error1) {
-                    reject(new Error(error1));
-                    return;
-                }
-                if (!client) {
-                    reject('No fue posible la conexión con el servicio externo.');
-                    return;
-                }
-                client.getPlaca({ ppu: ppu }, function (error2, result) {
-                    if (error2) {
-                        reject(new Error(error2));
-                        return;
-                    }
-                    if (result != null) {
-                        resolve(result);
-                    }
-                    else {
-                        var response = {};
-                        response.return = {
-                            patente: ppu
-                        };
-                        resolve(response);
-                    }
-                });
-            });
-        });
-    };
-    ServiciosGateway.prototype.Promise = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            soap.createClient(_this.urlRT, function (error1, client) {
-                if (error1) {
-                    reject(new Error(error1));
-                    return;
-                }
-                if (!client) {
-                    reject('No fue posible la conexión con el servicio externo.');
-                    return;
-                }
-                client.consultaRevisionTecnica({ ppu: ppu }, function (error2, result) {
-                    if (error2) {
-                        var response = {};
-                        response.return = {
-                            patente: ppu
-                        };
-                        resolve(response);
-                    }
-                    resolve(result);
-                });
-            });
-        });
-    };
-    return ServiciosGateway;
-})();
+

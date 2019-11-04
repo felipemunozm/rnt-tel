@@ -289,8 +289,8 @@ module.exports = {
         let docs = []
         let docsOpcionales = []
         //verificar si no valido todo OK, hay casos en los que debe continuar y otros en los que no
-        ruleEngineEvents.revisionRechazosBuses(ruleEngine, docs, continua)
-        ruleEngineEvents.revisionValidadosBuses(ruleEngine, docs, continua)
+        ruleEngineEvents.revisionRechazosBuses(ruleEngine, docs,docsOpcionales, continua)
+        ruleEngineEvents.revisionValidadosBuses(ruleEngine, docs,docsOpcionales, continua)
         // ruleEngineCommons.cargarRevisionRechazoVehiculo(ruleEngine, docs, continua)
         let lstFlotaValidada = []
         let lstFlotaRechazada = []
@@ -299,8 +299,18 @@ module.exports = {
             try {
                 let srceiResponse = await services.getPPUSRCeI(inputValidarFlota.lstPpuRut[i].ppu)
                 log.trace('sreciResponse: ' + JSON.stringify(srceiResponse))
-                let sgprtResponse = await services.getPPURT(inputValidarFlota.lstPpuRut[i].ppu)
-                log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
+                if(srceiResponse.return.status === false) {
+                    docs.push({codigo:'V12', descripcion: 'CERTIFICADO DE INSCRIPCIÓN Y DE ANOTACIONES VIGENTES (CAV)'})
+                    docs.push({codigo:'V23', descripcion: 'FACTURA DE COMPRAVENTA'})
+                    docs.push({codigo:'V39', descripcion: 'SOLICITUD DE PRIMERA INSCRIPCIÓN O TRANSFERENCIA EN EL REGISTRO NACIONAL DE VEHÍCULOS MOTORIZADOS (RNVM)'})
+                }
+                let sgprtResponse = undefined
+                try {
+                    sgprtResponse = await services.getPPURT(inputValidarFlota.lstPpuRut[i].ppu)
+                    log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
+                } catch (e) {
+                    docs.push({codigo: 'V11', descripcion: 'CERTIFICADO DE HOMOLOGACIÓN'})
+                }
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
                 let dataRNT = busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, inputValidarFlota.lstPpuRut[i].ppu, srceiResponse.return.tipoVehi)
                 log.trace('DataRNT para PPU ' + inputValidarFlota.lstPpuRut[i].ppu + ": " + JSON.stringify(dataRNT))
@@ -309,15 +319,16 @@ module.exports = {
                 let datosVehiculo = {
                     registrocivil: {
                         rutPropietario: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? srceiUtils.getArrayPropietarioComunidad(srceiResponse.return.propieActual.propact.itemPropact) : srceiResponse.return.propieActual.propact.itemPropact[0].rut ,
-                        antiguedad: (srceiResponse.return.aaFabric > new Date().getFullYear) ? 0 : (Number((new Date()).getFullYear()) - Number(srceiResponse.return.aaFabric)),
+                        antiguedad: (srceiResponse.return.aaFabric > (new Date()).getFullYear()) ? 0 : (Number((new Date()).getFullYear()) - Number(srceiResponse.return.aaFabric)),
                         tipoVehiculo: srceiResponse.return.tipoVehi,
                         leasing: srceiUtils.determinarLeasing(srceiResponse.return.limita),
                         rutMerotenedor: srceiUtils.getRutMerotenedor(srceiResponse.return.limita),
-                        comunidad: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? true : false
+                        comunidad: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? true : false,
+                        status: srceiResponse.return.status
                     },
                     sgprt: {
                         resultadoRT: (sgprtResponse.return.revisionTecnica.resultado == 'A' && sgprtResponse.return.revisionesGases.revisionGas[sgprtResponse.return.revisionesGases.revisionGas.length - 1].resultado == 'A') ? 'Aprobada' : 'Rechazada',
-                        fechaVencimientoRT: sgprtResponse.return.revisionTecnica.fechaVencimiento
+                        fechaVencimientoRT: sgprtResponse.return.revisionTecnica.fechaVencimiento.getTime()
                     },
                     rnt: {
                         estado: dataRNT.estado, //No Encontrado = 0, Cancelado Definitivo = 3, VIGENTE = 1, Cancelado Temporal = 2 
@@ -331,7 +342,8 @@ module.exports = {
                         rutPropietario: inputValidarFlota.lstPpuRut[i].rut,
                         regionInscripcion: inputValidarFlota.region,
                         ppu: inputValidarFlota.lstPpuRut[i].ppu,
-                        ppureemplaza: inputValidarFlota.ppureemplaza
+                        ppureemplaza: inputValidarFlota.ppureemplaza,
+                        fechaSolicitud: (new Date()).getTime()
                     }
                 }
                 log.trace("datosVehiculo: " + JSON.stringify(datosVehiculo))

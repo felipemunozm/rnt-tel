@@ -1,5 +1,8 @@
 module.exports = {
-    db2ConectionString: "DATABASE=RNT5;HOSTNAME=alamo.mtt.cl;UID=db2admin;PWD=**db2admin;PORT=50000;PROTOCOL=TCPIP",
+    //conexion QA
+    db2ConectionString: process.env.RNTDN ? process.env.RNTDN : "DATABASE=RNT5;HOSTNAME=alamo.mtt.cl;UID=db2admin;PWD=**db2admin;PORT=50000;PROTOCOL=TCPIP",
+    //conexion PRD
+    // db2ConectionString: "DATABASE=RNT5;HOSTNAME=alamo.mtt.cl;UID=db2admin;PWD=**db2admin;PORT=50000;PROTOCOL=TCPIP",
     rntTramitesMap: {
         buses: {
             IdsTramites: [22]
@@ -82,6 +85,12 @@ module.exports = {
                                     value: true
                                 }
                             ]
+                        },// valida que el servicio contestara OK, cuando falla trae un campo status = false, si es exitoso es undefined
+                        {
+                            fact: 'registrocivil',
+                            path: '.status',
+                            operator: 'equal',
+                            value: 'undefined'
                         }
                     ]
                 },
@@ -121,6 +130,15 @@ module.exports = {
                             path: '.resultadoRT',
                             operator: 'equal',
                             value: 'Aprobada'
+                        },
+                        {
+                            fact: 'sgprt',
+                            path: '.fechaVencimientoRT',
+                            operator: 'greaterThanInclusive',
+                            value: {
+                                fact: 'solicitud',
+                                path: '.fechaSolicitud'
+                            }
                         }
                     ]
                 },
