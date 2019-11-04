@@ -21,23 +21,24 @@ module.exports = {
         'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ESTADO = 1 AND rl.AUTORIZADO_TRAMITES = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
     },
     findRecorridosByFolioRegionAndTipoServicio: (folio,region, lstTipoServicios) => {
-        return ibmdb.query('SELECT r.NOMBRE AS NOMBRE_RECORRIDO, p.nombre AS ORIGEN, c.NOMBRE AS COMUNA_ORIGEN, p2.NOMBRE AS DESTINO, c2.NOMBRE AS COMUNA_DESTINO ' +
-        'FROM NULLID.rnt_servicio s INNER JOIN NULLID.rnt_tipo_servicio ts ON ts.id = s.id_tipo_servicio ' +
-        'LEFT JOIN NULLID.rnt_modalidad mo ON mo.id = ts.id_modalidad ' +
-        'LEFT JOIN NULLID.rnt_categoria_transporte ct ON ct.id = ts.id_categoria_transporte ' +
-        'LEFT JOIN NULLID.rnt_medio_transporte mt ON mt.id = ts.id_medio_transporte ' +
-        'LEFT JOIN NULLID.rnt_tipo_transporte tt ON tt.id = ts.id_tipo_transporte ' +
-        'LEFT JOIN NULLID.rnt_tipo_vehiculo_servicio tvs ON tvs.id = ts.id_tipo_vehiculo_servicio ' +
-        'LEFT JOIN NULLID.rnt_tipo_servicio_area tsa ON ts.id_tipo_servicio_area = tsa.id ' +
-        'INNER JOIN NULLID.rnt_recorrido r ON s.id = r.id_servicio ' +
-        'INNER JOIN NULLID.rnt_trazado t ON t.id_recorrido = r.id ' +
-        'LEFT JOIN NULLID.rnt_extremo_recorrido er ON er.id = r.id_origen ' +
-        'INNER JOIN NULLID.rnt_paradero p ON p.id = er.id_paradero ' +
-        'LEFT JOIN NULLID.UTILSQA_COMUNA c ON c.id = p.codigo_comuna ' +
-        'LEFT JOIN NULLID.rnt_extremo_recorrido er2 ON er2.id = r.id_destino ' +
-        'INNER JOIN NULLID.rnt_paradero p2 ON p2.id = er2.id_paradero ' +
-        'LEFT JOIN NULLID.UTILSQA_COMUNA c2 ON c2.id = p2.codigo_comuna ' +
-        'WHERE s.IDENT_SERVICIO = ? AND s.CODIGO_REGION = ? AND s.ESTADO = 1 AND r.ESTADO = 1 AND ts.id IN (' + lstTipoServicios.toString() +')',[folio,region])
+        return ibmdb.query('SELECT RECORRIDO.NOMBRE AS NOMBRE_RECORRIDO, PARADERO_ORIGEN.NOMBRE AS ORIGEN, COMUNA.NOMBRE AS COMUNA_ORIGEN, PARADERO_DESTINO.NOMBRE AS DESTINO, COMUNA_DESTINO.NOMBRE AS COMUNA_DESTINO, TRAZADO.TIPO AS TIPO_TRAZADO , TRAZADO.NOMBRE AS NOMBRE_TRAZADO ' +
+        'FROM NULLID.RNT_SERVICIO AS SERVICIO ' +
+        'INNER JOIN NULLID.RNT_TIPO_SERVICIO AS TIPO_SERV ON TIPO_SERV.ID = SERVICIO.ID_TIPO_SERVICIO ' +
+        'LEFT JOIN NULLID.RNT_MODALIDAD AS MODALIDAD ON MODALIDAD.ID = TIPO_SERV.ID_MODALIDAD ' +
+        'LEFT JOIN NULLID.RNT_CATEGORIA_TRANSPORTE AS CAT_TRANSPORTE ON CAT_TRANSPORTE.ID = TIPO_SERV.ID_CATEGORIA_TRANSPORTE ' +
+        'LEFT JOIN NULLID.RNT_MEDIO_TRANSPORTE AS MEDIO_TRANS ON MEDIO_TRANS.ID = TIPO_SERV.ID_MEDIO_TRANSPORTE ' +
+        'LEFT JOIN NULLID.RNT_TIPO_TRANSPORTE AS TIPO_TRANS ON TIPO_TRANS.ID = TIPO_SERV.ID_TIPO_TRANSPORTE ' +
+        'LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS TIPO_VEH_SERV ON TIPO_VEH_SERV.ID = TIPO_SERV.ID_TIPO_VEHICULO_SERVICIO ' +
+        'LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA AS TIPO_SERV_AREA ON TIPO_SERV.ID_TIPO_SERVICIO_AREA = TIPO_SERV_AREA.ID ' +
+        'INNER JOIN NULLID.RNT_RECORRIDO AS RECORRIDO ON SERVICIO.ID = RECORRIDO.ID_SERVICIO ' +
+        'INNER JOIN NULLID.RNT_TRAZADO AS TRAZADO ON TRAZADO.ID_RECORRIDO = RECORRIDO.ID ' +
+        'LEFT JOIN NULLID.RNT_EXTREMO_RECORRIDO AS EXTREMO_RECORRIDO ON EXTREMO_RECORRIDO.ID = RECORRIDO.ID_ORIGEN ' +
+        'INNER JOIN NULLID.RNT_PARADERO AS PARADERO_ORIGEN ON PARADERO_ORIGEN.ID = EXTREMO_RECORRIDO.ID_PARADERO ' +
+        'LEFT JOIN NULLID.UTILSQA_COMUNA AS COMUNA ON COMUNA.ID = PARADERO_ORIGEN.CODIGO_COMUNA ' +
+        'LEFT JOIN NULLID.RNT_EXTREMO_RECORRIDO AS EXTREMO_RECORRIDO_1 ON EXTREMO_RECORRIDO_1.ID = RECORRIDO.ID_DESTINO ' +
+        'INNER JOIN NULLID.RNT_PARADERO AS PARADERO_DESTINO ON PARADERO_DESTINO.ID = EXTREMO_RECORRIDO_1.ID_PARADERO ' +
+        'LEFT JOIN NULLID.UTILSQA_COMUNA AS COMUNA_DESTINO ON COMUNA_DESTINO.ID = PARADERO_DESTINO.CODIGO_COMUNA ' +
+        'WHERE SERVICIO.IDENT_SERVICIO = ? AND SERVICIO.CODIGO_REGION = ? AND SERVICIO.ESTADO = 1 AND RECORRIDO.ESTADO = 1 AND TIPO_SERV.ID IN (' + lstTipoServicios.toString() +')',[folio,region])
     },
     findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios: (rut_empresa, rut_representante, rut_solicitante, lstTipoServicios) => {
         return ibmdb.query("SELECT pNatural.RUT AS RUT_REPRESENTANTE, tvs.NOMBRE || ' ' || tsa.NOMBRE || ' ' || mod.NOMBRE AS TIPO_SERVICIO, pJuridica.RUT AS RUT_RESPONSABLE ,pjuridica.NOMBRE AS NOMBRE_RESPONSABLE, MANDATARIOPERSONA.RUT AS RUT_MANDATARIO, s.IDENT_SERVICIO AS FOLIO, r.NOMBRE AS REGION, s.codigo_region as COD_REGION  " +
