@@ -378,7 +378,7 @@ module.exports = {
             }
                 
         }
-        let monto = (inputValidarFlota.cantidadRecorridos * lstFlotaValidada.length ) * 400
+        let monto = (inputValidarFlota.cantidadRecorridos * lstFlotaValidada.length ) * 530 + (790-530) //se cobra al primero 790 y todos los demas 530
         let response = {listaFlotaValidada: lstFlotaValidada, listaFlotaRechazada: lstFlotaRechazada, monto: monto}
         return response
     }
