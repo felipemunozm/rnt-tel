@@ -464,12 +464,29 @@ module.exports = {
         'INNER JOIN NULLID.RNT_CATEGORIA_TRANSPORTE ct ON ct.id = ts.ID_CATEGORIA_TRANSPORTE ' +
         'WHERE v.PPU = ?',[ppu])
     },
-    findAntiguedadMaximaByFolioRegionTipoVehiculo: (folio, region, tipoVehiculo) => {
+    findAntiguedadMaximaByTipoVehiculo: (tipoVehiculo) => {
+        let tipoVehiculoFiltrado = ""
         switch(tipoVehiculo) {
-            case 'BUS': return 23
-            case 'MINIBUS': return 18
-            default: return 0
+            case 'MINIBUS': 
+                tipoVehiculoFiltrado = "MINIBUS"
+            case 'MICROBUS': 
+                tipoVehiculoFiltrado = "MINIBUS"
+            case 'BUS': 
+                tipoVehiculoFiltrado = "BUS"
+            case 'CHASIS CABINADO':
+                tipoVehiculoFiltrado = "BUS"
+            case 'CHASSIS':
+                tipoVehiculoFiltrado = "BUS"
+            case 'OMNIBUS':
+                tipoVehiculoFiltrado = "BUS"
+            case 'TAXIBUS':
+                tipoVehiculoFiltrado = "BUS"
+            case 'BUS PULLMAN':
+                tipoVehiculoFiltrado = "BUS"        
+            default: tipoVehiculoFiltrado = undefined
         }
+        let anioPorTipoDeVeviculo = getAntiguedadMaximaPermitidaPorTipoVehiculo(tipoVehiculoFiltrado)
+        return anioPorTipoDeVeviculo.ANTIGUEDAD_MAXIMA
     },
     findLstTipoVehiculoPermitidoByFolioRegion: (folio, region) => {
         try {
@@ -486,21 +503,20 @@ module.exports = {
             return []
         }
     },
-    getAntiguedadMaximaPermitidaPorTipoAndIdNormativa: (id_normativa, tipo_servicio) => {
-        return ibmdb.query("SELECT DISTINCT NITEMDAT.VALUE AS ANTIGUEDAD_MAXIMA, TVS.NOMBRE AS TIPO_VEHICULO" + 
-        "FROM NULLID.RNT_REGLAMENTACION AS REG" +
-        "LEFT JOIN NULLID.RNT_TIPO_REGLAMENTACION AS TREG ON TREG.ID = REG.ID_TIPO_REGLAMENTACION" +
-        "LEFT JOIN NULLID.RNT_NORMATIVA AS NORM ON NORM.ID_REGLAMENTACION = REG.ID" +
-        "LEFT JOIN NULLID.RNT_AUTORIZACION AS AUT ON AUT.ID_NORMATIVA = NORM.ID" +
-        "LEFT JOIN NULLID.RNT_NORMATIVA_REGISTRO AS NREG ON NREG.ID_NORMATIVA = NORM.ID" +
-        "LEFT JOIN NULLID.RNT_NORMATIVA_ITEM AS NITEM ON NITEM.ID_NORMATIVA_REGISTRO = NREG.ID" +
-        "LEFT JOIN NULLID.RNT_NORMATIVA_ITEM_DATA AS NITEMDAT ON NITEMDAT.ID_NORMATIVA_ITEM = NITEM.ID" +
-        "LEFT JOIN NULLID.RNT_VEHICULO_SERVICIO AS VS ON VS.ID_REGLAMENTACION = REG.ID" +
-        "LEFT JOIN NULLID.RNT_SERVICIO AS SERV ON SERV.ID = VS.ID_SERVICIO" +
-        "LEFT JOIN NULLID.RNT_TIPO_SERVICIO AS TSERV ON TSERV.ID = SERV.ID_TIPO_SERVICIO" +
-        "LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS TVS ON TVS.ID = TSERV.ID_TIPO_VEHICULO_SERVICIO" +
-        "WHERE NORM.RNT_LABEL = 'Antigüedad de Ingreso por marco geográfico y tipo de vehículo'" +
-        "AND NORM.TIPONORMATIVA = 'tipoNorma.bloqueante' AND NORM.VALIDACION = 'validacion.especificada' AND AUT.ESTADO = 0 AND NITEM.RNT_KEY = 'antiguedad_maxima' AND TVS.NOMBRE = ? AND SERV.ACTIVO = 1" + 
-        "AND VS.ID_TIPO_INGRESO = 2 AND NITEM.ID_NORMATIVA_REGISTRO = ?", [tipo_servicio, id_normativa, ])
+    getAntiguedadMaximaPermitidaPorTipoVehiculo: (tipoVehiculo) => {
+        return ibmdb.query("SELECT DISTINCT MAX(CAST(NITEMDAT.VALUE AS INT)) AS ANTIGUEDAD_MAXIMA " +
+            "FROM NULLID.RNT_REGLAMENTACION AS REG " +
+            "LEFT JOIN NULLID.RNT_TIPO_REGLAMENTACION AS TREG ON TREG.ID = REG.ID_TIPO_REGLAMENTACION " +
+            "LEFT JOIN NULLID.RNT_NORMATIVA AS NORM ON NORM.ID_REGLAMENTACION = REG.ID " +
+            "LEFT JOIN NULLID.RNT_AUTORIZACION AS AUT ON AUT.ID_NORMATIVA = NORM.ID " +
+            "LEFT JOIN NULLID.RNT_NORMATIVA_REGISTRO AS NREG ON NREG.ID_NORMATIVA = NORM.ID " +
+            "LEFT JOIN NULLID.RNT_NORMATIVA_ITEM AS NITEM ON NITEM.ID_NORMATIVA_REGISTRO = NREG.ID " +
+            "LEFT JOIN NULLID.RNT_NORMATIVA_ITEM_DATA AS NITEMDAT ON NITEMDAT.ID_NORMATIVA_ITEM = NITEM.ID " +
+            "LEFT JOIN NULLID.RNT_VEHICULO_SERVICIO AS VS ON VS.ID_REGLAMENTACION = REG.ID " +
+            "LEFT JOIN NULLID.RNT_SERVICIO AS SERV ON SERV.ID = VS.ID_SERVICIO " +
+            "LEFT JOIN NULLID.RNT_TIPO_SERVICIO AS TSERV ON TSERV.ID = SERV.ID_TIPO_SERVICIO " +
+            "LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS TVS ON TVS.ID = TSERV.ID_TIPO_VEHICULO_SERVICIO " +
+            "WHERE NORM.\"DESCRIPTOR\" = 'antiguedad_marco_geografico_tipo_vehiculo' AND NORM.RNT_LABEL = 'Antigüedad de Ingreso por marco geográfico y tipo de vehículo' " +
+            "AND AUT.ESTADO = 0 AND NITEM.RNT_KEY = 'antiguedad_maxima' AND TVS.NOMBRE = '?' AND SERV.ACTIVO = 1 AND VS.ID_TIPO_INGRESO = 2",[tipoVehiculo])
     }
 }

@@ -262,5 +262,191 @@ module.exports = {
                 }
             }
         }
+    },
+    documents:{
+        V01: {
+            code : "V01",
+            description : "ACREDITACIÓN DE OTORGAMIENTO DE SUBSIDIO"
+        },
+        V02: {
+            code : "V02",
+            description : "ACREDITACIÓN DEL SII SOBRE EL GIRO DE AGENCIA DE VIAJES U OPERADOR TURÍSTICO"
+        },
+        V03: {
+            code : "V03",
+            description : "ACREDITACIÓN LEASING"
+        },
+        V04: {
+            code : "V04",
+            description : "ADJUDICACIÓN DE CONDICIONES DE OPERACIÓN"
+        },
+        V05: {
+            code : "V05",
+            description : "AUTORIZACIÓN DEL PROPIETARIO AL MERO TENEDOR"
+        },
+        V06: {
+            code : "V06",
+            description : "CÉDULA DE IDENTIDAD (RUN)"
+        },
+        V07: {
+            code : "V07",
+            description : "CERTIFICADO DE ANTECEDENTES"
+        },
+        V08: {
+            code : "V08",
+            description : "CERTIFICADO DE GASES"
+        },
+        V09: {
+            code : "V09",
+            description : "CERTIFICADO DE CARACTERÍSTICAS ESPECIALES"
+        },
+        V10: {
+            code : "V10",
+            description : "CERTIFICADO DE CONTROL DE TAXÍMETRO"
+        },
+        V11: {
+            code : "V11",
+            description : "CERTIFICADO DE HOMOLOGACIÓN"
+        },
+        V12: {
+            code : "V12",
+            description : "CERTIFICADO DE INSCRIPCIÓN Y DE ANOTACIONES VIGENTES (CAV)"
+        },
+        V13: {
+            code : "V13",
+            description : "CERTIFICADO DE REVISIÓN TÉCNICA (RT)"
+        },
+        V14: {
+            code : "V14",
+            description : "CERTIFICADO DE VIGENCIA DE LA SOCIEDAD"
+        },
+        V15: {
+            code : "V15",
+            description : "CERTIFICADO DE VIGENCIA DE REPRESENTATIVIDAD CON VIGENCIA NO MAYOR A 30 DÍAS"
+        },
+        V16: {
+            code : "V16",
+            description : "COMPROBANTE DE TRANSFERENCIA O DEPÓSITO"
+        },
+        V17: {
+            code : "V17",
+            description : "CONTRATO CON TERCERO PARA REALIZAR SERVICIO SEGÚN GIRO SII"
+        },
+        V18: {
+            code : "V18",
+            description : "DOCUMENTO EMITIDO POR SEREMITT DE EDUCACIÓN ACREDITANDO PERÍODO DE VACACIONES"
+        },
+        V19: {
+            code : "V19",
+            description : "DOCUMENTO QUE ACREDITA LA INSTALACIÓN DE TACÓGRAFO"
+        },
+        V20: {
+            code : "V20",
+            description : "ESCRITURA PÚBLICA DE CONSTITUCIÓN DE SOCIEDAD"
+        },
+        V21: {
+            code : "V21",
+            description : "ESCRITURA PÚBLICA DEL MANDATO DE LA COMUNIDAD"
+        },
+        V22: {
+            code : "V22",
+            description : "EXTRACTO DE PUBLICACIÓN EN EL DIARIO OFICIAL DE LA EMPRESA"
+        },
+        V23: {
+            code : "V23",
+            description : "FACTURA DE COMPRAVENTA"
+        },
+        V24: {
+            code : "V24",
+            description : "FORMULARIO E SOLICITUD DE PERMISO ESPECIAL PARA SERVICIOS DE TRANSPORTE PRIVADO REMUNERADO DE PASAJEROS"
+        },
+        V25: {
+            code : "V25",
+            description : "FORMULARIO G SOLICITUD DE PERMISO GENERAL PARA SERVICIOS DE TRANSPORTE PRIVADO REMUNERADO DE PASAJEROS"
+        },
+        V26: {
+            code : "V26",
+            description : "FORMULARIO N°1 DE INSCRIPCIÓN O ANOTACIÓN"
+        },
+        V27: {
+            code : "V27",
+            description : "FORMULARIO N°2 DE CARACTERÍSTICAS DEL SERVICIO"
+        },
+        V28: {
+            code : "V28",
+            description : "FORMULARIO N°3 FLOTA ASOCIADA AL SERVICIO Y CONSTANCIA DE EXISTENCIA DE TITULO"
+        },
+        V29: {
+            code : "V29",
+            description : "FORMULARIO PARA REGISTRO DE SERVICIOS DE TRANSPORTE REMUNERADO DE ESCOLARES"
+        },
+        V30: {
+            code : "V30",
+            description : "FORMULARIO ÚNICO DE REEMPLAZO (FUR)"
+        },
+        V31: {
+            code : "V31",
+            description : "INSCRIPCIÓN EN EL REGISTRO DE COMERCIO"
+        },
+        V32: {
+            code : "V32",
+            description : "INSPECCIÓN VISUAL OTORGADA POR UNA PLANTA DE REVISIÓN CLASE A"
+        },
+        V33: {
+            code : "V33",
+            description : "LICENCIA DE CONDUCIR"
+        },
+        V34: {
+            code : "V34",
+            description : "MANDATO NOTARIAL CON VIGENCIA NO MAYOR A 30 DÍAS"
+        },
+        V35: {
+            code : "V35",
+            description : "PERMISO DE CIRCULACIÓN (PC)"
+        },
+        V36: {
+            code : "V36",
+            description : "PODER NOTARIAL AL REPRESENTANTE DEL MANDATO"
+        },
+        V37: {
+            code : "V37",
+            description : "ROL ÚNICO TRIBUTARIO (RUT)"
+        },
+        V38: {
+            code : "V38",
+            description : "SEGURO DEL PERSONAL DE CONDUCCIÓN"
+        },
+        V39: {
+            code : "V39",
+            description : "SOLICITUD DE PRIMERA INSCRIPCIÓN O TRANSFERENCIA EN EL REGISTRO NACIONAL DE VEHÍCULOS MOTORIZADOS (RNVM)"
+        },
+        V40: {
+            code : "V40",
+            description : "TÍTULO QUE HABILITA AL VEHÍCULO PARA PRESTAR SERVICIO"
+        },
+        V41: {
+            code : "V41",
+            description : "AUTORIZACIÓN MUNICIPAL PARA EL USO DE VÍAS INCLUIDAS EN EL TRAZADO"
+        },
+        V42: {
+            code : "V42",
+            description : "ACREDITACIÓN DE USO DE TERMINAL PARA INICIO Y/O TÉRMINO DE SERVICIOS URBANOS, RURALES E INTERURBANOS"
+        },
+        V43: {
+            code : "V43",
+            description : "AUTORIZACIÓN MUNICIPAL PARA EL USO DE PARADEROS"
+        },
+        V44: {
+            code : "V44",
+            description : "FIJACIÓN DE VÍAS A SERVICIOS RURALES E INTERURBANOS QUE ESTABLECE EL TRAZADO A REALIZAR EN ZONAS URBANAS"
+        },
+        V45: {
+            code : "V45",
+            description : "TARIFAS DEL RECORRIDO"
+        },
+        V46: {
+            code : "V46",
+            description : "ACREDITACIÓN DE USO DE TERMINAL INTERMEDIOS EN CASO DE SERVICIOS RURALES E INTERURBANOS"
+        }
     }
 }

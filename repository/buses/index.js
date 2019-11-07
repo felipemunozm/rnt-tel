@@ -86,7 +86,7 @@ module.exports = {
             }
         }
         //buscar antiguedad maxima para la norma del folio region tv
-        response.antiguedadMaxima = commons.findAntiguedadMaximaByFolioRegionTipoVehiculo(folio, region, tipoVehiculoSrcei)
+        response.antiguedadMaxima = commons.findAntiguedadMaximaByTipoVehiculo(tipoVehiculoSrcei)
         response.lstTipoVehiculoPermitidos = commons.findLstTipoVehiculoPermitidoByFolioRegion(folio, region)
         return response
     }
