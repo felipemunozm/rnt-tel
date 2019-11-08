@@ -122,7 +122,7 @@ module.exports = {
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
                     nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                     rut_representante: servicioDB.RUT_REPRESENTANTE,
-                    tipo_servicio: servicioDB.TIPOSERVICIO,
+                    tipo_servicio: servicioDB.TIPO_SERVICIO,
                     recorridos: recorridos
                 })
             }else{
@@ -133,7 +133,7 @@ module.exports = {
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
                     nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                     rut_representante: servicioDB.RUT_REPRESENTANTE,
-                    tipo_servicio: servicioDB.TIPOSERVICIO
+                    tipo_servicio: servicioDB.TIPO_SERVICIO
                 })
             }
         })
@@ -167,6 +167,7 @@ module.exports = {
                     nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                     rut_representante: servicioDB.RUT_REPRESENTANTE,
                     rut_mandatario: servicioDB.RUT_MANDATARIO,
+                    tipo_servicio: servicioDB.TIPO_SERVICIO,
                     recorridos: recorridos
                 })
             }else{
@@ -177,7 +178,8 @@ module.exports = {
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
                     nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                     rut_representante: servicioDB.RUT_REPRESENTANTE,
-                    rut_mandatario: servicioDB.RUT_MANDATARIO
+                    rut_mandatario: servicioDB.RUT_MANDATARIO,
+                    tipo_servicio: servicioDB.TIPO_SERVICIO
                 })
             }
         })
