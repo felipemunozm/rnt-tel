@@ -55,8 +55,6 @@ module.exports = {
                         break
                     default:
                         log.debug("\tRechazo no detectado, evento: " + event.type)
-                   
-
                 }
             } catch (e) {
                 log.error("\tError buscando rechazo: " + e)
