@@ -344,19 +344,18 @@ module.exports = {
                 if  (hab_persona_tram[0].TOTAL>0)
                 {
                       //3 Usted no se encuentra habilitado para realizar este tramite en la region indicada
-                      let query="select CASE  " + id_region +
-                            " WHEN aut.CODIGO_REGION THEN 1 " +
-                            " else 0 END as resul "+
-                            "FROM    tel.TEL_PERSONA per 	" +
-                            "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 2 " +
-                            "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
-                            "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
-                            "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
-                            "where per.RUT = ? AND per2.RUT = ?  "
-                        let hab_persona_region =  ibmdb.query( query,[rut_representante, rut_solicitante])
+                    
+                    let query="select count(1) as RESUL " +
+                             "FROM    tel.TEL_PERSONA per 	" +
+                             "INNER JOIN   tel.TEL_RESPONSABLE resp                    ON resp.ID_PERSONA         = per.ID  and  per.TIPO_PERSONA_ID     = 2 " +
+                             "INNER JOIN   tel.TEL_RESPONSABLE_AUTORIZACION resp_aut   ON resp_aut.ID_RESPONSABLE = resp.ID  " +
+                             "INNER JOIN   tel.TEL_AUTORIZACION aut                    ON aut.id                  = RESP_AUT.ID_AUTORIZACION " +
+                             "INNER JOIN   tel.TEL_PERSONA per2 					      ON aut.ID_PERSONA = per2.id AND per2.TIPO_PERSONA_ID = 1 " +
+                             "where per.RUT = ? AND per2.RUT = ?  and aut.codigo_region =? "
+                        let hab_persona_region =  ibmdb.query( query,[rut_representante, rut_solicitante,id_region])
     
                           
-                        if  (hab_persona_region[0].RESUL==1)
+                        if  (hab_persona_region[0].RESUL>0)
                             {
                                 //4 Usted no se encuentra habilitado para realizar este tramite en linea
                                 let query="select tram.id as id_tram " +
