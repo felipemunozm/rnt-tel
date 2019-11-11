@@ -13,7 +13,7 @@ module.exports = {
             servicios: []
         }
         let servicios =  privadoRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioPrivado(id_region,rut_representante,rut_solicitante,idtramite)
-        if(servicios.estado == 'RECHAZADO' || servicios.estado=='undefined' ) {
+        if(!Array.isArray(servicios)) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -48,7 +48,7 @@ module.exports = {
             servicios: []
         }
         let servicios =   privadoRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioPrivado(id_region,rut_solicitante,idtramite)
-        if(servicios.estado == 'RECHAZADO' || servicios.estado=='undefined' ) {
+        if(!Array.isArray(servicios) ) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios

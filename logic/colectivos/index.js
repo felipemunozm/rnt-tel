@@ -13,7 +13,7 @@ module.exports = {
             servicios: []
         }
         let servicios = colectivosRepository.getAutorizacionPorEmpresaAndPersonaTramiteInscripcionTaxiColectivo(id_region,rut_empresa,rut_solicitante,idtramite)
-        if(servicios.estado == 'RECHAZADO' || servicios.estado=='undefined' ) {
+        if(!Array.isArray(servicios)) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -44,7 +44,7 @@ module.exports = {
             servicios: []
         }
         let servicios = colectivosRepository.getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo(id_region,rut_solicitante,idtramite)
-        if(servicios.estado == 'RECHAZADO' || servicios.estado=='undefined' ) {
+        if(!Array.isArray(servicios) ) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
