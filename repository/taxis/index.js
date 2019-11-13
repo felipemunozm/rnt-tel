@@ -24,6 +24,11 @@ module.exports = {
     getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioTaxis:  (id_region, rut_representante, rut_solicitante,idtramite) => {
         return commons.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicio (id_region, rut_representante,rut_solicitante,idtramite) 
     },
+      //psalas persona-mandatario
+      getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicioTaxis:  (id_region, rut_representante,rut_solicitante,idtramite) => {
+        return commons.getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicio (id_region,rut_representante, rut_solicitante,idtramite) 
+            
+    },
   
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable) => {
         return commons.getServiciosVigentesInscritosPorRutResponsable(rut_responsable, config.rntTipoServicioMap.taxis.IdsTiposServicios)

@@ -9,6 +9,12 @@ module.exports = {
     getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo: (id_region, rut_solicitante, idtramite) => {
         return commons.getAutorizadoPorPersonaParaTramiteInscripcionServicio(id_region, rut_solicitante, idtramite )
 
-    }
+    },
+     //psalas persona-mandatario
+     getAutorizacionPorPersonaMandatarioInscripcionServicioTaxiColectivo:  (id_region, rut_representante,rut_solicitante,idtramite) => {
+            return commons.getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicio (id_region,rut_representante, rut_solicitante,idtramite) 
+                
+        }
+
 
 }

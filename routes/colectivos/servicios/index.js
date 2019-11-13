@@ -17,10 +17,11 @@ router.get('/regiones/:ID_REGION/personas/:RUT_SOLICITANTE', (ctx) => {
     let idtramite =rntTramitesMap.rntTramitesMap.colectivos.IdsTramites[0]
     ctx.body = logicColectivos.getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo(ctx.params.ID_REGION,ctx.params.RUT_SOLICITANTE,idtramite)
 })
+//psalas persona mandatario
+   router.get('/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', async (ctx) => {
+   ctx.body = await logicColectivos.getAutorizacionPorPersonaMandatarioInscripcionServicioTaxiColectivo(ctx.params.ID_REGION,ctx.params.RUT_RESPONSABLE,ctx.params.RUT_SOLICITANTE)
+})
 
-/*router.get('/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', (ctx) => {
-    ctx.body = {test: ctx.url}
-})*/
 
 router.get('/tipos_servicios', (ctx) => {
     ctx.body = {test: ctx.url}

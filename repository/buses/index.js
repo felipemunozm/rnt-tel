@@ -38,7 +38,12 @@ module.exports = {
     getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses:  (id_region, rut_solicitante,idtramite) => {
         return commons.getAutorizadoPorPersonaParaTramiteInscripcionServicio (id_region, rut_solicitante,idtramite) 
             
-        },
+    },
+       //psalas persona-mandatario
+       getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicioBuses:  (id_region, RUT_RESPONSABLE,rut_solicitante,idtramite) => {
+        return commons.getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicio (id_region,RUT_RESPONSABLE, rut_solicitante,idtramite) 
+            
+    },
   
     //por rmason
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable) => {

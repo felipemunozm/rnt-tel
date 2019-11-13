@@ -12,6 +12,12 @@ module.exports = {
     getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioPrivado:  (id_region, rut_representante, rut_solicitante,idtramite) => {
         return commons.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicio (id_region, rut_representante,rut_solicitante,idtramite) 
     }
+    ,
+      //psalas persona-mandatario
+      getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicioPrivado:  (id_region, rut_representante,rut_solicitante,idtramite) => {
+        return commons.getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicio (id_region,rut_representante, rut_solicitante,idtramite) 
+            
+    }
   
    
 }
