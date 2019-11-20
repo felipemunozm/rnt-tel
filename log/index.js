@@ -21,5 +21,5 @@ log4js.configure({
     pm2InstanceVar: 'INSTANCE_ID'
 })
 const logger = log4js.getLogger()
-logger.level = 'debug'
+logger.level = 'info'
 module.exports = logger
