@@ -1,8 +1,9 @@
 const log = require('../../log')
+const config = require('../../config')
 
 
 module.exports = {
-    revisionRechazosBuses: (ruleEngine, docs,docsOpcionales , continua) => {
+    revisionRechazosBuses: (ruleEngine, docs, docsOpcionales, continua) => {
         ruleEngine.on("failure", (event, almanac, ruleResult) => {
             log.debug("Rechazo Buses, Revisando...")
             log.trace("\tEvent: " + JSON.stringify(event))
@@ -12,23 +13,74 @@ module.exports = {
                 switch(event.type) {
                     case 'propietario':
                         log.debug("\tRechazo BUS Propietario")
-                        docs.push({codigo: 'V02', descripcion: 'Factura de Compraventa'},{codigo:'V03', descripcion: 'Solicitud de Primera Incripción o de Transferencia" en el Registro Nacional de Vehículos Motorizados - R.N.V.M.'})
+                        let validacionrutPropietario = ruleResult.conditions.any[0].result;     
+                        
+                        if (validacionrutPropietario) {
+                            log.debug("\tRevisando Propietario")
+                            //Documentos obligatorios
+                            docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
+                            docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
+                            //Documentos adicionales opcionales
+                            docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                        }else{
+                            if(resultadoLeasing && resultadoMerotenedor){
+                                log.debug("\tRevisando Merotenedor")
+                                //Documentos obligatorios
+                                docs.push({codigo: config.documents.V03.code, descripcion: config.documents.V03.description})
+                                docs.push({codigo: config.documents.V05.code, descripcion: config.documents.V05.description})
+                                docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
+                                docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
+                                //Documentos adicionales opcionales
+                                docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                            }
+                            if(resultadoRutPerteneceComunidad && resultadoComunidad) {
+                                log.debug("\tRevisando Comunidad")
+                                //Documentos obligatorios
+                                docs.push({codigo: config.documents.V21.code, descripcion: config.documents.V21.description})
+                                docs.push({codigo: config.documents.V36.code, descripcion: config.documents.V36.description})
+                                docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
+                                docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
+                                //Documentos adicionales opcionales
+                                docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                            }
+                        }
+
+                        docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
+                            {codigo:config.documents.V03.code, descripcion: config.documents.V03.description})
                         break
                     case 'antiguedad':
                         log.debug("\tRechazo BUS Antiguedad")
-                        continua.estado = false
-                        continua.lstRechazos.push('Rechazo por Antiguedad')
+                        let validacionAntiguedad = ruleResult.conditions.all[0].result
+
+                        if (!validacionAntiguedad) {
+                            continua.estado = false
+                            continua.lstRechazos.push('Vehículo rechazado por antigüedad')   
+                        }
+                        
                         break
                     case 'rt':
                         log.debug("\tRechazo BUS RT")
-                        let resultadoRT = ruleResult.conditions.all[0].result
-                        let vigenciaRT = ruleResult.conditions.all[1].result
-                        docs.push({codigo:'V07', descripcion: 'Adjunte copia de "Certificado de Revisión Técnica" o copia de "Certificado de Homologación" y "Certificado de Características Especiales", otorgado por una planta de revisión técnica'})
+                        let validacionResultadoRT = ruleResult.conditions.all[0].result
+                        let validacionVigenciaRT = ruleResult.conditions.all[1].result
+
+                        log.trace("valor de la vigencia " + validacionVigenciaRT)
+                        if (!validacionVigenciaRT && !validacionResultadoRT) {
+                            //Documentos obligatorios
+                            docs.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description},
+                                      {codigo: config.documents.V08.code, descripcion: config.documents.V08.description}) 
+                            //Documentos adicionales opcionales
+                            docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description}) 
+                        }
+
                         break
                     case 'TVNORMA':
                         log.debug("\tRechazo BUS TV NORMA")
-                        continua.estado = false
-                        continua.lstRechazos.push('Rechazo por Tipo Vehiculo en Norma')
+                        let validacionTVNorma = ruleResult.conditions.all[0].result
+                        if (!validacionTVNorma) {
+                            continua.estado = false
+                            continua.lstRechazos.push('Rechazo por Tipo Vehiculo en Norma')
+                        }
+                        
                         break
                     case 'BUSOK':
                         log.debug("\tRechazo BUS RNT")
@@ -76,13 +128,13 @@ module.exports = {
                     let resultadoMerotenedor = ruleResult.conditions.any[1].all[0].result
                     let resultadoLeasing = ruleResult.conditions.any[1].all[1].result
                     if(resultadoLeasing && resultadoMerotenedor){
-                        docs.push({codigo: 'V05', descripcion: 'Adjunte "Acreditación de leasing" y "Documento del propietario" autorizando al Mero tenedor destinar el vehículo a la prestación del servicio'})
+                        docs.push({codigo: config.documents.V05.code, descripcion: config.documents.V05.description})
                     }
                     log.debug("\tRevisando Comunidad")
                     let resultadoRutPerteneceComunidad = ruleResult.conditions.any[2].all[0].result
                     let resultadoComunidad = ruleResult.conditions.any[2].all[1].result
                     if(resultadoRutPerteneceComunidad && resultadoComunidad) {
-                        docs.push({codigo: 'V06', descripcion: 'Adjunte copia de "Escritura Pública del Mandato de la comunidad" '})
+                        docs.push({codigo: config.documents.V06.code, descripcion: config.documents.V06.description})
                     }
                     break
                 default:
