@@ -4,41 +4,41 @@ module.exports = {
     //conexion PRD
     db2ConectionString: "DATABASE=RNT5;HOSTNAME=alamo.mtt.cl;UID=db2admin;PWD=**db2admin;PORT=50000;PROTOCOL=TCPIP",
     //QA
-    rntTramitesMap: {
-        buses: {
-            IdsTramites: [22]
-        },
-        colectivos: {
-            IdsTramites: [7]
-        },
-        escolares: {
-            IdsTramites: [21]
-        },
-        privados: {
-            IdsTramites: [23]
-        },
-        taxis: {
-            IdsTramites: [24]
-        }
-    },
-    //PRODUCCION
     // rntTramitesMap: {
     //     buses: {
-    //         IdsTramites: [4]
+    //         IdsTramites: [22]
     //     },
     //     colectivos: {
-    //         IdsTramites: [2]
-    //     },
-    //     escolares: {
-    //         IdsTramites: [6]
-    //     },
-    //     privados: {
     //         IdsTramites: [7]
     //     },
+    //     escolares: {
+    //         IdsTramites: [21]
+    //     },
+    //     privados: {
+    //         IdsTramites: [23]
+    //     },
     //     taxis: {
-    //         IdsTramites: [1]
+    //         IdsTramites: [24]
     //     }
     // },
+    //PRODUCCION
+    rntTramitesMap: {
+        buses: {
+            IdsTramites: [4]
+        },
+        colectivos: {
+            IdsTramites: [2]
+        },
+        escolares: {
+            IdsTramites: [6]
+        },
+        privados: {
+            IdsTramites: [7]
+        },
+        taxis: {
+            IdsTramites: [1]
+        }
+    },
     rntTipoServicioMap: {
         buses: {
             IdsTiposServicios: [2,3,5,7,9,11,12,13,14,15,16,17,18,26]
