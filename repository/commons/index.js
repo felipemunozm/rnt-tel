@@ -639,7 +639,7 @@ module.exports = {
         "LEFT JOIN NULLID.RNT_TIPO_SERVICIO AS TSERV ON TSERV.ID = SERV.ID_TIPO_SERVICIO " +
         "LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS TVS ON TVS.ID = TSERV.ID_TIPO_VEHICULO_SERVICIO " +
         "WHERE NORM.\"DESCRIPTOR\" = 'antiguedad_marco_geografico_tipo_vehiculo' AND NORM.RNT_LABEL = 'Antigüedad de Ingreso por marco geográfico y tipo de vehículo' " +
-        "AND AUT.ESTADO = 0 AND NITEM.RNT_KEY = 'antiguedad_maxima' AND TVS.NOMBRE = '?' AND SERV.ACTIVO = 1 AND VS.ID_TIPO_INGRESO = 2",[tipoVehiculoFiltrado])
+        "AND AUT.ESTADO = 0 AND NITEM.RNT_KEY = 'antiguedad_maxima' AND TVS.NOMBRE = ? AND SERV.ACTIVO = 1 AND VS.ID_TIPO_INGRESO = 2",[tipoVehiculoFiltrado])
 
         return anioPorTipoDeVeviculo
     },
