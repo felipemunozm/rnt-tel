@@ -3,9 +3,9 @@ const config = require('../../config')
 
 
 module.exports = {
-    revisionRechazosBuses: (ruleEngine, docs, docsOpcionales, continua) => {
+    revisionRechazosTaxis: (ruleEngine, docs, docsOpcionales, continua) => {
         ruleEngine.on("failure", (event, almanac, ruleResult) => {
-            log.debug("Rechazo Buses, Revisando...")
+            log.debug("Rechazo Taxis, Revisando...")
             log.trace("\tEvent: " + JSON.stringify(event))
             log.trace("\tAlmanac: " + JSON.stringify(almanac))
             log.trace("\tRuleResult: " + JSON.stringify(ruleResult))
@@ -114,9 +114,9 @@ module.exports = {
             }
         })
     },
-    revisionValidadosBuses: (ruleEngine, docs, docsOpcionales, continua) => {
+    revisionValidadosTaxis: (ruleEngine, docs, docsOpcionales, continua) => {
         ruleEngine.on("success", (event, almanac, ruleResult) => {
-            log.debug("Validacion Buses, Revisando...")
+            log.debug("Validacion Taxis, Revisando...")
             log.trace("\tEvent: " + JSON.stringify(event))
             log.trace("\tAlmanac: " + JSON.stringify(almanac))
             log.trace("\tRuleResult: " + JSON.stringify(ruleResult))

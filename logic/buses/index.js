@@ -325,8 +325,8 @@ module.exports = {
         let docs = []
         let docsOpcionales = []
         //verificar si no valido todo OK, hay casos en los que debe continuar y otros en los que no
-        ruleEngineEvents.revisionRechazosBuses(ruleEngine, docs,docsOpcionales, continua)
-        ruleEngineEvents.revisionValidadosBuses(ruleEngine, docs,docsOpcionales, continua)
+        ruleEngineEvents.revisionRechazosBuses(ruleEngine, docs, docsOpcionales, continua)
+        ruleEngineEvents.revisionValidadosBuses(ruleEngine, docs, docsOpcionales, continua)
         // ruleEngineCommons.cargarRevisionRechazoVehiculo(ruleEngine, docs, continua)
         let lstFlotaValidada = []
         let lstFlotaRechazada = []
@@ -336,16 +336,27 @@ module.exports = {
                 let srceiResponse = await services.getPPUSRCeI(inputValidarFlota.lstPpuRut[i].ppu)
                 log.trace('sreciResponse: ' + JSON.stringify(srceiResponse))
                 if(srceiResponse.return.status === false) {
-                    docs.push({codigo:'V12', descripcion: 'CERTIFICADO DE INSCRIPCIÓN Y DE ANOTACIONES VIGENTES (CAV)'})
-                    docs.push({codigo:'V23', descripcion: 'FACTURA DE COMPRAVENTA'})
-                    docs.push({codigo:'V39', descripcion: 'SOLICITUD DE PRIMERA INSCRIPCIÓN O TRANSFERENCIA EN EL REGISTRO NACIONAL DE VEHÍCULOS MOTORIZADOS (RNVM)'})
+                    //Documentos obligatorios
+                    docs.push({codigo: config.documents.V12.code, descripcion: config.documents.V12.description})
+                    docs.push({codigo: config.documents.V23.code, descripcion: config.documents.V23.description})
+                    docs.push({codigo: config.documents.V39.code, descripcion: config.documents.V39.description})
+                    //Documentos adicionales Obligatorios
+                    docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
+                    docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
+                    //Documentos adicionales opcionales
+                    docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
                 }
                 let sgprtResponse = undefined
                 try {
                     sgprtResponse = await services.getPPURT(inputValidarFlota.lstPpuRut[i].ppu)
                     log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
                 } catch (e) {
-                    docs.push({codigo: 'V11', descripcion: 'CERTIFICADO DE HOMOLOGACIÓN'})
+                    //Documentos obligatorios
+                    docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
+                    //Documentos adicionales opcionales
+                    docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
+                    docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
+                    docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
                 }
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
                 let dataRNT = busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, inputValidarFlota.lstPpuRut[i].ppu, srceiResponse.return.tipoVehi)
@@ -393,12 +404,12 @@ module.exports = {
                     })
                 })
                 //documentos obligatorios para todos los casos: V04,V09
-                docs.push({codigo: 'V04',descripcion: 'Adjunte copia de "Título que habilita al vehículo a prestar servicios" (Formulario N°3)'},{codigo: 'V09',descripcion: 'Adjunte copia de "Permiso de Circulación" del vehiculo'})
-                docsOpcionales.push({codigo: 'V08', descripcion: 'Adjunte copia de "Otorgamiento de Subsidio" o "Adjudicacion de Condiciones de Operación"'})
+                docs.push({codigo: config.documents.V04.code, descripcion: config.documents.V04.description},
+                          {codigo: config.documents.V09.code, descripcion: config.documents.V09.description})
+                docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
                 //se revisa si procede la PPU para añadirla a lista de flota validada
                 if(continua.estado == true) {
                     lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs, documentosOpcionales: docsOpcionales})
-                    
                 } else {
                     lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada",listaRechazos: continua.lstRechazos})
                 }

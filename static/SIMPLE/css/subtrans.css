@@ -89,3 +89,7 @@
 .activo{
   opacity:1
 }
+
+.sololectura {
+  pointer-events: none;
+}
