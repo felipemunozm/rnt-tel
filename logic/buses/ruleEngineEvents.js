@@ -13,7 +13,14 @@ module.exports = {
                 switch(event.type) {
                     case 'propietario':
                         log.debug("\tRechazo BUS Propietario")
-                        let validacionrutPropietario = ruleResult.conditions.any[0].result;     
+                        let validacionrutPropietario = ruleResult.conditions.any[0].result;
+                        //revisar meratenencia para agregar documentos a solicitar
+                        let resultadoMerotenedor = ruleResult.conditions.any[1].all[0].result
+                        let resultadoLeasing = ruleResult.conditions.any[1].all[1].result 
+                        
+                        //revisar Comunidad para agregar documentos a solicitar
+                        let resultadoRutPerteneceComunidad = ruleResult.conditions.any[2].all[0].result
+                        let resultadoComunidad = ruleResult.conditions.any[2].all[1].result
                         
                         if (validacionrutPropietario) {
                             log.debug("\tRevisando Propietario")
@@ -47,24 +54,24 @@ module.exports = {
 
                         docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
                             {codigo:config.documents.V03.code, descripcion: config.documents.V03.description})
-                        break
+                        //break;
                     case 'antiguedad':
                         log.debug("\tRechazo BUS Antiguedad")
                         let validacionAntiguedad = ruleResult.conditions.all[0].result
 
-                        if (!validacionAntiguedad) {
+                        if (validacionAntiguedad) {
                             continua.estado = false
                             continua.lstRechazos.push('Vehículo rechazado por antigüedad')   
                         }
                         
-                        break
+                        //break;
                     case 'rt':
                         log.debug("\tRechazo BUS RT")
                         let validacionResultadoRT = ruleResult.conditions.all[0].result
                         let validacionVigenciaRT = ruleResult.conditions.all[1].result
 
                         log.trace("valor de la vigencia " + validacionVigenciaRT)
-                        if (!validacionVigenciaRT && !validacionResultadoRT) {
+                        if (validacionVigenciaRT && !validacionResultadoRT) {
                             //Documentos obligatorios
                             docs.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description},
                                       {codigo: config.documents.V08.code, descripcion: config.documents.V08.description}) 
@@ -72,16 +79,16 @@ module.exports = {
                             docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description}) 
                         }
 
-                        break
+                        //break;
                     case 'TVNORMA':
                         log.debug("\tRechazo BUS TV NORMA")
                         let validacionTVNorma = ruleResult.conditions.all[0].result
-                        if (!validacionTVNorma) {
+                        if (validacionTVNorma) {
                             continua.estado = false
                             continua.lstRechazos.push('Rechazo por Tipo Vehiculo en Norma')
                         }
                         
-                        break
+                        //break;
                     case 'BUSOK':
                         log.debug("\tRechazo BUS RNT")
                         //verificar condicion de rechazo por RNT
@@ -104,9 +111,10 @@ module.exports = {
                             continua.estado = false
                             continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
                         }
-                        break
+                        //break;
                     default:
                         log.debug("\tRechazo no detectado, evento: " + event.type)
+                        //break;
                 }
             } catch (e) {
                 log.error("\tError buscando rechazo: " + e)

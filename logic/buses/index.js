@@ -350,6 +350,14 @@ module.exports = {
                 try {
                     sgprtResponse = await services.getPPURT(inputValidarFlota.lstPpuRut[i].ppu)
                     log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
+                    if (sgprtResponse.return.status === false) {
+                        //Documentos obligatorios
+                        docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
+                        //Documentos adicionales opcionales
+                        docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
+                        docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
+                        docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
+                    }
                 } catch (e) {
                     //Documentos obligatorios
                     docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
@@ -359,7 +367,7 @@ module.exports = {
                     docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
                 }
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
-                let dataRNT = busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, inputValidarFlota.lstPpuRut[i].ppu, srceiResponse.return.tipoVehi)
+                let dataRNT = await busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, inputValidarFlota.lstPpuRut[i].ppu, srceiResponse.return.tipoVehi)
                 log.trace('DataRNT para PPU ' + inputValidarFlota.lstPpuRut[i].ppu + ": " + JSON.stringify(dataRNT))
                 //otra consulta para determinar la Antiguedad Maxima permitida por tipo de vehiculo en el folio donde se desea inscribir
                 log.trace('FechaPRT: ' + sgprtResponse.return.revisionTecnica.fechaVencimiento)
@@ -403,10 +411,8 @@ module.exports = {
                         // continua.estado = true
                     })
                 })
-                //documentos obligatorios para todos los casos: V04,V09
-                docs.push({codigo: config.documents.V04.code, descripcion: config.documents.V04.description},
-                          {codigo: config.documents.V09.code, descripcion: config.documents.V09.description})
-                docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
+                //documentos obligatorios para todos los casos: V04
+                docs.push({codigo: config.documents.V04.code, descripcion: config.documents.V04.description})
                 //se revisa si procede la PPU para añadirla a lista de flota validada
                 if(continua.estado == true) {
                     lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs, documentosOpcionales: docsOpcionales})
@@ -418,12 +424,10 @@ module.exports = {
                 docsOpcionales = []
             } catch (e) {
                 log.error("Error en logica de negocio: " + e)
-            }
-                
+            }    
         }
         let monto = (inputValidarFlota.cantidadRecorridos * lstFlotaValidada.length ) * 530 + (790-530) //se cobra al primero 790 y todos los demas 530
         let response = {listaFlotaValidada: lstFlotaValidada, listaFlotaRechazada: lstFlotaRechazada, monto: monto}
         return response
     }
-   
 }

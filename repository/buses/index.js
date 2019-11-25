@@ -61,7 +61,7 @@ module.exports = {
     findServiciosByMandatarioAndRepresentanteAndEmpresa: (rut_empresa, rut_representante, rut_solicitante) => {
         return commons.findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios(rut_empresa, rut_representante, rut_solicitante, config.rntTipoServicioMap.buses.IdsTiposServicios)
     },
-    findInscripcionRNTData: (folio, region, ppu, tipoVehiculoSrcei) => {
+    findInscripcionRNTData: async (folio, region, ppu, tipoVehiculoSrcei) => {
         let response = {
             estado: '',
             tipoCancelacion: '',
@@ -71,19 +71,19 @@ module.exports = {
             categoria: ''
         }
 
-        let vehiculoExiste = commons.checkVehiculoByPPU(ppu).length > 0 ? true : false
-        let antiguedadMaxima = commons.findAntiguedadMaximaByTipoVehiculo(tipoVehiculoSrcei)
+        let vehiculoExiste = await commons.checkVehiculoByPPU(ppu).length > 0 ? true : false
+        let antiguedadMaxima = await commons.findAntiguedadMaximaByTipoVehiculo(tipoVehiculoSrcei).ANTIGUEDAD
         if(vehiculoExiste) {
             //diseñar response con tipos de cancelacion
             //buscar info de vehiculo:
-            let infoRNT = commons.findInfoVehiculoParaInscripcion(ppu)
+            let infoRNT = await commons.findInfoVehiculoParaInscripcion(ppu)
             response = {
-                estado: infoRNT.ESTADO,
-                tipoCancelacion: infoRNT.TIPO_CANCELACION,
-                regionOrigen: infoRNT.CODIGO_REGION,
-                antiguedadMaxima: antiguedadMaxima.ANTIGUEDAD_MAXIMA,
+                estado: infoRNT[0].ESTADO,
+                tipoCancelacion: infoRNT[0].TIPO_CANCELACION,
+                regionOrigen: infoRNT[0].CODIGO_REGION,
+                antiguedadMaxima: antiguedadMaxima,
                 lstTipoVehiculoPermitidos: commons.findLstTipoVehiculoPermitidoByFolioRegion(folio, region),
-                categoria: infoRNT.CATEGORIA
+                categoria: infoRNT[0].CATEGORIA
             }
             
         } else {
