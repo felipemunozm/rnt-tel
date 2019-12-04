@@ -1,7 +1,6 @@
 const log = require('../../log')
 const config = require('../../config')
 
-
 module.exports = {
     revisionRechazosTaxis: (ruleEngine, docs, docsOpcionales, continua) => {
         ruleEngine.on("failure", (event, almanac, ruleResult) => {
@@ -47,7 +46,7 @@ module.exports = {
 
                         docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
                             {codigo:config.documents.V03.code, descripcion: config.documents.V03.description})
-                        break
+                        break;
                     case 'antiguedad':
                         log.debug("\tRechazo BUS Antiguedad")
                         let validacionAntiguedad = ruleResult.conditions.all[0].result
@@ -57,7 +56,7 @@ module.exports = {
                             continua.lstRechazos.push('Vehículo rechazado por antigüedad')   
                         }
                         
-                        break
+                        break;
                     case 'rt':
                         log.debug("\tRechazo BUS RT")
                         let validacionResultadoRT = ruleResult.conditions.all[0].result
@@ -72,7 +71,7 @@ module.exports = {
                             docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description}) 
                         }
 
-                        break
+                        break;
                     case 'TVNORMA':
                         log.debug("\tRechazo BUS TV NORMA")
                         let validacionTVNorma = ruleResult.conditions.all[0].result
@@ -81,7 +80,7 @@ module.exports = {
                             continua.lstRechazos.push('Rechazo por Tipo Vehiculo en Norma')
                         }
                         
-                        break
+                        break;
                     case 'BUSOK':
                         log.debug("\tRechazo BUS RNT")
                         //verificar condicion de rechazo por RNT
@@ -104,7 +103,7 @@ module.exports = {
                             continua.estado = false
                             continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
                         }
-                        break
+                        break;
                     default:
                         log.debug("\tRechazo no detectado, evento: " + event.type)
                 }

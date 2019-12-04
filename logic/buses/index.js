@@ -333,6 +333,12 @@ module.exports = {
         for(let i = 0; i< inputValidarFlota.lstPpuRut.length; i++) {
             //implementar como extraer data para llenar objeto para evaluar condiciones
             try {
+                function encode_utf8(unicodeString){
+                    //return unescape(encodeURIComponent(s));
+                    let stringModificado = unescape(encodeURIComponent(unicodeString));
+                    console.log("RESULTADO TRANSFORMACION UTF-8 " + stringModificado);
+                    return stringModificado;
+                }
                 let srceiResponse = await services.getPPUSRCeI(inputValidarFlota.lstPpuRut[i].ppu)
                 log.trace('sreciResponse: ' + JSON.stringify(srceiResponse))
                 if(srceiResponse.return.status === false) {
@@ -376,10 +382,10 @@ module.exports = {
                         rutPropietario: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? srceiUtils.getArrayPropietarioComunidad(srceiResponse.return.propieActual.propact.itemPropact) : srceiResponse.return.propieActual.propact.itemPropact[0].rut ,
                         antiguedad: (srceiResponse.return.aaFabric > (new Date()).getFullYear()) ? 0 : (Number((new Date()).getFullYear()) - Number(srceiResponse.return.aaFabric)),
                         tipoVehiculo: srceiResponse.return.tipoVehi,
-                        leasing: srceiUtils.determinarLeasing(srceiResponse.return.limita),
-                        rutMerotenedor: srceiUtils.getRutMerotenedor(srceiResponse.return.limita),
+                        leasing: srceiUtils.determinarLeasing(srceiResponse.return.limita) != undefined ? srceiUtils.determinarLeasing(srceiResponse.return.limita) : "",
+                        rutMerotenedor: srceiUtils.getRutMerotenedor(srceiResponse.return.limita) != undefined ? srceiUtils.getRutMerotenedor(srceiResponse.return.limita) : "",
                         comunidad: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? true : false,
-                        status: srceiResponse.return.status
+                        status: srceiResponse.return.status != undefined ? srceiResponse.return.status : ""
                     },
                     sgprt: {
                         resultadoRT: (sgprtResponse.return.revisionTecnica.resultado == 'A' && sgprtResponse.return.revisionesGases.revisionGas[sgprtResponse.return.revisionesGases.revisionGas.length - 1].resultado == 'A') ? 'Aprobada' : 'Rechazada',
@@ -387,28 +393,35 @@ module.exports = {
                     },
                     rnt: {
                         estado: dataRNT.estado, //No Encontrado = 0, Cancelado Definitivo = 3, VIGENTE = 1, Cancelado Temporal = 2 
-                        tipoCancelacion: dataRNT.tipoCancelacion,
-                        regionOrigen: dataRNT.regionOrigen,
+                        tipoCancelacion: dataRNT.tipoCancelacion != undefined ? encode_utf8(dataRNT.tipoCancelacion) : "",
+                        regionOrigen: dataRNT.regionOrigen != undefined ? dataRNT.regionOrigen : "",
                         antiguedadMaxima: dataRNT.antiguedadMaxima,
                         lstTipoVehiculoPermitidos: dataRNT.lstTipoVehiculoPermitidos,
-                        categoria: dataRNT.categoria
+                        categoria: dataRNT.categoria != undefined ? encode_utf8(dataRNT.categoria) : ""
                     },
                     solicitud: {
                         rutPropietario: inputValidarFlota.lstPpuRut[i].rut,
                         regionInscripcion: inputValidarFlota.region,
                         ppu: inputValidarFlota.lstPpuRut[i].ppu,
-                        ppureemplaza: inputValidarFlota.ppureemplaza,
+                        ppureemplaza: inputValidarFlota.ppureemplaza != undefined ? inputValidarFlota.ppureemplaza : "",
                         fechaSolicitud: (new Date()).getTime()
                     }
                 }
                 log.trace("datosVehiculo: " + JSON.stringify(datosVehiculo))
+                log.debug("datosVehiculo PPU: " + datosVehiculo.solicitud.ppu)
+
+                console.log("datosVehiculo PPU A VALIDAR: " + datosVehiculo.solicitud.ppu)
                 await ruleEngine //variar el objeto datosVehiculo, para cada PPU
                 .run(datosVehiculo)
                 .then( results => {
                     results.events.map(event => {
                         log.trace(JSON.stringify(event))
                         log.debug("Aprobadas reglas de negocio: " + event.params.mensaje)
+                        console.log("APROBADAS!!!!!!!!!!!!!! reglas de negocio: " + event.params.mensaje)
                         // continua.estado = true
+                        let documentos = event.type
+
+                        console.log("DOCUMENTOS OBTENIDOS " + documentos)
                     })
                 })
                 //documentos obligatorios para todos los casos: V04
@@ -419,6 +432,10 @@ module.exports = {
                 } else {
                     lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada",listaRechazos: continua.lstRechazos})
                 }
+                log.trace("datosVehiculo: " + JSON.stringify(datosVehiculo))
+                log.debug("datosVehiculo PPU: " + datosVehiculo.solicitud.ppu)
+                console.log("datosVehiculo PPU: " + datosVehiculo.solicitud.ppu)
+                
                 continua = {estado: true, lstRechazos: []}
                 docs = []
                 docsOpcionales = []
