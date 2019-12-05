@@ -2,7 +2,7 @@ module.exports = {
     //conexion QA
     // db2ConectionString: process.env.RNTDN ? process.env.RNTDN : "DATABASE=RNT5;HOSTNAME=alamo.mtt.cl;UID=db2admin;PWD=**db2admin;PORT=50000;PROTOCOL=TCPIP",
     //conexion PRD
-    db2ConectionString: "DATABASE=RNT5;HOSTNAME=alamo.mtt.cl;UID=db2admin;PWD=**db2admin;PORT=50000;PROTOCOL=TCPIP",
+    db2ConectionString: "DATABASE=RNT5;HOSTNAME=172.25.1.249;UID=db2admin;PWD=**db2admin;PORT=50000;PROTOCOL=TCPIP",
     //QA
     // rntTramitesMap: {
     //     buses: {
