@@ -11,8 +11,7 @@ module.exports = {
             try {
                 switch(event.type) {
                     case 'propietario':
-                        log.debug("\tRechazo BUS Propietario")
-                        console.log("\tRechazo BUS Propietario failure")
+                        log.debug("\tRechazo BUS Propietario FAILURE")
                         let validacionrutPropietario = ruleResult.conditions.any[0].result;
                         //revisar meratenencia para agregar documentos a solicitar
                         let resultadoMerotenedor = ruleResult.conditions.any[1].all[0].result
@@ -23,8 +22,7 @@ module.exports = {
                         let resultadoComunidad = ruleResult.conditions.any[2].all[1].result
                         
                         if (validacionrutPropietario) {
-                            log.debug("\tRevisando Propietario")
-                            console.log("\tRevisando Propietario failure")
+                            log.debug("\tRevisando Propietario FAILURE")
                             //Documentos obligatorios
                             docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
                             docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
@@ -32,8 +30,7 @@ module.exports = {
                             docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
                         }else{
                             if(resultadoLeasing || resultadoMerotenedor){
-                                log.debug("\tRevisando Merotenedor")
-                                console.log("\tRevisando Merotenedor failure")
+                                log.debug("\tRevisando Merotenedor FAILURE")
                                 //Documentos obligatorios
                                 docs.push({codigo: config.documents.V03.code, descripcion: config.documents.V03.description})
                                 docs.push({codigo: config.documents.V05.code, descripcion: config.documents.V05.description})
@@ -43,8 +40,7 @@ module.exports = {
                                 docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
                             }
                             if(resultadoRutPerteneceComunidad || resultadoComunidad) {
-                                log.debug("\tRevisando Comunidad")
-                                console.log("\tRevisando Comunidad failure")
+                                log.debug("\tRevisando Comunidad FAILURE")
                                 //Documentos obligatorios
                                 docs.push({codigo: config.documents.V21.code, descripcion: config.documents.V21.description})
                                 docs.push({codigo: config.documents.V36.code, descripcion: config.documents.V36.description})
@@ -60,8 +56,7 @@ module.exports = {
                             
                         break;
                     case 'antiguedad':
-                        log.debug("\tRechazo BUS Antiguedad")
-                        console.log("\tRechazo BUS Antiguedad failure")
+                        log.debug("\tRechazo BUS Antiguedad FAILURE")
                         let validacionAntiguedad = ruleResult.conditions.all[0].result
 
                         if (validacionAntiguedad) {
@@ -70,13 +65,11 @@ module.exports = {
                         }
                         break;
                     case 'rt':
-                        log.debug("\tRechazo BUS RT")
-                        console.log("\tRechazo BUS RT failure")
+                        log.debug("\tRechazo BUS RT FAILURE")
                         let validacionResultadoRT = ruleResult.conditions.all[0].result
                         let validacionVigenciaRT = ruleResult.conditions.all[1].result
 
                         log.trace("valor de la vigencia " + validacionVigenciaRT)
-                        console.log("valor de la vigencia failure " + validacionVigenciaRT)
                         if (!validacionVigenciaRT && !validacionResultadoRT) {
                             //Documentos obligatorios
                             docs.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description},
@@ -86,8 +79,7 @@ module.exports = {
                         }
                         break;
                     case 'TVNORMA':
-                        log.debug("\tRechazo BUS TV NORMA")
-                        console.log("\tRechazo BUS TV NORMA failure")
+                        log.debug("\tRechazo BUS TV NORMA FAILURE")
                         let validacionTVNorma = ruleResult.conditions.all[0].result
                         if (validacionTVNorma) {
                             continua.estado = false
@@ -95,8 +87,7 @@ module.exports = {
                         }
                         break;
                     case 'BUSOK':
-                        log.debug("\tRechazo BUS RNT")
-                        console.log("\tRechazo BUS RNT failure")
+                        log.debug("\tRechazo BUS RNT FAILURE")
                         //verificar condicion de rechazo por RNT
                         let resultadoRNTNoEncontrado = ruleResult.conditions.any[0].result
                         if(resultadoRNTNoEncontrado) {
@@ -117,7 +108,6 @@ module.exports = {
                             continua.estado = false
                             continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
                         }
-
                         break;
                     default:
                         console.log("\tRechazo no detectado, evento: failure " + event.type)
@@ -140,26 +130,19 @@ module.exports = {
             try {
                 switch(event.type) {
                     case 'propietario':
-                        log.debug("\tRechazo BUS Propietario")
-                        console.log("\tRechazo BUS Propietario")
+                         log.debug("\tRechazo BUS Propietario")
                         let validacionrutPropietario = ruleResult.conditions.any[0].result;
-                        console.log("Revisando validacionrutPropietario: " + validacionrutPropietario)
-
+                        docsOpcionales.push({codigo: config.documents.V04.code, descripcion: config.documents.V04.description})
                         //revisar meratenencia para agregar documentos a solicitar
                         let resultadoMerotenedor = ruleResult.conditions.any[1].all[0].result
                         let resultadoLeasing = ruleResult.conditions.any[1].all[1].result
-                        console.log("Revisando resultadoMerotenedor: " + resultadoMerotenedor)
-                        console.log("Revisando resultadoLeasing: " + resultadoLeasing)
                         
                         //revisar Comunidad para agregar documentos a solicitar
                         let resultadoRutPerteneceComunidad = ruleResult.conditions.any[2].all[0].result
                         let resultadoComunidad = ruleResult.conditions.any[2].all[1].result
-                        console.log("Revisando resultadoRutPerteneceComunidad: " + resultadoRutPerteneceComunidad)
-                        console.log("Revisando resultadoComunidad: " + resultadoComunidad)
                         
                         if (validacionrutPropietario) {
                             log.debug("\tRevisando Propietario")
-                            console.log("\tRevisando Propietario")
                             //Documentos obligatorios
                             docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
                             docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
@@ -168,7 +151,6 @@ module.exports = {
                         }else{
                             if(resultadoLeasing || resultadoMerotenedor){
                                 log.debug("\tRevisando Merotenedor")
-                                console.log("\tRevisando Merotenedor")
                                 //Documentos obligatorios
                                 docs.push({codigo: config.documents.V03.code, descripcion: config.documents.V03.description})
                                 docs.push({codigo: config.documents.V05.code, descripcion: config.documents.V05.description})
@@ -179,7 +161,6 @@ module.exports = {
                             }
                             if(resultadoRutPerteneceComunidad || resultadoComunidad) {
                                 log.debug("\tRevisando Comunidad")
-                                console.log("\tRevisando Comunidad")
                                 //Documentos obligatorios
                                 docs.push({codigo: config.documents.V21.code, descripcion: config.documents.V21.description})
                                 docs.push({codigo: config.documents.V36.code, descripcion: config.documents.V36.description})
@@ -196,24 +177,22 @@ module.exports = {
                         break;
                     case 'antiguedad':
                         log.debug("\tRechazo BUS Antiguedad")
-                        console.log("\tRechazo BUS Antiguedad")
                         let validacionAntiguedad = ruleResult.conditions.all[0].result
-                        console.log("validacion validacionAntiguedad: " + validacionAntiguedad)
 
                         if (!validacionAntiguedad) {
                             continua.estado = false
                             continua.lstRechazos.push('Vehículo rechazado por antigüedad')   
+                        }else{
+                            continua.estado = true
                         }
+
                         break;
                     case 'rt':
                         log.debug("\tRechazo BUS RT")
-                        console.log("\tRechazo BUS RT")
                         let validacionResultadoRT = ruleResult.conditions.all[0].result
                         let validacionVigenciaRT = ruleResult.conditions.all[1].result
 
                         log.trace("valor de la vigencia " + validacionVigenciaRT)
-                        console.log("valor de la vigencia " + validacionVigenciaRT)
-                        console.log("resultado de la vigencia " + validacionResultadoRT)
                         if (!validacionVigenciaRT || !validacionResultadoRT) {
                             //Documentos obligatorios
                             docs.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description},
@@ -224,10 +203,7 @@ module.exports = {
                         break;
                     case 'TVNORMA':
                         log.debug("\tRechazo BUS TV NORMA")
-                        console.log("\tRechazo BUS TV NORMA")
                         let validacionTVNorma = ruleResult.conditions.all[0].result
-                        console.log("validacion TV NORMA " + validacionTVNorma)
-
                         if (validacionTVNorma) {
                             continua.estado = false
                             continua.lstRechazos.push('Rechazo por Tipo Vehiculo en Norma')
@@ -235,21 +211,16 @@ module.exports = {
                         break;
                     case 'BUSOK':
                         log.debug("\tRechazo BUS RNT")
-                        console.log("\tRechazo BUS RNT")
                         //verificar condicion de rechazo por RNT
                         let resultadoRNTNoEncontrado = ruleResult.conditions.any[0].result
 
-                        console.log("validacion Rechazo BUS RNT resultadoRNTNoEncontrado: " + resultadoRNTNoEncontrado)
-                        if(resultadoRNTNoEncontrado) {
+                        if(!resultadoRNTNoEncontrado) {
                             continua.estado = false
                             continua.lstRechazos.push('Rechazo por existir en RNT previamente')
                         }
                         let resultadoRNTCanceladoTraslado = ruleResult.conditions.any[1].all[0].result
                         let resultadoRNTCanceladoTipoTraslado = ruleResult.conditions.any[1].all[1].result
                         let resultadoRNTCanceladoTrasladoRegion = ruleResult.conditions.any[1].all[2].result
-                        console.log("validacion Rechazo BUS RNT resultadoRNTCanceladoTraslado: " + resultadoRNTCanceladoTraslado)
-                        console.log("validacion Rechazo BUS RNT resultadoRNTCanceladoTipoTraslado: " + resultadoRNTCanceladoTipoTraslado)
-                        console.log("validacion Rechazo BUS RNT resultadoRNTCanceladoTrasladoRegion: " + resultadoRNTCanceladoTrasladoRegion)
                         if(!resultadoRNTCanceladoTraslado && !resultadoRNTCanceladoTipoTraslado && !resultadoRNTCanceladoTrasladoRegion) {
                             continua.estado = false
                             continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Traslado')
@@ -257,9 +228,6 @@ module.exports = {
                         let resultadoRNTCanceladoCategoria = ruleResult.conditions.any[2].all[0].result
                         let resultadoRNTCanceladoTipoCategoria = ruleResult.conditions.any[2].all[1].result
                         let resultadoRNTCanceladoCategoriaAnterior = ruleResult.conditions.any[2].all[2].result
-                        console.log("validacion Rechazo BUS RNT resultadoRNTCanceladoCategoria: " + resultadoRNTCanceladoCategoria)
-                        console.log("validacion Rechazo BUS RNT resultadoRNTCanceladoTipoCategoria: " + resultadoRNTCanceladoTipoCategoria)
-                        console.log("validacion Rechazo BUS RNT resultadoRNTCanceladoCategoriaAnterior: " + resultadoRNTCanceladoCategoriaAnterior)
                         if(!resultadoRNTCanceladoCategoria && !resultadoRNTCanceladoTipoCategoria && !resultadoRNTCanceladoCategoriaAnterior) {
                             continua.estado = false
                             continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
@@ -267,15 +235,14 @@ module.exports = {
 
                         break;
                     default:
-                        console.log("\tRechazo no detectado, evento: " + event.type)
                         log.debug("\tRechazo no detectado, evento: " + event.type)
                         break;
                 }
             } catch (e) {
-                console.log("\tError buscando rechazo: " + e)
                 log.error("\tError buscando rechazo: " + e)
+                log.debug("\tError buscando rechazo: " + e)
                 continua.estado = false                
             }
-        })
+         })
     }
 }
