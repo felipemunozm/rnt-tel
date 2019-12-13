@@ -296,6 +296,7 @@ module.exports = {
         let datosVehiculo;
         let lstFlotaValidada = []
         let lstFlotaRechazada = []
+        let documentos = []
         
         for(let i = 0; i < inputValidarFlota.lstPpuRut.length; i++) {
             //implementar como extraer data para llenar objeto para evaluar condiciones
@@ -363,7 +364,7 @@ module.exports = {
                         tipoCancelacion: dataRNT.tipoCancelacion != undefined ? dataRNT.tipoCancelacion : "",
                         regionOrigen: dataRNT.regionOrigen != undefined ? dataRNT.regionOrigen : inputValidarFlota.region,
                         antiguedadMaxima: dataRNT.antiguedadMaxima != undefined ? dataRNT.antiguedadMaxima : 0,
-                        lstTipoVehiculoPermitidos: dataRNT.lstTipoVehiculoPermitidos != undefined ? dataRNT.lstTipoVehiculoPermitidos : [],
+                        lstTipoVehiculoPermitidos: dataRNT.lstTipoVehiculoPermitidos != undefined ? dataRNT.lstTipoVehiculoPermitidos : ["AUTOMOVIL"],
                         categoria: dataRNT.categoria != undefined ? dataRNT.categoria : ""
                     },
                     solicitud: {
@@ -376,21 +377,27 @@ module.exports = {
                 }
                 log.debug("datosVehiculo PPU: " + datosVehiculo.solicitud.ppu)
                 
-                let documentos = commons.validacionFlota(datosVehiculo, tipoValidacion);
+                if (datosVehiculo.registrocivil.tipoVehiculo == "AUTOMOVIL") {
+                    //Realiza la validacion de la flota a partir de los datos obtenidos de RNT, SGPRT Y REGISTRO CIVIL
+                    documentos = commons.validacionFlota(datosVehiculo, tipoValidacion);
+                    
+                    //Recorre los documentos
+                    for (let index = 0; index < documentos.docs.length; index++) {
+                        docs.push(documentos.docs[index]);
+                    }
 
-                //Recorre los documentos
-                for (let index = 0; index < documentos.docs.length; index++) {
-                    docs.push(documentos.docs[index]);
-                }
-
-                //Recorre los documentos Opcionales
-                for (let index = 0; index < documentos.docsOpcionales.length; index++) {
-                    docsOpcionales.push(documentos.docsOpcionales[index]);
-                }
-                continua.estado = documentos.continua.estado;
-                if (typeof documentos.continua.lstRechazos !== "undefined") {
-                    continua.lstRechazos = documentos.continua.lstRechazos
-                }
+                    //Recorre los documentos Opcionales
+                    for (let index = 0; index < documentos.docsOpcionales.length; index++) {
+                        docsOpcionales.push(documentos.docsOpcionales[index]);
+                    }
+                    continua.estado = documentos.continua.estado;
+                    if (typeof documentos.continua.lstRechazos !== "undefined") {
+                        continua.lstRechazos = documentos.continua.lstRechazos
+                    }
+                }else{
+                    continua.estado = false
+                    continua.lstRechazos.push('Rechazo por Tipo Vehiculo en Norma')
+                }   
                 
                 //--------------------------------------------------------------------------------------------------------------------
                 //documentos obligatorios para todos los casos: V04
