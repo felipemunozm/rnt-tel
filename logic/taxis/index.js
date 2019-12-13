@@ -1,5 +1,9 @@
 const taxisRepository = require('../../repository/taxis')
+const log = require('../../log')
 const rntTramitesMap= require('../../config')
+const config = require('../../config')
+const services = require('../../utils/serviciosGateway')
+const srceiUtils = require('../../utils/SRCeIUtils')
 const commons = require('../commons/RuleValidator')
 module.exports = {
     getTest: () => {
@@ -336,7 +340,7 @@ module.exports = {
                     docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
                 }
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
-                let dataRNT = await busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi)
+                let dataRNT = await taxisRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi)
                 log.trace('DataRNT para PPU ' + ppu + ": " + JSON.stringify(dataRNT))
                 //otra consulta para determinar la Antiguedad Maxima permitida por tipo de vehiculo en el folio donde se desea inscribir
                 log.trace('FechaPRT: ' + sgprtResponse.return.revisionTecnica.fechaVencimiento)
@@ -359,7 +363,7 @@ module.exports = {
                         tipoCancelacion: dataRNT.tipoCancelacion != undefined ? dataRNT.tipoCancelacion : "",
                         regionOrigen: dataRNT.regionOrigen != undefined ? dataRNT.regionOrigen : inputValidarFlota.region,
                         antiguedadMaxima: dataRNT.antiguedadMaxima != undefined ? dataRNT.antiguedadMaxima : 0,
-                        lstTipoVehiculoPermitidos: dataRNT.lstTipoVehiculoPermitidos != undefined ? dataRNT.lstTipoVehiculoPermitidos : ['BUS','MINIBUS'],
+                        lstTipoVehiculoPermitidos: dataRNT.lstTipoVehiculoPermitidos != undefined ? dataRNT.lstTipoVehiculoPermitidos : [],
                         categoria: dataRNT.categoria != undefined ? dataRNT.categoria : ""
                     },
                     solicitud: {

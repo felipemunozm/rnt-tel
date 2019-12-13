@@ -621,7 +621,10 @@ module.exports = {
                 break;
             case 'BUS PULLMAN':
                 tipoVehiculoFiltrado = "BUS"    
-                break;    
+                break;
+            case 'AUTOMOVIL':
+                    tipoVehiculoFiltrado = "AUTOMOVIL"    
+                    break;   
             default: tipoVehiculoFiltrado = ""
                 break;
         }

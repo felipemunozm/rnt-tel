@@ -35,5 +35,43 @@ module.exports = {
     },
     getServiciosVigentesInscritosPorRutResponsableAndRutMandatario: (rut_responsable, rut_mandatario) => {
         return commons.getServiciosVigentesInscritosPorRutResponsableAndRutMandatario(rut_responsable, rut_mandatario, config.rntTipoServicioMap.taxis.IdsTiposServicios)
+    },
+    findInscripcionRNTData: async (folio, region, ppu, tipoVehiculoSrcei) => {
+        let response = {
+            estado: '',
+            tipoCancelacion: '',
+            regionOrigen: '',
+            antiguedadMaxima: '',
+            lstTipoVehiculoPermitidos: [],
+            categoria: ''
+        }
+
+        let vehiculoExiste = await commons.checkVehiculoByPPU(ppu).length > 0 ? true : false
+        let antiguedadMaxima = await commons.findAntiguedadMaximaByTipoVehiculo(tipoVehiculoSrcei).ANTIGUEDAD
+        if(vehiculoExiste) {
+            //diseñar response con tipos de cancelacion
+            //buscar info de vehiculo:
+            let infoRNT = await commons.findInfoVehiculoParaInscripcion(ppu)
+            response = {
+                estado: infoRNT[0].ESTADO,
+                tipoCancelacion: infoRNT[0].TIPO_CANCELACION,
+                regionOrigen: infoRNT[0].CODIGO_REGION,
+                antiguedadMaxima: antiguedadMaxima,
+                lstTipoVehiculoPermitidos: commons.findLstTipoVehiculoPermitidoByFolioRegion(folio, region),
+                categoria: infoRNT[0].CATEGORIA
+            }
+            
+        } else {
+            //diseñar response con vehiculo no encontrado
+            response = {
+                estado: '0',
+                tipoCancelacion: 'vehiculo no encontrado',
+                regionOrigen: undefined,
+                antiguedadMaxima: 0,
+                lstTipoVehiculoPermitidos: []
+            }
+        }
+
+        return response
     }
 }

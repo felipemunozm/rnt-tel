@@ -32,6 +32,7 @@ router.post('/ppus/validaciones', async (ctx) => {
     ctx.body = await busesLogic.validarFlota(inputValidarFlota)
     log.debug("Saliendo de Routes")
 })
+
 router.get('/solicitudes', (ctx) => {
     log.debug(JSON.stringify(ctx.params))
     ctx.body = {test: ctx.url}
