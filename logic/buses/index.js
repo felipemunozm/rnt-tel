@@ -1,12 +1,10 @@
 const busesRepository = require("../../repository/buses")
 const log = require('../../log')
 const rntTramitesMap= require('../../config')
-const RuleEngine = require('json-rules-engine').Engine
-// const Rule = require('json-rules-engine').Rule
 const config = require('../../config')
-const ruleEngineEvents = require('./ruleEngineEvents')
 const services = require('../../utils/serviciosGateway')
 const srceiUtils = require('../../utils/SRCeIUtils')
+const commons = require('../commons/RuleValidator')
 module.exports = {
     getTest: () => {
         queryOut = busesRepository.getTest();
@@ -305,50 +303,35 @@ module.exports = {
     }, 
     //@param: InputValidarFlota class
     validarFlota: async (inputValidarFlota ) => {
-        
-        // let validacionInscripcionBuses = config.rntRules.inscripcionVehiculo.validacionInscripcionBuses
-        let validaPropietarioRule = config.validacionRules.inscripcionVehiculo.validaPropietarioRule
-        let validaAntiguedadRule = config.validacionRules.inscripcionVehiculo.validaAntiguedadRule
-        let validaRTRule = config.validacionRules.inscripcionVehiculo.validaRTRule
-        let validaInscripcionBusesRule = config.validacionRules.inscripcionVehiculo.buses.validaInscripcionRNTRule
-        let validaTVNormaRule = config.validacionRules.inscripcionVehiculo.validaTipoVehiculoNormaRule
-        let ruleEngine = new RuleEngine()
-        // ruleEngine.addRule(validacionInscripcionBuses)
-        // log.trace("RULE: " + JSON.stringify(validaRTRule))
-        ruleEngine.addRule(validaPropietarioRule)
-        ruleEngine.addRule(validaAntiguedadRule)
-        ruleEngine.addRule(validaRTRule)
-        ruleEngine.addRule(validaInscripcionBusesRule)
-        ruleEngine.addRule(validaTVNormaRule)
-        //continua no es bool solo para ser pasado por referencia a la funcion que realiza los eventos
-        let continua = {estado:true, lstRechazos: []}
+        let tipoValidacion = "BUSES";
+        let continua = {estado: true, lstRechazos: []}
         let docs = []
         let docsOpcionales = []
-        //verificar si no valido todo OK, hay casos en los que debe continuar y otros en los que no
-        ruleEngineEvents.revisionRechazosBuses(ruleEngine, docs, docsOpcionales, continua)
-        ruleEngineEvents.revisionValidadosBuses(ruleEngine, docs, docsOpcionales, continua)
-        // ruleEngineCommons.cargarRevisionRechazoVehiculo(ruleEngine, docs, continua)
+        let datosVehiculo;
         let lstFlotaValidada = []
         let lstFlotaRechazada = []
+        
         for(let i = 0; i < inputValidarFlota.lstPpuRut.length; i++) {
-            
             //implementar como extraer data para llenar objeto para evaluar condiciones
-            try {
-                continua.estado = true
+            continua.lstRechazos = []
+            continua.estado = true
+            docs = []
+            docsOpcionales = []
+
+            try {        
                 let ppu = inputValidarFlota.lstPpuRut[i].ppu
-                log.debug("CONTADOR : " + i + " PPU: " + ppu)
                 let srceiResponse = await services.getPPUSRCeI(ppu)
-                log.trace('sreciResponse: ' + JSON.stringify(srceiResponse))
+
                 if(srceiResponse.return.status === false) {
                     //Documentos obligatorios
-                    docs.push({ppu : ppu, codigo: config.documents.V12.code, descripcion: config.documents.V12.description})
-                    docs.push({ppu : ppu, codigo: config.documents.V23.code, descripcion: config.documents.V23.description})
-                    docs.push({ppu : ppu, codigo: config.documents.V39.code, descripcion: config.documents.V39.description})
+                    docs.push({codigo: config.documents.V12.code, descripcion: config.documents.V12.description})
+                    docs.push({codigo: config.documents.V23.code, descripcion: config.documents.V23.description})
+                    docs.push({codigo: config.documents.V39.code, descripcion: config.documents.V39.description})
                     //Documentos adicionales Obligatorios
-                    docs.push({ppu : ppu, codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
-                    docs.push({ppu : ppu, codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
+                    docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
+                    docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
                     //Documentos adicionales opcionales
-                    docsOpcionales.push({ppu : ppu, codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                    docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
                 }
                 let sgprtResponse = undefined
                 try {
@@ -356,26 +339,26 @@ module.exports = {
                     log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
                     if (sgprtResponse.return.status === false) {
                         //Documentos obligatorios
-                        docs.push({ppu : ppu, codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
+                        docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
                         //Documentos adicionales opcionales
-                        docsOpcionales.push({ppu : ppu, codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
-                        docsOpcionales.push({ppu : ppu, codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
-                        docsOpcionales.push({ppu : ppu, codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
+                        docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
+                        docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
+                        docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
                     }
                 } catch (e) {
                     //Documentos obligatorios
-                    docs.push({ppu : ppu, codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
+                    docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
                     //Documentos adicionales opcionales
-                    docsOpcionales.push({ppu : ppu, codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
-                    docsOpcionales.push({ppu : ppu, codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
-                    docsOpcionales.push({ppu : ppu, codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
+                    docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
+                    docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
+                    docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
                 }
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
                 let dataRNT = await busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi)
                 log.trace('DataRNT para PPU ' + ppu + ": " + JSON.stringify(dataRNT))
                 //otra consulta para determinar la Antiguedad Maxima permitida por tipo de vehiculo en el folio donde se desea inscribir
                 log.trace('FechaPRT: ' + sgprtResponse.return.revisionTecnica.fechaVencimiento)
-                let datosVehiculo = {
+                datosVehiculo = {
                     registrocivil: {
                         rutPropietario: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? srceiUtils.getArrayPropietarioComunidad(srceiResponse.return.propieActual.propact.itemPropact) : srceiResponse.return.propieActual.propact.itemPropact[0].rut ,
                         antiguedad: (srceiResponse.return.aaFabric > (new Date()).getFullYear()) ? 0 : (Number((new Date()).getFullYear()) - Number(srceiResponse.return.aaFabric)),
@@ -390,12 +373,12 @@ module.exports = {
                         fechaVencimientoRT: sgprtResponse.return.revisionTecnica.fechaVencimiento.getTime()
                     },
                     rnt: {
-                        estado: dataRNT.estado != undefined ? dataRNT.estado : 2,//No Encontrado = 0, Cancelado Definitivo = 3, VIGENTE = 1, Cancelado Temporal = 2 
-                        tipoCancelacion: dataRNT.tipoCancelacion != undefined ? dataRNT.tipoCancelacion : "TRASLADO DE REGIÓN",
+                        estado: dataRNT.estado != undefined ? dataRNT.estado : 0,//No Encontrado = 0, Cancelado Definitivo = 3, VIGENTE = 1, Cancelado Temporal = 2 
+                        tipoCancelacion: dataRNT.tipoCancelacion != undefined ? dataRNT.tipoCancelacion : "",
                         regionOrigen: dataRNT.regionOrigen != undefined ? dataRNT.regionOrigen : inputValidarFlota.region,
                         antiguedadMaxima: dataRNT.antiguedadMaxima != undefined ? dataRNT.antiguedadMaxima : 0,
-                        lstTipoVehiculoPermitidos: dataRNT.lstTipoVehiculoPermitidos != undefined ? dataRNT.lstTipoVehiculoPermitidos : Array(2) ["BUS", "MINIBUS"],
-                        categoria: dataRNT.categoria != undefined ? dataRNT.categoria : "PÚBLICO"
+                        lstTipoVehiculoPermitidos: dataRNT.lstTipoVehiculoPermitidos != undefined ? dataRNT.lstTipoVehiculoPermitidos : ['BUS','MINIBUS'],
+                        categoria: dataRNT.categoria != undefined ? dataRNT.categoria : ""
                     },
                     solicitud: {
                         rutPropietario: inputValidarFlota.lstPpuRut[i].rut != undefined ? inputValidarFlota.lstPpuRut[i].rut : "",
@@ -405,24 +388,27 @@ module.exports = {
                         fechaSolicitud: (new Date()).getTime()
                     }
                 }
-                log.trace("datosVehiculo: " + JSON.stringify(datosVehiculo))
                 log.debug("datosVehiculo PPU: " + datosVehiculo.solicitud.ppu)
-                try {
-                    await ruleEngine //variar el objeto datosVehiculo, para cada PPU
-                    .run(datosVehiculo)
-                    .then( results => {
-                    
-                            results.events.map(event => {
-                                log.trace(JSON.stringify(event))
-                                log.debug("Aprobadas reglas de negocio: " + event.params.mensaje)
-                            })
-                    })
-                } catch (error) {
-                    log.error("Error reglas de negocio: " + event.params.mensaje + " Error en: " + error)
-                    log.debug("Error reglas de negocio: " + event.params.mensaje + " Error en: " + error)
+                
+                let documentos = commons.validacionFlota(datosVehiculo, tipoValidacion);
+
+                //Recorre los documentos
+                for (let index = 0; index < documentos.docs.length; index++) {
+                    docs.push(documentos.docs[index]);
                 }
+
+                //Recorre los documentos Opcionales
+                for (let index = 0; index < documentos.docsOpcionales.length; index++) {
+                    docsOpcionales.push(documentos.docsOpcionales[index]);
+                }
+                continua.estado = documentos.continua.estado;
+                if (typeof documentos.continua.lstRechazos !== "undefined") {
+                    continua.lstRechazos = documentos.continua.lstRechazos
+                }
+                
+                //--------------------------------------------------------------------------------------------------------------------
                 //documentos obligatorios para todos los casos: V04
-                docs.push({ppu : ppu, codigo: config.documents.V04.code, descripcion: config.documents.V04.description})
+                docs.push({codigo: config.documents.V04.code, descripcion: config.documents.V04.description})
                 
                 //se revisa si procede la PPU para añadirla a lista de flota validada
                 if(continua.estado === true) {
@@ -430,7 +416,7 @@ module.exports = {
                 } else {
                     lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada",listaRechazos: continua.lstRechazos})
                 }
-                log.trace("datosVehiculo: " + JSON.stringify(datosVehiculo))
+
                 log.debug("datosVehiculo PPU: " + datosVehiculo.solicitud.ppu)
                 
                 continua.lstRechazos = []
