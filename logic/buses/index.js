@@ -370,7 +370,7 @@ module.exports = {
                     },
                     sgprt: {
                         resultadoRT: (sgprtResponse.return.revisionTecnica.resultado == 'A' && sgprtResponse.return.revisionesGases.revisionGas[sgprtResponse.return.revisionesGases.revisionGas.length - 1].resultado == 'A') ? 'Aprobada' : 'Rechazada',
-                        fechaVencimientoRT: sgprtResponse.return.revisionTecnica.fechaVencimiento.getTime()
+                        fechaVencimientoRT: sgprtResponse.return.revisionTecnica.fechaVencimiento.getTime() != undefined ? sgprtResponse.return.revisionTecnica.fechaVencimiento : 0
                     },
                     rnt: {
                         estado: dataRNT.estado != undefined ? dataRNT.estado : 0,//No Encontrado = 0, Cancelado Definitivo = 3, VIGENTE = 1, Cancelado Temporal = 2 
