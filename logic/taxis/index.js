@@ -324,7 +324,7 @@ module.exports = {
                 try {
                     sgprtResponse = await services.getPPURT(ppu)
                     log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
-                    if (sgprtResponse.return.status === false) {
+                    if (sgprtResponse.return.status === false || sgprtResponse.return.revisionTecnica.fechaVencimiento === undefined) {
                         //Documentos obligatorios
                         docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
                         //Documentos adicionales opcionales
@@ -357,7 +357,7 @@ module.exports = {
                     },
                     sgprt: {
                         resultadoRT: (sgprtResponse.return.revisionTecnica.resultado == 'A' && sgprtResponse.return.revisionesGases.revisionGas[sgprtResponse.return.revisionesGases.revisionGas.length - 1].resultado == 'A') ? 'Aprobada' : 'Rechazada',
-                        fechaVencimientoRT: sgprtResponse.return.revisionTecnica.fechaVencimiento.getTime()
+                        fechaVencimientoRT: sgprtResponse.return.revisionTecnica.fechaVencimiento != undefined ? sgprtResponse.return.revisionTecnica.fechaVencimiento : 0
                     },
                     rnt: {
                         estado: dataRNT.estado != undefined ? dataRNT.estado : 0,//No Encontrado = 0, Cancelado Definitivo = 3, VIGENTE = 1, Cancelado Temporal = 2 
@@ -400,8 +400,6 @@ module.exports = {
                 }   
                 
                 //--------------------------------------------------------------------------------------------------------------------
-                //documentos obligatorios para todos los casos: V04
-                //docs.push({codigo: config.documents.V04.code, descripcion: config.documents.V04.description})
                 
                 //se revisa si procede la PPU para añadirla a lista de flota validada
                 if(continua.estado === true) {
