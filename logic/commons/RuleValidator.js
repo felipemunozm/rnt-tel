@@ -1,5 +1,6 @@
 const log = require('../../log')
 const config = require('../../config')
+const services = require('../../utils/serviciosGateway')
 
 module.exports = {
     validacionFlota: (datosVehiculo, tipoValidacion) => {
@@ -130,5 +131,57 @@ module.exports = {
         }
 
         return documentos;
+    },
+    consumoServicioSgprt: async (ppu) => {
+        let sgprtResponse = [];
+
+        try {
+            sgprtResponse = await services.getPPURT(ppu)
+            sgprtResponse.return.docs = [];
+            sgprtResponse.return.docsOpcionales = [];
+            log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
+            if (sgprtResponse.return.status === false || sgprtResponse.return.revisionTecnica.fechaVencimiento === undefined) {
+                //Documentos obligatorios
+                sgprtResponse.return.docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
+                //Documentos adicionales opcionales
+                sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
+                sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
+                sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
+            }
+        } catch (e) {
+            log.debug("\tError en: " + e)
+            //Documentos obligatorios
+            sgprtResponse.return.docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
+            //Documentos adicionales opcionales
+            sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
+            sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
+            sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
+        }
+
+        return sgprtResponse;
+    },
+    consumoServicioRegistroCivil: async (ppu) => {
+        let srceiResponse = []
+
+        try {
+            srceiResponse = await services.getPPUSRCeI(ppu)
+            srceiResponse.return.docs = [];
+            srceiResponse.return.docsOpcionales = [];
+            if(srceiResponse.return.status === false) {
+                //Documentos obligatorios
+                srceiResponse.return.docs.push({codigo: config.documents.V12.code, descripcion: config.documents.V12.description})
+                srceiResponse.return.docs.push({codigo: config.documents.V23.code, descripcion: config.documents.V23.description})
+                srceiResponse.return.docs.push({codigo: config.documents.V39.code, descripcion: config.documents.V39.description})
+                //Documentos adicionales Obligatorios
+                srceiResponse.return.docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
+                srceiResponse.return.docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
+                //Documentos adicionales opcionales
+                srceiResponse.return.docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+            }
+        } catch (error) {
+            log.debug("\tError en: " + error)
+        }
+
+        return srceiResponse;
     }
 }
