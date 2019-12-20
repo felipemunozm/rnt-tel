@@ -40,7 +40,6 @@ router.post('/ppus/validaciones', async (ctx) => {
     let inputValidarServicios = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.CantidadRecorridos)
     log.trace("inputParameters: " + JSON.stringify(inputValidarServicios))
     ctx.body = await logicTaxis.InputValidarServiciosFlota(inputValidarServicios)
-    //ctx.body = {test: ctx.url}
     log.debug("Saliendo de Routes")
 })
 
