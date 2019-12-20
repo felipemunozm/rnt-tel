@@ -3,15 +3,10 @@ const router = new Router()
 const log = require('../../log')
 const commons = require('../../repository/commons')
 
-router.get('/tipos_servicios/:ID_CATEGORIA_TRANSPORTE', async (ctx) => {
-    log.debug("ID_CATEGORIA_TRANSPORTE: " + ctx.params.ID_CATEGORIA_TRANSPORTE);
-    let idCategoriaTransporte = ctx.params.ID_CATEGORIA_TRANSPORTE;
-    ctx.body = await commons.findServiciosByCategoriaTransporte(idCategoriaTransporte);
-})
-
-router.get('/', (ctx) => {
-    // res.status(200).json({message: "route de commons"})
-    ctx.body = "Hola mundo"
+router.get('/tipos_servicios/:NOMBRE_CATEGORIA', async (ctx) => {
+    log.debug("NOMBRE_CATEGORIA: " + ctx.params.NOMBRE_CATEGORIA);
+    let nombreCategoriaTransporte = ctx.params.NOMBRE_CATEGORIA;
+    ctx.body = await commons.findServiciosByCategoriaTransporte(nombreCategoriaTransporte);
 })
 
 module.exports = router.routes()

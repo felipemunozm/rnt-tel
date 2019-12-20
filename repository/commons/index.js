@@ -648,7 +648,7 @@ module.exports = {
             return []
         }
     },
-    findServiciosByCategoriaTransporte: (idCategoriaTransporte) => {
+    findServiciosByCategoriaTransporte: (nombreCategoria) => {
         try {
             return ibmdb.query("SELECT  tsa.NOMBRE  || ' ' || tvs.NOMBRE || ' ' ||  m.NOMBRE AS CATEGORIA_TRANSPORTE " +
             "FROM NULLID.rnt_tipo_servicio ts " +
@@ -657,8 +657,8 @@ module.exports = {
             "INNER JOIN NULLID.rnt_medio_transporte mt on mt.ID = ts.ID_MEDIO_TRANSPORTE " +
             "INNER JOIN NULLID.rnt_tipo_servicio_area tsa on tsa.ID = ts.ID_TIPO_SERVICIO_AREA " +
             "INNER JOIN NULLID.rnt_tipo_vehiculo_servicio tvs on tvs.ID = ts.ID_TIPO_VEHICULO_SERVICIO " +
-            "WHERE CT.ID = ? " +
-            "ORDER BY 1", [idCategoriaTransporte])
+            "WHERE CT.NOMBRE = ? " +
+            "ORDER BY 1", [nombreCategoria])
         } catch (error) {
             log.debug("Exeption al ejecutar query findServiciosByCategoriaTransporte " + error);
         }
