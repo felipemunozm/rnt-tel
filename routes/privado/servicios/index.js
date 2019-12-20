@@ -31,7 +31,7 @@ router.get('/tipos_servicios', (ctx) => {
     ctx.body = {test: ctx.url}
 })
 
-router.post('/ppus/validaciones', (ctx) => {
+router.post('/ppus/validaciones', async (ctx) => {
     log.trace(JSON.stringify(ctx.request.body))
     let inputParams = ctx.request.body
     let inputValidarServicios = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.CantidadRecorridos)

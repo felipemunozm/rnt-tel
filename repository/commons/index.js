@@ -647,5 +647,20 @@ module.exports = {
             log.error("Error obteniendo listado de tipo de vehiculos para Folio: " + folio + " y REGION: " + region)
             return []
         }
+    },
+    findServiciosByCategoriaTransporte: (idCategoriaTransporte) => {
+        try {
+            return ibmdb.query("SELECT  tsa.NOMBRE  || ' ' || tvs.NOMBRE || ' ' ||  m.NOMBRE AS CATEGORIA_TRANSPORTE " +
+            "FROM NULLID.rnt_tipo_servicio ts " +
+            "INNER JOIN NULLID.rnt_categoria_transporte ct on ct.ID = ts.ID_CATEGORIA_TRANSPORTE " +
+            "INNER JOIN NULLID.rnt_modalidad m on m.ID = ts.ID_MODALIDAD " +
+            "INNER JOIN NULLID.rnt_medio_transporte mt on mt.ID = ts.ID_MEDIO_TRANSPORTE " +
+            "INNER JOIN NULLID.rnt_tipo_servicio_area tsa on tsa.ID = ts.ID_TIPO_SERVICIO_AREA " +
+            "INNER JOIN NULLID.rnt_tipo_vehiculo_servicio tvs on tvs.ID = ts.ID_TIPO_VEHICULO_SERVICIO " +
+            "WHERE CT.ID = ? " +
+            "ORDER BY 1", [idCategoriaTransporte])
+        } catch (error) {
+            log.debug("Exeption al ejecutar query findServiciosByCategoriaTransporte " + error);
+        }
     }
 }
