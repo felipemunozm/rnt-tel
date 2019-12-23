@@ -319,39 +319,28 @@ module.exports = {
             docsOpcionales = []
 
             try {        
-                let ppu = inputValidarFlota.lstPpuRut[i].ppu
-                let srceiResponse = await services.getPPUSRCeI(ppu)
+                let ppu =  inputValidarFlota.lstPpuRut[i].ppu
+                let srceiResponse = await commons.consumoServicioRegistroCivil(ppu);
+                let sgprtResponse = await commons.consumoServicioSgprt(ppu);
 
-                if(srceiResponse.return.status === false) {
-                    //Documentos obligatorios
-                    docs.push({codigo: config.documents.V12.code, descripcion: config.documents.V12.description})
-                    docs.push({codigo: config.documents.V23.code, descripcion: config.documents.V23.description})
-                    docs.push({codigo: config.documents.V39.code, descripcion: config.documents.V39.description})
-                    //Documentos adicionales Obligatorios
-                    docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
-                    docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
-                    //Documentos adicionales opcionales
-                    docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                //Recorre los documentos obtenidos de registro civil
+                for (let index = 0; index < srceiResponse.return.docs.length; index++) {
+                    docs.push(srceiResponse.return.docs[index]);
                 }
-                let sgprtResponse = undefined
-                try {
-                    sgprtResponse = await services.getPPURT(ppu)
-                    log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
-                    if (sgprtResponse.return.status === false) {
-                        //Documentos obligatorios
-                        docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
-                        //Documentos adicionales opcionales
-                        docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
-                        docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
-                        docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
-                    }
-                } catch (e) {
-                    //Documentos obligatorios
-                    docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
-                    //Documentos adicionales opcionales
-                    docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
-                    docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
-                    docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
+
+                //Recorre los documentos Opcionales obtenidos de registro civil
+                for (let index = 0; index < srceiResponse.return.docsOpcionales.length; index++) {
+                    docsOpcionales.push(srceiResponse.return.docsOpcionales[index]);
+                }
+
+                //Recorre los documentos obtenidos obtenidos de sgprt
+                for (let index = 0; index < sgprtResponse.return.docs.length; index++) {
+                    docs.push(sgprtResponse.return.docs[index]);
+                }
+
+                //Recorre los documentos Opcionales obtenidos de sgprt
+                for (let index = 0; index < sgprtResponse.return.docsOpcionales.length; index++) {
+                    docsOpcionales.push(sgprtResponse.return.docsOpcionales[index]);
                 }
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
                 let dataRNT = await busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi)
@@ -449,39 +438,28 @@ module.exports = {
             docsOpcionales = []
 
             try {        
-                let ppu = inputValidarFlota.lstPpuRut[i].ppu
-                let srceiResponse = await services.getPPUSRCeI(ppu)
+                let ppu =  inputValidarFlota.lstPpuRut[i].ppu
+                let srceiResponse = await commons.consumoServicioRegistroCivil(ppu);
+                let sgprtResponse = await commons.consumoServicioSgprt(ppu);
 
-                if(srceiResponse.return.status === false) {
-                    //Documentos obligatorios
-                    docs.push({codigo: config.documents.V12.code, descripcion: config.documents.V12.description})
-                    docs.push({codigo: config.documents.V23.code, descripcion: config.documents.V23.description})
-                    docs.push({codigo: config.documents.V39.code, descripcion: config.documents.V39.description})
-                    //Documentos adicionales Obligatorios
-                    docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
-                    docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
-                    //Documentos adicionales opcionales
-                    docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                //Recorre los documentos obtenidos de registro civil
+                for (let index = 0; index < srceiResponse.return.docs.length; index++) {
+                    docs.push(srceiResponse.return.docs[index]);
                 }
-                let sgprtResponse = undefined
-                try {
-                    sgprtResponse = await services.getPPURT(ppu)
-                    log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
-                    if (sgprtResponse.return.status === false || sgprtResponse.return.revisionTecnica.fechaVencimiento === undefined) {
-                        //Documentos obligatorios
-                        docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
-                        //Documentos adicionales opcionales
-                        docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
-                        docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
-                        docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
-                    }
-                } catch (e) {
-                    //Documentos obligatorios
-                    docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
-                    //Documentos adicionales opcionales
-                    docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
-                    docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
-                    docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
+
+                //Recorre los documentos Opcionales obtenidos de registro civil
+                for (let index = 0; index < srceiResponse.return.docsOpcionales.length; index++) {
+                    docsOpcionales.push(srceiResponse.return.docsOpcionales[index]);
+                }
+
+                //Recorre los documentos obtenidos obtenidos de sgprt
+                for (let index = 0; index < sgprtResponse.return.docs.length; index++) {
+                    docs.push(sgprtResponse.return.docs[index]);
+                }
+
+                //Recorre los documentos Opcionales obtenidos de sgprt
+                for (let index = 0; index < sgprtResponse.return.docsOpcionales.length; index++) {
+                    docsOpcionales.push(sgprtResponse.return.docsOpcionales[index]);
                 }
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
                 let dataRNT = await taxisRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi)

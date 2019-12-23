@@ -144,7 +144,11 @@ module.exports = {
                 gases = sgprtResponse.return.revisionesGases.revisionGas.length != undefined && sgprtResponse.return.revisionesGases.revisionGas.length > 2 ? true : false;
             } catch (error) {
                 log.debug('respuesta de gases no existe en sgprtResponse: ' + error)
-                gases = sgprtResponse.return.revisionGases.revisionGas.length != undefined && sgprtResponse.return.revisionGases.revisionGas.length > 2 ? true : false;
+                if (sgprtResponse.return.tipoVehiculo == "BUS") {
+                    gases = false;
+                }else{
+                    gases = sgprtResponse.return.revisionGases.revisionGas.length != undefined && sgprtResponse.return.revisionGases.revisionGas.length > 2 ? true : false;
+                }
             }
             
             log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
@@ -156,7 +160,7 @@ module.exports = {
                  sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
                  sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
             }
-            if (sgprtResponse.return.status === false || sgprtResponse.return.revisionTecnica.fechaVencimiento === undefined) {
+            else if (sgprtResponse.return.status === false || sgprtResponse.return.revisionTecnica.fechaVencimiento === undefined) {
                 //Documentos obligatorios
                 sgprtResponse.return.docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
                 //Documentos adicionales opcionales
