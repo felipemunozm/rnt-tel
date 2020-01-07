@@ -27,7 +27,7 @@ router.get('/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLI
 router.get('/tipos_servicios', (ctx) => {
     ctx.body = {test: ctx.url}
 })
-router.post('/ppus/validaciones', (ctx) => {
+router.post('/ppus/validaciones', async (ctx) => {
     log.trace("Request Body: " + JSON.stringify(ctx.request.body))
     let inputParams = ctx.request.body
     let inputValidarFlota = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.CantidadRecorridos)
