@@ -27,11 +27,12 @@ router.get('/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', (ctx) => {
 router.post('/ppus/validaciones', async (ctx) => {
     log.trace("Request Body: " + JSON.stringify(ctx.request.body))
     let inputParams = ctx.request.body
-    let inputValidarFlota = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.cantidadRecorridos)
+    let inputValidarFlota = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.CantidadRecorridos)
     log.trace("inputParameters: " + JSON.stringify(inputValidarFlota))
     ctx.body = await busesLogic.validarFlota(inputValidarFlota)
     log.debug("Saliendo de Routes")
 })
+
 router.get('/solicitudes', (ctx) => {
     log.debug(JSON.stringify(ctx.params))
     ctx.body = {test: ctx.url}

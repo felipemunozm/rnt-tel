@@ -42,7 +42,6 @@ module.exports = {
        //psalas persona-mandatario
        getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicioBuses:  (id_region, RUT_RESPONSABLE,rut_solicitante,idtramite) => {
         return commons.getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicio (id_region,RUT_RESPONSABLE, rut_solicitante,idtramite) 
-            
     },
   
     //por rmason
@@ -62,37 +61,42 @@ module.exports = {
     findServiciosByMandatarioAndRepresentanteAndEmpresa: (rut_empresa, rut_representante, rut_solicitante) => {
         return commons.findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios(rut_empresa, rut_representante, rut_solicitante, config.rntTipoServicioMap.buses.IdsTiposServicios)
     },
-    findInscripcionRNTData: (folio, region, ppu, tipoVehiculoSrcei) => {
-        let vehiculoExiste = commons.checkVehiculoByPPU(ppu).length > 0 ? true : false
-        let response
+    findInscripcionRNTData: async (folio, region, ppu, tipoVehiculoSrcei) => {
+        let response = {
+            estado: '',
+            tipoCancelacion: '',
+            regionOrigen: '',
+            antiguedadMaxima: '',
+            lstTipoVehiculoPermitidos: [],
+            categoria: ''
+        }
+
+        let vehiculoExiste = await commons.checkVehiculoByPPU(ppu).length > 0 ? true : false
+        let antiguedadMaxima = await commons.findAntiguedadMaximaByTipoVehiculo(tipoVehiculoSrcei).ANTIGUEDAD
         if(vehiculoExiste) {
             //diseñar response con tipos de cancelacion
             //buscar info de vehiculo:
-            let infoRNT = commons.findInfoVehiculoParaInscripcion(ppu)
+            let infoRNT = await commons.findInfoVehiculoParaInscripcion(ppu)
             response = {
-                estado: infoRNT.ESTADO,
-                tipoCancelacion: infoRNT.TIPO_CANCELACION,
-                regionOrigen: infoRNT.CODIGO_REGION,
-                antiguedadMaxima: undefined,//no se puede obtener por la PPU, s edebe agregar posterior
-                lstTipoVehiculoPermitidos: [],
-                categoria: infoRNT.CATEGORIA
+                estado: infoRNT[0].ESTADO,
+                tipoCancelacion: infoRNT[0].TIPO_CANCELACION,
+                regionOrigen: infoRNT[0].CODIGO_REGION,
+                antiguedadMaxima: antiguedadMaxima,
+                lstTipoVehiculoPermitidos: commons.findLstTipoVehiculoPermitidoByFolioRegion(folio, region),
+                categoria: infoRNT[0].CATEGORIA
             }
             
-        }
-        else {
+        } else {
             //diseñar response con vehiculo no encontrado
             response = {
                 estado: '0',
-                tipoCancelacion: undefined,
+                tipoCancelacion: 'vehiculo no encontrado',
                 regionOrigen: undefined,
-                antiguedadMaxima: undefined,
-                lstTipoVehiculoPermitidos: [],
-                categoria: undefined
+                antiguedadMaxima: 0,
+                lstTipoVehiculoPermitidos: []
             }
         }
-        //buscar antiguedad maxima para la norma del folio region tv
-        response.antiguedadMaxima = commons.findAntiguedadMaximaByTipoVehiculo(tipoVehiculoSrcei)
-        response.lstTipoVehiculoPermitidos = commons.findLstTipoVehiculoPermitidoByFolioRegion(folio, region)
+
         return response
     }
 }

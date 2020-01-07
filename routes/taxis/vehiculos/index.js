@@ -21,12 +21,17 @@ router.get('/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', (ctx) => {
 })
 
 router.post('/ppus/validaciones', async (ctx) => {
-    log.debug(JSON.stringify(ctx.request.body))
+    log.trace(JSON.stringify(ctx.request.body))
     let inputParams = ctx.request.body
-    let inputValidarFlota = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.cantidadRecorridos)
-    log.debug("inputParameters: " + JSON.stringify(inputValidarFlota))
-    ctx.body = await taxisLogic.validarFlota(inputValidarFlota)
-    log.debug("Saliendo de Routes")
+    let temporal = inputParams.rut_solicitante === undefined ? true : false;
+    if (!temporal) {
+        let inputValidarFlota = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.CantidadRecorridos)
+        log.trace("inputParameters: " + JSON.stringify(inputValidarFlota))
+        ctx.body = await taxisLogic.validarFlota(inputValidarFlota)
+        log.debug("Saliendo de Routes")
+    }else{
+        ctx.body = ""
+    }
 })
 
 router.post('/solicitudes', (ctx) => {

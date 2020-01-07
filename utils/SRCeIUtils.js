@@ -12,6 +12,8 @@ module.exports = {
             let tenedor = limita.itemLimita[0].tenedores.itemTenedores[0]
             if(tenedor.rut != undefined) {
                 return true
+            }else{
+                return false
             }
         }
         catch(e) {

@@ -2,6 +2,9 @@ const ibmdb = require('../db')
 const log = require('../../log')
 const config = require('../../config')
 
+let nombreUTILS = 'UTILSQA'
+//let nombreUTILS = 'UTILSPR'
+
 module.exports = {
     findServiciosByRepresentanteLegalAndEmpresaAndTipoServicioList: (rut_empresa, rut_representante, lstTiposServicios) => {
         return ibmdb.query('SELECT pNatural.RUT AS "RUT_REPRESENTANTE", pJuridica.RUT AS "RUT_RESPONSABLE",pjuridica.NOMBRE AS NOMBRE_RESPONSABLE, s.IDENT_SERVICIO AS "FOLIO", s.CODIGO_REGION AS COD_REGION,r.NOMBRE as "REGION",  tvs.NOMBRE ||\' \'|| tsa.NOMBRE ||\' \'|| mo.NOMBRE  as TIPO_SERVICIO ' +
@@ -17,7 +20,7 @@ module.exports = {
         'LEFT JOIN NULLID.rnt_tipo_transporte tt ON tt.id = ts.id_tipo_transporte ' +
         'LEFT JOIN NULLID.rnt_tipo_vehiculo_servicio tvs ON tvs.id = ts.id_tipo_vehiculo_servicio ' +
         'LEFT JOIN NULLID.rnt_tipo_servicio_area tsa ON ts.id_tipo_servicio_area = tsa.id ' +
-        'INNER JOIN NULLID.UTILSQA_REGION r ON r.ID = s.CODIGO_REGION ' +
+        'INNER JOIN NULLID.' + nombreUTILS + '_REGION r ON r.ID = s.CODIGO_REGION ' +
         'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ESTADO = 1 AND rl.AUTORIZADO_TRAMITES = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
     },
     findRecorridosByFolioRegionAndTipoServicio: (folio,region, lstTipoServicios) => {
@@ -34,10 +37,10 @@ module.exports = {
         'INNER JOIN NULLID.RNT_TRAZADO AS TRAZADO ON TRAZADO.ID_RECORRIDO = RECORRIDO.ID ' +
         'LEFT JOIN NULLID.RNT_EXTREMO_RECORRIDO AS EXTREMO_RECORRIDO ON EXTREMO_RECORRIDO.ID = RECORRIDO.ID_ORIGEN ' +
         'INNER JOIN NULLID.RNT_PARADERO AS PARADERO_ORIGEN ON PARADERO_ORIGEN.ID = EXTREMO_RECORRIDO.ID_PARADERO ' +
-        'LEFT JOIN NULLID.UTILSQA_COMUNA AS COMUNA ON COMUNA.ID = PARADERO_ORIGEN.CODIGO_COMUNA ' +
+        'LEFT JOIN NULLID.' + nombreUTILS + '_COMUNA AS COMUNA ON COMUNA.ID = PARADERO_ORIGEN.CODIGO_COMUNA ' +
         'LEFT JOIN NULLID.RNT_EXTREMO_RECORRIDO AS EXTREMO_RECORRIDO_1 ON EXTREMO_RECORRIDO_1.ID = RECORRIDO.ID_DESTINO ' +
         'INNER JOIN NULLID.RNT_PARADERO AS PARADERO_DESTINO ON PARADERO_DESTINO.ID = EXTREMO_RECORRIDO_1.ID_PARADERO ' +
-        'LEFT JOIN NULLID.UTILSQA_COMUNA AS COMUNA_DESTINO ON COMUNA_DESTINO.ID = PARADERO_DESTINO.CODIGO_COMUNA ' +
+        'LEFT JOIN NULLID.' + nombreUTILS + '_COMUNA AS COMUNA_DESTINO ON COMUNA_DESTINO.ID = PARADERO_DESTINO.CODIGO_COMUNA ' +
         'WHERE SERVICIO.IDENT_SERVICIO = ? AND SERVICIO.CODIGO_REGION = ? AND SERVICIO.ESTADO = 1 AND RECORRIDO.ESTADO = 1 AND TIPO_SERV.ID IN (' + lstTipoServicios.toString() +')',[folio,region])
     },
     findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios: (rut_empresa, rut_representante, rut_solicitante, lstTipoServicios) => {
@@ -57,7 +60,7 @@ module.exports = {
         "LEFT JOIN NULLID.RNT_TIPO_TRANSPORTE tt ON tt.ID = ts.ID_TIPO_TRANSPORTE " +
         "LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO tvs ON tvs.ID = ts.ID_TIPO_VEHICULO_SERVICIO " +
         "LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA tsa ON ts.ID_tipo_servicio_area = tsa.ID " +
-        "INNER JOIN NULLID.UTILSQA_REGION r ON r.ID = s.CODIGO_REGION " +
+        "INNER JOIN NULLID.' + nombreUTILS + '_REGION r ON r.ID = s.CODIGO_REGION " +
         "WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND MANDATARIOPERSONA.RUT = ? AND man.AUTORIZADO_TRAMITES = 1 AND s.ESTADO = 1 AND ts.id in (" + lstTipoServicios.toString() + ")", [rut_empresa, rut_representante, rut_solicitante])
     },
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable,lstTipoServicios) =>{
@@ -69,7 +72,7 @@ module.exports = {
 		"LEFT JOIN NULLID.RNT_MODALIDAD AS MODALIDAD ON MODALIDAD.ID = T_SERV.ID_MODALIDAD " +
 		"LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS T_VEHICULO_SERV ON T_VEHICULO_SERV.ID = T_SERV.ID_TIPO_VEHICULO_SERVICIO " +
 		"LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA AS T_SERV_AREA ON T_SERV.ID_TIPO_SERVICIO_AREA = T_SERV_AREA.ID " +
-        "LEFT JOIN NULLID.UTILSQA_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
+        "LEFT JOIN NULLID.' + nombreUTILS + '_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
         "WHERE RESPONSABLE.RUT = ? AND SERVICIO.ESTADO = 1 AND RESPONSABLE.TIPO_PERSONA = 1 AND T_SERV.ID IN (" + lstTipoServicios.toString() + ")",[rut_responsable])
     },
     getServiciosVigentesInscritosPorRutResponsableAndRutMandatario: (rut_responsable, rut_mandatario, lstTipoServicios) =>{
@@ -84,7 +87,7 @@ module.exports = {
         "LEFT JOIN NULLID.RNT_MODALIDAD AS MODALIDAD ON MODALIDAD.ID = T_SERV.ID_MODALIDAD " +
         "LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS T_VEHICULO_SERV ON T_VEHICULO_SERV.ID = T_SERV.ID_TIPO_VEHICULO_SERVICIO " +
         "LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA AS T_SERV_AREA ON T_SERV.ID_TIPO_SERVICIO_AREA = T_SERV_AREA.ID " +
-        "LEFT JOIN NULLID.UTILSQA_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
+        "LEFT JOIN NULLID.' + nombreUTILS + '_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
         "WHERE RESPONSABLE.RUT = ? AND MANDATARIO.RUT = ? AND SERVICIO.ESTADO = 1 AND RESPONSABLE.TIPO_PERSONA = 1 AND MAND.AUTORIZADO_TRAMITES = 1 AND T_SERV.ID IN (" + lstTipoServicios.toString() + ")",[rut_responsable, rut_mandatario])
     },
            //psalas
@@ -587,8 +590,8 @@ module.exports = {
         '    INNER JOIN nullid.rnt_tipo_servicio TSS ON ss.id_tipo_servicio = tss.id ' +
         '    INNER JOIN nullid.rnt_modalidad Ms ON ms.id = tss.id_modalidad AND ms.nombre <> \'ESPECIAL\' ' +
         '   WHERE vss.id_vehiculo = v.id ORDER BY vss.fecha_estado DESC, vss.id DESC FETCH FIRST 1 ROWS ONLY ) ' +
-        'INNER JOIN NULLID.RNT_SERVICIO s ON s.ID = vs.ID_SERVICIO' + 
-        'INNER JOIN NULLID.RNT_TIPO_SERVICIO ts ON ts.id = s.ID_TIPO_SERVICIO' +
+        'INNER JOIN NULLID.RNT_SERVICIO s ON s.ID = vs.ID_SERVICIO ' + 
+        'INNER JOIN NULLID.RNT_TIPO_SERVICIO ts ON ts.id = s.ID_TIPO_SERVICIO ' +
         'INNER JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO tvs ON tvs.id = ts.ID_TIPO_VEHICULO_SERVICIO ' +
         'INNER JOIN NULLID.RNT_TIPO_CANCELACION tc ON vs.ID_TIPO_CANCELACION = tc.ID ' +
         'INNER JOIN NULLID.RNT_CATEGORIA_TRANSPORTE ct ON ct.id = ts.ID_CATEGORIA_TRANSPORTE ' +
@@ -596,27 +599,42 @@ module.exports = {
     },
     findAntiguedadMaximaByTipoVehiculo: (tipoVehiculo) => {
         let tipoVehiculoFiltrado = ""
+
         switch(tipoVehiculo) {
             case 'MINIBUS': 
                 tipoVehiculoFiltrado = "MINIBUS"
+                break;
             case 'MICROBUS': 
                 tipoVehiculoFiltrado = "MINIBUS"
+                break;
             case 'BUS': 
                 tipoVehiculoFiltrado = "BUS"
+                break;
             case 'CHASIS CABINADO':
                 tipoVehiculoFiltrado = "BUS"
+                break;
             case 'CHASSIS':
                 tipoVehiculoFiltrado = "BUS"
+                break;
             case 'OMNIBUS':
                 tipoVehiculoFiltrado = "BUS"
+                break;
             case 'TAXIBUS':
                 tipoVehiculoFiltrado = "BUS"
+                break;
             case 'BUS PULLMAN':
-                tipoVehiculoFiltrado = "BUS"        
-            default: tipoVehiculoFiltrado = undefined
+                tipoVehiculoFiltrado = "BUS"    
+                break;
+            case 'AUTOMOVIL':
+                    tipoVehiculoFiltrado = "AUTOMOVIL"    
+                    break;   
+            default: tipoVehiculoFiltrado = ""
+                break;
         }
-        let anioPorTipoDeVeviculo = getAntiguedadMaximaPermitidaPorTipoVehiculo(tipoVehiculoFiltrado)
-        return anioPorTipoDeVeviculo.ANTIGUEDAD_MAXIMA
+
+        let anioPorTipoDeVeviculo = ibmdb.query("SELECT NULLID.GET_ANTIGUEDAD_BY_TIPO_VEHICULO (?) AS ANTIGUEDAD FROM \"SYSIBM\".DUAL",[tipoVehiculoFiltrado])
+
+        return anioPorTipoDeVeviculo[0]
     },
     findLstTipoVehiculoPermitidoByFolioRegion: (folio, region) => {
         try {
@@ -633,20 +651,19 @@ module.exports = {
             return []
         }
     },
-    getAntiguedadMaximaPermitidaPorTipoVehiculo: (tipoVehiculo) => {
-        return ibmdb.query("SELECT DISTINCT MAX(CAST(NITEMDAT.VALUE AS INT)) AS ANTIGUEDAD_MAXIMA " +
-            "FROM NULLID.RNT_REGLAMENTACION AS REG " +
-            "LEFT JOIN NULLID.RNT_TIPO_REGLAMENTACION AS TREG ON TREG.ID = REG.ID_TIPO_REGLAMENTACION " +
-            "LEFT JOIN NULLID.RNT_NORMATIVA AS NORM ON NORM.ID_REGLAMENTACION = REG.ID " +
-            "LEFT JOIN NULLID.RNT_AUTORIZACION AS AUT ON AUT.ID_NORMATIVA = NORM.ID " +
-            "LEFT JOIN NULLID.RNT_NORMATIVA_REGISTRO AS NREG ON NREG.ID_NORMATIVA = NORM.ID " +
-            "LEFT JOIN NULLID.RNT_NORMATIVA_ITEM AS NITEM ON NITEM.ID_NORMATIVA_REGISTRO = NREG.ID " +
-            "LEFT JOIN NULLID.RNT_NORMATIVA_ITEM_DATA AS NITEMDAT ON NITEMDAT.ID_NORMATIVA_ITEM = NITEM.ID " +
-            "LEFT JOIN NULLID.RNT_VEHICULO_SERVICIO AS VS ON VS.ID_REGLAMENTACION = REG.ID " +
-            "LEFT JOIN NULLID.RNT_SERVICIO AS SERV ON SERV.ID = VS.ID_SERVICIO " +
-            "LEFT JOIN NULLID.RNT_TIPO_SERVICIO AS TSERV ON TSERV.ID = SERV.ID_TIPO_SERVICIO " +
-            "LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS TVS ON TVS.ID = TSERV.ID_TIPO_VEHICULO_SERVICIO " +
-            "WHERE NORM.\"DESCRIPTOR\" = 'antiguedad_marco_geografico_tipo_vehiculo' AND NORM.RNT_LABEL = 'Antigüedad de Ingreso por marco geográfico y tipo de vehículo' " +
-            "AND AUT.ESTADO = 0 AND NITEM.RNT_KEY = 'antiguedad_maxima' AND TVS.NOMBRE = '?' AND SERV.ACTIVO = 1 AND VS.ID_TIPO_INGRESO = 2",[tipoVehiculo])
+    findServiciosByCategoriaTransporte: (nombreCategoria) => {
+        try {
+            return ibmdb.query("SELECT  tsa.NOMBRE  || ' ' || tvs.NOMBRE || ' ' ||  m.NOMBRE AS CATEGORIA_TRANSPORTE " +
+            "FROM NULLID.rnt_tipo_servicio ts " +
+            "INNER JOIN NULLID.rnt_categoria_transporte ct on ct.ID = ts.ID_CATEGORIA_TRANSPORTE " +
+            "INNER JOIN NULLID.rnt_modalidad m on m.ID = ts.ID_MODALIDAD " +
+            "INNER JOIN NULLID.rnt_medio_transporte mt on mt.ID = ts.ID_MEDIO_TRANSPORTE " +
+            "INNER JOIN NULLID.rnt_tipo_servicio_area tsa on tsa.ID = ts.ID_TIPO_SERVICIO_AREA " +
+            "INNER JOIN NULLID.rnt_tipo_vehiculo_servicio tvs on tvs.ID = ts.ID_TIPO_VEHICULO_SERVICIO " +
+            "WHERE CT.NOMBRE = ? " +
+            "ORDER BY 1", [nombreCategoria])
+        } catch (error) {
+            log.debug("Exeption al ejecutar query findServiciosByCategoriaTransporte " + error);
+        }
     }
 }

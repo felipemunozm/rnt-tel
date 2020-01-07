@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 const router = new Router()
 const log = require('../../../log')
-const  logicBuses = require('../../../logic/buses')
+const logicBuses = require('../../../logic/buses')
 //psalas empresa
 router.get('/regiones/:ID_REGION/empresas/:RUT_EMPRESA/representante/:RUT_SOLICITANTE',async (ctx) => {
     log.debug("ID_REGION: " + ctx.params.ID_REGION)
@@ -28,7 +28,12 @@ router.get('/tipos_servicios', (ctx) => {
     ctx.body = {test: ctx.url}
 })
 router.post('/ppus/validaciones', (ctx) => {
-    ctx.body = {test: ctx.url}
+    log.trace("Request Body: " + JSON.stringify(ctx.request.body))
+    let inputParams = ctx.request.body
+    let inputValidarFlota = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.CantidadRecorridos)
+    log.trace("inputParameters: " + JSON.stringify(inputValidarFlota))
+    ctx.body = await logicBuses.InputValidarServiciosFlota(inputValidarFlota)
+    log.debug("Saliendo de Routes")
 })
 router.post('/solicitudes', (ctx) => {
     ctx.body = {test: ctx.url}
