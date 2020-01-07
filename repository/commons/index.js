@@ -2,6 +2,9 @@ const ibmdb = require('../db')
 const log = require('../../log')
 const config = require('../../config')
 
+let nombreUTILS = 'UTILSQA'
+//let nombreUTILS = 'UTILSPR'
+
 module.exports = {
     findServiciosByRepresentanteLegalAndEmpresaAndTipoServicioList: (rut_empresa, rut_representante, lstTiposServicios) => {
         return ibmdb.query('SELECT pNatural.RUT AS "RUT_REPRESENTANTE", pJuridica.RUT AS "RUT_RESPONSABLE",pjuridica.NOMBRE AS NOMBRE_RESPONSABLE, s.IDENT_SERVICIO AS "FOLIO", s.CODIGO_REGION AS COD_REGION,r.NOMBRE as "REGION",  tvs.NOMBRE ||\' \'|| tsa.NOMBRE ||\' \'|| mo.NOMBRE  as TIPO_SERVICIO ' +
@@ -17,7 +20,7 @@ module.exports = {
         'LEFT JOIN NULLID.rnt_tipo_transporte tt ON tt.id = ts.id_tipo_transporte ' +
         'LEFT JOIN NULLID.rnt_tipo_vehiculo_servicio tvs ON tvs.id = ts.id_tipo_vehiculo_servicio ' +
         'LEFT JOIN NULLID.rnt_tipo_servicio_area tsa ON ts.id_tipo_servicio_area = tsa.id ' +
-        'INNER JOIN NULLID.UTILSQA_REGION r ON r.ID = s.CODIGO_REGION ' +
+        'INNER JOIN NULLID.' + nombreUTILS + '_REGION r ON r.ID = s.CODIGO_REGION ' +
         'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ESTADO = 1 AND rl.AUTORIZADO_TRAMITES = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
     },
     findRecorridosByFolioRegionAndTipoServicio: (folio,region, lstTipoServicios) => {
@@ -34,10 +37,10 @@ module.exports = {
         'INNER JOIN NULLID.RNT_TRAZADO AS TRAZADO ON TRAZADO.ID_RECORRIDO = RECORRIDO.ID ' +
         'LEFT JOIN NULLID.RNT_EXTREMO_RECORRIDO AS EXTREMO_RECORRIDO ON EXTREMO_RECORRIDO.ID = RECORRIDO.ID_ORIGEN ' +
         'INNER JOIN NULLID.RNT_PARADERO AS PARADERO_ORIGEN ON PARADERO_ORIGEN.ID = EXTREMO_RECORRIDO.ID_PARADERO ' +
-        'LEFT JOIN NULLID.UTILSQA_COMUNA AS COMUNA ON COMUNA.ID = PARADERO_ORIGEN.CODIGO_COMUNA ' +
+        'LEFT JOIN NULLID.' + nombreUTILS + '_COMUNA AS COMUNA ON COMUNA.ID = PARADERO_ORIGEN.CODIGO_COMUNA ' +
         'LEFT JOIN NULLID.RNT_EXTREMO_RECORRIDO AS EXTREMO_RECORRIDO_1 ON EXTREMO_RECORRIDO_1.ID = RECORRIDO.ID_DESTINO ' +
         'INNER JOIN NULLID.RNT_PARADERO AS PARADERO_DESTINO ON PARADERO_DESTINO.ID = EXTREMO_RECORRIDO_1.ID_PARADERO ' +
-        'LEFT JOIN NULLID.UTILSQA_COMUNA AS COMUNA_DESTINO ON COMUNA_DESTINO.ID = PARADERO_DESTINO.CODIGO_COMUNA ' +
+        'LEFT JOIN NULLID.' + nombreUTILS + '_COMUNA AS COMUNA_DESTINO ON COMUNA_DESTINO.ID = PARADERO_DESTINO.CODIGO_COMUNA ' +
         'WHERE SERVICIO.IDENT_SERVICIO = ? AND SERVICIO.CODIGO_REGION = ? AND SERVICIO.ESTADO = 1 AND RECORRIDO.ESTADO = 1 AND TIPO_SERV.ID IN (' + lstTipoServicios.toString() +')',[folio,region])
     },
     findServiciosByMandatarioAndRepresentanteAndEmpresaAndTiposServicios: (rut_empresa, rut_representante, rut_solicitante, lstTipoServicios) => {
@@ -57,7 +60,7 @@ module.exports = {
         "LEFT JOIN NULLID.RNT_TIPO_TRANSPORTE tt ON tt.ID = ts.ID_TIPO_TRANSPORTE " +
         "LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO tvs ON tvs.ID = ts.ID_TIPO_VEHICULO_SERVICIO " +
         "LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA tsa ON ts.ID_tipo_servicio_area = tsa.ID " +
-        "INNER JOIN NULLID.UTILSQA_REGION r ON r.ID = s.CODIGO_REGION " +
+        "INNER JOIN NULLID.' + nombreUTILS + '_REGION r ON r.ID = s.CODIGO_REGION " +
         "WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND MANDATARIOPERSONA.RUT = ? AND man.AUTORIZADO_TRAMITES = 1 AND s.ESTADO = 1 AND ts.id in (" + lstTipoServicios.toString() + ")", [rut_empresa, rut_representante, rut_solicitante])
     },
     getServiciosVigentesInscritosPorRutResponsable: (rut_responsable,lstTipoServicios) =>{
@@ -69,7 +72,7 @@ module.exports = {
 		"LEFT JOIN NULLID.RNT_MODALIDAD AS MODALIDAD ON MODALIDAD.ID = T_SERV.ID_MODALIDAD " +
 		"LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS T_VEHICULO_SERV ON T_VEHICULO_SERV.ID = T_SERV.ID_TIPO_VEHICULO_SERVICIO " +
 		"LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA AS T_SERV_AREA ON T_SERV.ID_TIPO_SERVICIO_AREA = T_SERV_AREA.ID " +
-        "LEFT JOIN NULLID.UTILSQA_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
+        "LEFT JOIN NULLID.' + nombreUTILS + '_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
         "WHERE RESPONSABLE.RUT = ? AND SERVICIO.ESTADO = 1 AND RESPONSABLE.TIPO_PERSONA = 1 AND T_SERV.ID IN (" + lstTipoServicios.toString() + ")",[rut_responsable])
     },
     getServiciosVigentesInscritosPorRutResponsableAndRutMandatario: (rut_responsable, rut_mandatario, lstTipoServicios) =>{
@@ -84,7 +87,7 @@ module.exports = {
         "LEFT JOIN NULLID.RNT_MODALIDAD AS MODALIDAD ON MODALIDAD.ID = T_SERV.ID_MODALIDAD " +
         "LEFT JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO AS T_VEHICULO_SERV ON T_VEHICULO_SERV.ID = T_SERV.ID_TIPO_VEHICULO_SERVICIO " +
         "LEFT JOIN NULLID.RNT_TIPO_SERVICIO_AREA AS T_SERV_AREA ON T_SERV.ID_TIPO_SERVICIO_AREA = T_SERV_AREA.ID " +
-        "LEFT JOIN NULLID.UTILSQA_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
+        "LEFT JOIN NULLID.' + nombreUTILS + '_REGION AS REGION ON REGION.ID = SERVICIO.CODIGO_REGION " +
         "WHERE RESPONSABLE.RUT = ? AND MANDATARIO.RUT = ? AND SERVICIO.ESTADO = 1 AND RESPONSABLE.TIPO_PERSONA = 1 AND MAND.AUTORIZADO_TRAMITES = 1 AND T_SERV.ID IN (" + lstTipoServicios.toString() + ")",[rut_responsable, rut_mandatario])
     },
            //psalas
