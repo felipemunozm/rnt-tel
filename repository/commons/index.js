@@ -2,8 +2,8 @@ const ibmdb = require('../db')
 const log = require('../../log')
 const config = require('../../config')
 
-let nombreUTILS = 'UTILSQA'
-//let nombreUTILS = 'UTILSPR'
+//let nombreUTILS = 'UTILSQA'
+let nombreUTILS = 'UTILSPR'
 
 module.exports = {
     findServiciosByRepresentanteLegalAndEmpresaAndTipoServicioList: (rut_empresa, rut_representante, lstTiposServicios) => {
