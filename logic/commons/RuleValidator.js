@@ -98,13 +98,20 @@ module.exports = {
                 
             //VALIDACIONES RNT
             //verificar condicion de rechazo por RNT
-            let resultadoRNTNoEncontrado = datosVehiculo.rnt.estado == 0 ? true : false;
-            log.debug("\tRechazo " + tipoValidacion + " RNT")
+            // psalas 20-01-2020
+           //Si se encuentra la PPU, debe estar cancelado Definitivo (3). 
+           //En caso de Cancelaciones Temporales (2), puede ser por "Cancelado por Traslado de region", 
+           //y se debe comparar la region de tralado con la region del servicio al cual se inscribe. 
+           //Y si corresponde a "Cancelado por cambio de Categoria", validar que la categoria sea distinta a Público.
 
-            if(!resultadoRNTNoEncontrado)  {
-                documentos.continua.estado = false
-                documentos.continua.lstRechazos.push('Rechazo por existir en RNT previamente')
-            }
+           
+           // let resultadoRNTNoEncontrado = datosVehiculo.rnt.estado == 0 ? true : false;
+           // log.debug("\tRechazo " + tipoValidacion + " RNT")
+
+           // if(!resultadoRNTNoEncontrado)  {
+            //    documentos.continua.estado = false
+            //    documentos.continua.lstRechazos.push('Rechazo por existir en RNT previamente')
+           // }
 
             if (tipoValidacion == "BUSES") {
                 let resultadoRNTCanceladoTraslado = datosVehiculo.rnt.estado == 2 ? true : false;
@@ -118,6 +125,35 @@ module.exports = {
                 let resultadoRNTCanceladoCategoria = datosVehiculo.rnt.estado == 2 ? true : false;
                 let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.tipoCancelacion == "CANCELACIÓN POR CAMBIO DE CATEGORÍA DE TRANSPORTE" ? true : false;
                 let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.categoria != "PÚBLICO" ? true : false;
+                if(resultadoRNTCanceladoCategoria && resultadoRNTCanceladoTipoCategoria && resultadoRNTCanceladoCategoriaAnterior) {
+                    documentos.continua.estado = false
+                    documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
+                }
+            }
+            // psalas 20-01-2020
+            if (tipoValidacion == "TAXIS") {
+                let resultadoRNTCanceladoTraslado = datosVehiculo.rnt.estado == 2 ? true : false;
+              //  let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.tipoCancelacion == "TRASLADO DE REGIÓN" ? true : false;
+                let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.id_tipoCancelacion == "7" ? true : false; //psalas
+                let resultadoRNTCanceladoTrasladoRegion = datosVehiculo.rnt.regionOrigen != datosVehiculo.solicitud.regionInscripcion ? true : false;
+                if(!resultadoRNTCanceladoTraslado || !resultadoRNTCanceladoTipoTraslado ) {
+
+                    documentos.continua.estado = false
+                    documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Traslado')
+                }
+                else{
+                    if(!resultadoRNTCanceladoTrasladoRegion) {
+                        documentos.continua.estado = false
+                       documentos.continua.lstRechazos.push('Rechazo por Region de tralado es la misma a la region del servicio al cual se inscribe')
+                     }
+                }
+           
+
+                let resultadoRNTCanceladoCategoria = datosVehiculo.rnt.estado == 3 ? true : false;
+               // let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.tipoCancelacion == "CANCELACIÓN POR CAMBIO DE CATEGORÍA DE TRANSPORTE" ? true : false;
+               let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.id_tipoCancelacion == "61" ? true : false; //psalas 
+            //   let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.categoria != "PÚBLICO" ? true : false;
+               let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.id_categoria != "1" ? true : false;
                 if(resultadoRNTCanceladoCategoria && resultadoRNTCanceladoTipoCategoria && resultadoRNTCanceladoCategoriaAnterior) {
                     documentos.continua.estado = false
                     documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')

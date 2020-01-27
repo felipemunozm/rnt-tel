@@ -35,6 +35,7 @@ module.exports = {
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
                     nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
                     tipo_servicio: servicioDB.TIPO_SERVICIO,
+                   id_tipo_servicio : servicioDB.ID_TIPO_SERVICIO,
                     recorridos: recorridos
                 })
             }else{
@@ -44,7 +45,8 @@ module.exports = {
                     cod_region: servicioDB.ID_REGION,
                     rut_responsable: servicioDB.RUT_RESPONSABLE,
                     nombre_responsable: servicioDB.NOMBRE_RESPONSABLE,
-                    tipo_servicio: servicioDB.TIPO_SERVICIO
+                    tipo_servicio: servicioDB.TIPO_SERVICIO,
+                    id_tipo_servicio : servicioDB.ID_TIPO_SERVICIO
                 }) 
             }
         })
@@ -330,7 +332,7 @@ module.exports = {
                 }
 
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
-                let dataRNT = await taxisRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi)
+                let dataRNT = await taxisRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi,inputValidarFlota.tipoingreso)
                 log.trace('DataRNT para PPU ' + ppu + ": " + JSON.stringify(dataRNT))
                 //otra consulta para determinar la Antiguedad Maxima permitida por tipo de vehiculo en el folio donde se desea inscribir
                 log.trace('FechaPRT: ' + sgprtResponse.return.revisionTecnica.fechaVencimiento)
@@ -351,6 +353,7 @@ module.exports = {
                     rnt: {
                         estado: dataRNT.estado != undefined ? dataRNT.estado : 0,//No Encontrado = 0, Cancelado Definitivo = 3, VIGENTE = 1, Cancelado Temporal = 2 
                         tipoCancelacion: dataRNT.tipoCancelacion != undefined ? dataRNT.tipoCancelacion : "",
+                        id_tipoCancelacion: dataRNT.id_tipoCancelacion != undefined ? dataRNT.id_tipoCancelacion : "", // psalas
                         regionOrigen: dataRNT.regionOrigen != undefined ? dataRNT.regionOrigen : inputValidarFlota.region,
                         antiguedadMaxima: dataRNT.antiguedadMaxima != undefined ? dataRNT.antiguedadMaxima : 0,
                         lstTipoVehiculoPermitidos: dataRNT.lstTipoVehiculoPermitidos != undefined ? dataRNT.lstTipoVehiculoPermitidos : ["AUTOMOVIL"],
