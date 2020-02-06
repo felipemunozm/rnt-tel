@@ -1,7 +1,7 @@
 const ibmdb = require('../db')
 const log = require('../../log')
 const config = require('../../config')
-const encoding = require("encoding");
+
 let nombreUTILS = 'UTILSQA'
 //let nombreUTILS = 'UTILSPR'
 
