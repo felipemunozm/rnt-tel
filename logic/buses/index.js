@@ -60,7 +60,7 @@ module.exports = {
             servicios: []
         }
         let servicios = busesRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioBuses(id_region,rut_solicitante,idtramite)
-        if(!Array.isArray(servicios) ) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -92,7 +92,7 @@ module.exports = {
             servicios: []
         }
         let servicios = busesRepository.getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicioBuses(id_region,RUT_RESPONSABLE,rut_solicitante,idtramite)
-        if(!Array.isArray(servicios) ) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -212,7 +212,7 @@ module.exports = {
             servicios: []
         }
         let servicios = busesRepository.findServiciosByRepresentanteLegalAndEmpresa(rut_empresa, rut_representante_legal)
-        if(!Array.isArray(servicios)) {
+        if(!Array.isArray(servicios) || servicios.length==0 ) {
             response.estado = 'RECHAZADO'
             response.mensaje = 'Usted no se encuentra habilitado en el Registro Nacional de Transportes para realizar este Trámite, dirígase a la Seremitt mas cercana.'
             delete response.servicios

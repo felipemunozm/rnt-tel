@@ -267,7 +267,7 @@ module.exports = {
             servicios: []
         }
         let servicios = taxisRepository.getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicioTaxis(id_region,RUT_RESPONSABLE,rut_solicitante,idtramite)
-        if(!Array.isArray(servicios) ) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -357,7 +357,9 @@ module.exports = {
                         regionOrigen: dataRNT.regionOrigen != undefined ? dataRNT.regionOrigen : inputValidarFlota.region,
                         antiguedadMaxima: dataRNT.antiguedadMaxima != undefined ? dataRNT.antiguedadMaxima : 0,
                         lstTipoVehiculoPermitidos: dataRNT.lstTipoVehiculoPermitidos != undefined ? dataRNT.lstTipoVehiculoPermitidos : ["AUTOMOVIL"],
-                        categoria: dataRNT.categoria != undefined ? dataRNT.categoria : ""
+                        categoria: dataRNT.categoria != undefined ? dataRNT.categoria : "",
+                        id_tipoCategoria: dataRNT.id_tipoCategoria != undefined ? dataRNT.id_tipoCategoria : ""
+                        
                     },
                     solicitud: {
                         rutPropietario: inputValidarFlota.lstPpuRut[i].rut != undefined ? inputValidarFlota.lstPpuRut[i].rut : "",

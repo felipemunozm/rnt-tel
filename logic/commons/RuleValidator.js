@@ -121,7 +121,7 @@ module.exports = {
                     documentos.continua.estado = false
                     documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Traslado')
                 }
-
+                    
                 let resultadoRNTCanceladoCategoria = datosVehiculo.rnt.estado == 2 ? true : false;
                 let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.tipoCancelacion == "CANCELACIÓN POR CAMBIO DE CATEGORÍA DE TRANSPORTE" ? true : false;
                 let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.categoria != "PÚBLICO" ? true : false;
@@ -132,32 +132,55 @@ module.exports = {
             }
             // psalas 20-01-2020
             if (tipoValidacion == "TAXIS") {
-                let resultadoRNTCanceladoTraslado = datosVehiculo.rnt.estado == 2 ? true : false;
-              //  let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.tipoCancelacion == "TRASLADO DE REGIÓN" ? true : false;
-                let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.id_tipoCancelacion == "7" ? true : false; //psalas
-                let resultadoRNTCanceladoTrasladoRegion = datosVehiculo.rnt.regionOrigen != datosVehiculo.solicitud.regionInscripcion ? true : false;
-                if(!resultadoRNTCanceladoTraslado || !resultadoRNTCanceladoTipoTraslado ) {
 
-                    documentos.continua.estado = false
-                    documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Traslado')
+               // datosVehiculo.rnt.estado == 3 ? true : false;
+                if(datosVehiculo.rnt.estado == 3 ) 
+                {
+
                 }
-                else{
-                    if(!resultadoRNTCanceladoTrasladoRegion) {
-                        documentos.continua.estado = false
-                       documentos.continua.lstRechazos.push('Rechazo por Region de tralado es la misma a la region del servicio al cual se inscribe')
-                     }
+                else 
+                {
+                    if(datosVehiculo.rnt.estado == 2 ) 
+                    {
+                        let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.id_tipoCancelacion == "7" ? true : false; //psalas traslado
+                        let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.id_tipoCancelacion == "61" ? true : false; //psalas 
+                        let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.id_tipoCategoria != "1" ? true : false; //publico
+                        let resultadoRNTCanceladoTrasladoRegion = datosVehiculo.rnt.regionOrigen != datosVehiculo.solicitud.regionInscripcion ? true : false;
+                        if(!resultadoRNTCanceladoTipoTraslado ) {
+
+                            documentos.continua.estado = false
+                            documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Traslado')
+                        }
+                       
+                         if(!resultadoRNTCanceladoTrasladoRegion) {
+                                documentos.continua.estado = false
+                               documentos.continua.lstRechazos.push('Rechazo por Region de tralado es la misma a la region del servicio al cual se inscribe')
+                             }
+                        if(resultadoRNTCanceladoTipoCategoria && !resultadoRNTCanceladoCategoriaAnterior) {
+                                documentos.continua.estado = false
+                                documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
+                            }
+                    
+                    }
+
                 }
+
+              //  let resultadoRNTCanceladoTraslado = datosVehiculo.rnt.estado == 2 ? true : false;
+              //  let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.tipoCancelacion == "TRASLADO DE REGIÓN" ? true : false;
+                
+                
+               
            
 
-                let resultadoRNTCanceladoCategoria = datosVehiculo.rnt.estado == 3 ? true : false;
+               
                // let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.tipoCancelacion == "CANCELACIÓN POR CAMBIO DE CATEGORÍA DE TRANSPORTE" ? true : false;
-               let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.id_tipoCancelacion == "61" ? true : false; //psalas 
+             //  let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.id_tipoCancelacion == "61" ? true : false; //psalas 
             //   let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.categoria != "PÚBLICO" ? true : false;
-               let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.id_categoria != "1" ? true : false;
-                if(resultadoRNTCanceladoCategoria && resultadoRNTCanceladoTipoCategoria && resultadoRNTCanceladoCategoriaAnterior) {
-                    documentos.continua.estado = false
-                    documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
-                }
+             //  let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.id_categoria != "1" ? true : false;
+             //   if(resultadoRNTCanceladoCategoria && resultadoRNTCanceladoTipoCategoria && resultadoRNTCanceladoCategoriaAnterior) {
+             //       documentos.continua.estado = false
+             //       documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
+              //  }
             }
         } catch (e) {
             log.error("\tError buscando rechazo: " + e)

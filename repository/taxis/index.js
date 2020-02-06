@@ -44,11 +44,12 @@ module.exports = {
             regionOrigen: '',
             antiguedadMaxima: '',
             lstTipoVehiculoPermitidos: [],
-            categoria: ''
+            categoria: '' ,
+            id_tipoCategoria:''
         }
 
         let vehiculoExiste = await commons.checkVehiculoByPPU(ppu).length > 0 ? true : false
-        let antiguedadMaxima = await commons.findAntiguedadMaximaByTipoVehiculo(tipoVehiculoSrcei,folio,region,tipoingreso).ANTIGUEDAD
+        let antiguedadMaxima = await commons.findAntiguedadMaximaByTipoVehiculo(tipoVehiculoSrcei,folio,region,tipoingreso)
         if(vehiculoExiste) {
             //diseñar response con tipos de cancelacion
 
@@ -61,6 +62,7 @@ module.exports = {
       
          //   if (infoRNT[0].ESTADO==2)
          //   {
+          
               
             response = {
                 estado: infoRNT[0].ESTADO,
@@ -69,7 +71,8 @@ module.exports = {
                 regionOrigen: infoRNT[0].CODIGO_REGION,
                 antiguedadMaxima: antiguedadMaxima,
                 lstTipoVehiculoPermitidos: commons.findLstTipoVehiculoPermitidoByFolioRegion(folio, region),
-                categoria: infoRNT[0].CATEGORIA
+                categoria: infoRNT[0].CATEGORIA ,
+                id_tipoCategoria:infoRNT[0].ID_TIPO_CATEGORIA
             }
        // }
 
@@ -83,6 +86,7 @@ module.exports = {
                 regionOrigen: undefined,
                 antiguedadMaxima:antiguedadMaxima, //psalas
                 lstTipoVehiculoPermitidos: []
+                
             }
         }
 

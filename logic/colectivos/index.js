@@ -44,7 +44,7 @@ module.exports = {
             servicios: []
         }
         let servicios = colectivosRepository.getAutorizacionPorPersonaTramiteInscripcionTaxiColectivo(id_region,rut_solicitante,idtramite)
-        if(!Array.isArray(servicios) ) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -77,7 +77,7 @@ module.exports = {
         servicios: []
     }
     let servicios = colectivosRepository.getAutorizacionPorPersonaMandatarioInscripcionServicioTaxiColectivo(id_region,RUT_RESPONSABLE,rut_solicitante,idtramite)
-    if(!Array.isArray(servicios) ) {
+    if(!Array.isArray(servicios) || servicios.length==0) {
         response.estado = servicios.estado
         response.mensaje = servicios.mensaje
         delete response.servicios

@@ -15,7 +15,7 @@ module.exports = {
             servicios: []
         }
         let servicios = escolarRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioEscolar(id_region,rut_representante,rut_solicitante,idtramite)
-        if(!Array.isArray(servicios) ) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -47,7 +47,7 @@ module.exports = {
             servicios: []
         }
         let servicios =  escolarRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioEscolar(id_region,rut_solicitante,idtramite)
-        if(!Array.isArray(servicios) ) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -79,7 +79,7 @@ module.exports = {
         servicios: []
     }
     let servicios = escolarRepository.getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicioEscolar(id_region,RUT_RESPONSABLE,rut_solicitante,idtramite)
-    if(!Array.isArray(servicios) ) {
+    if(!Array.isArray(servicios) || servicios.length==0) {
         response.estado = servicios.estado
         response.mensaje = servicios.mensaje
         delete response.servicios

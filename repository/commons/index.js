@@ -1,27 +1,44 @@
 const ibmdb = require('../db')
 const log = require('../../log')
 const config = require('../../config')
-
+const encoding = require("encoding");
 let nombreUTILS = 'UTILSQA'
 //let nombreUTILS = 'UTILSPR'
 
 module.exports = {
     findServiciosByRepresentanteLegalAndEmpresaAndTipoServicioList: (rut_empresa, rut_representante, lstTiposServicios) => {
-        return ibmdb.query('SELECT pNatural.RUT AS "RUT_REPRESENTANTE", pJuridica.RUT AS "RUT_RESPONSABLE",pjuridica.NOMBRE AS NOMBRE_RESPONSABLE, s.IDENT_SERVICIO AS "FOLIO", s.CODIGO_REGION AS COD_REGION,r.NOMBRE as "REGION",  tvs.NOMBRE ||\' \'|| tsa.NOMBRE ||\' \'|| mo.NOMBRE  as TIPO_SERVICIO ' +
-        'FROM NULLID.RNT_TIPO_SERVICIO ts INNER JOIN NULLID.RNT_SERVICIO s ON s.ID_TIPO_SERVICIO = ts.ID ' +
-        'INNER JOIN NULLID.RNT_RESPONSABLE_SERVICIO rs ON s.ID_RESPONSABLE_SERVICIO = rs.ID ' +
-        'INNER JOIN NULLID.RNT_PERSONA pJuridica ON pJuridica.id = rs.ID_PERSONA AND PJURIDICA.TIPO_PERSONA = 2 ' +
-        'INNER JOIN NULLID.RNT_SERVICIO_REPRESENTANTE sr ON sr.ID_SERVICIO = s.ID ' +
-        'INNER JOIN nullid.RNT_REPRESENTATE_LEGAL rl ON rl.id = sr.ID_REPRESENTANTE_SERVICIO  ' +
-        'INNER JOIN NULLID.RNT_PERSONA pNatural ON PNATURAL.id = rl.ID_PERSONA AND pNatural.TIPO_PERSONA = 1  ' +
-        'LEFT JOIN NULLID.rnt_modalidad mo ON mo.id = ts.id_modalidad ' +
-        'LEFT JOIN NULLID.rnt_categoria_transporte ct ON ct.id = ts.id_categoria_transporte ' +
-        'LEFT JOIN NULLID.rnt_medio_transporte mt ON mt.id = ts.id_medio_transporte ' +
-        'LEFT JOIN NULLID.rnt_tipo_transporte tt ON tt.id = ts.id_tipo_transporte ' +
-        'LEFT JOIN NULLID.rnt_tipo_vehiculo_servicio tvs ON tvs.id = ts.id_tipo_vehiculo_servicio ' +
-        'LEFT JOIN NULLID.rnt_tipo_servicio_area tsa ON ts.id_tipo_servicio_area = tsa.id ' +
-        'INNER JOIN NULLID.' + nombreUTILS + '_REGION r ON r.ID = s.CODIGO_REGION ' +
-        'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ESTADO = 1 AND rl.AUTORIZADO_TRAMITES = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
+       
+       let query='SELECT pNatural.RUT AS "RUT_REPRESENTANTE", pJuridica.RUT AS "RUT_RESPONSABLE",pjuridica.NOMBRE AS NOMBRE_RESPONSABLE, s.IDENT_SERVICIO AS "FOLIO", s.CODIGO_REGION AS COD_REGION,r.NOMBRE as "REGION",  tvs.NOMBRE ||\' \'|| tsa.NOMBRE ||\' \'|| mo.NOMBRE  as TIPO_SERVICIO ' +
+       'FROM NULLID.RNT_TIPO_SERVICIO ts INNER JOIN NULLID.RNT_SERVICIO s ON s.ID_TIPO_SERVICIO = ts.ID ' +
+       'INNER JOIN NULLID.RNT_RESPONSABLE_SERVICIO rs ON s.ID_RESPONSABLE_SERVICIO = rs.ID ' +
+       'INNER JOIN NULLID.RNT_PERSONA pJuridica ON pJuridica.id = rs.ID_PERSONA AND PJURIDICA.TIPO_PERSONA = 2 ' +
+       'INNER JOIN NULLID.RNT_SERVICIO_REPRESENTANTE sr ON sr.ID_SERVICIO = s.ID ' +
+       'INNER JOIN nullid.RNT_REPRESENTATE_LEGAL rl ON rl.id = sr.ID_REPRESENTANTE_SERVICIO  ' +
+       'INNER JOIN NULLID.RNT_PERSONA pNatural ON PNATURAL.id = rl.ID_PERSONA AND pNatural.TIPO_PERSONA = 1  ' +
+       'LEFT JOIN NULLID.rnt_modalidad mo ON mo.id = ts.id_modalidad ' +
+       'LEFT JOIN NULLID.rnt_categoria_transporte ct ON ct.id = ts.id_categoria_transporte ' +
+       'LEFT JOIN NULLID.rnt_medio_transporte mt ON mt.id = ts.id_medio_transporte ' +
+       'LEFT JOIN NULLID.rnt_tipo_transporte tt ON tt.id = ts.id_tipo_transporte ' +
+       'LEFT JOIN NULLID.rnt_tipo_vehiculo_servicio tvs ON tvs.id = ts.id_tipo_vehiculo_servicio ' +
+       'LEFT JOIN NULLID.rnt_tipo_servicio_area tsa ON ts.id_tipo_servicio_area = tsa.id ' +
+       'INNER JOIN NULLID.' + nombreUTILS + '_REGION r ON r.ID = s.CODIGO_REGION ' +
+       'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ESTADO = 1 AND rl.AUTORIZADO_TRAMITES = 1 AND ts.id in (' + lstTiposServicios.toString() + ')'
+       return ibmdb.query(query, [rut_empresa, rut_representante])
+        // return ibmdb.query('SELECT pNatural.RUT AS "RUT_REPRESENTANTE", pJuridica.RUT AS "RUT_RESPONSABLE",pjuridica.NOMBRE AS NOMBRE_RESPONSABLE, s.IDENT_SERVICIO AS "FOLIO", s.CODIGO_REGION AS COD_REGION,r.NOMBRE as "REGION",  tvs.NOMBRE ||\' \'|| tsa.NOMBRE ||\' \'|| mo.NOMBRE  as TIPO_SERVICIO ' +
+        // 'FROM NULLID.RNT_TIPO_SERVICIO ts INNER JOIN NULLID.RNT_SERVICIO s ON s.ID_TIPO_SERVICIO = ts.ID ' +
+        // 'INNER JOIN NULLID.RNT_RESPONSABLE_SERVICIO rs ON s.ID_RESPONSABLE_SERVICIO = rs.ID ' +
+        // 'INNER JOIN NULLID.RNT_PERSONA pJuridica ON pJuridica.id = rs.ID_PERSONA AND PJURIDICA.TIPO_PERSONA = 2 ' +
+        // 'INNER JOIN NULLID.RNT_SERVICIO_REPRESENTANTE sr ON sr.ID_SERVICIO = s.ID ' +
+        // 'INNER JOIN nullid.RNT_REPRESENTATE_LEGAL rl ON rl.id = sr.ID_REPRESENTANTE_SERVICIO  ' +
+        // 'INNER JOIN NULLID.RNT_PERSONA pNatural ON PNATURAL.id = rl.ID_PERSONA AND pNatural.TIPO_PERSONA = 1  ' +
+        // 'LEFT JOIN NULLID.rnt_modalidad mo ON mo.id = ts.id_modalidad ' +
+        // 'LEFT JOIN NULLID.rnt_categoria_transporte ct ON ct.id = ts.id_categoria_transporte ' +
+        // 'LEFT JOIN NULLID.rnt_medio_transporte mt ON mt.id = ts.id_medio_transporte ' +
+        // 'LEFT JOIN NULLID.rnt_tipo_transporte tt ON tt.id = ts.id_tipo_transporte ' +
+        // 'LEFT JOIN NULLID.rnt_tipo_vehiculo_servicio tvs ON tvs.id = ts.id_tipo_vehiculo_servicio ' +
+        // 'LEFT JOIN NULLID.rnt_tipo_servicio_area tsa ON ts.id_tipo_servicio_area = tsa.id ' +
+        // 'INNER JOIN NULLID.' + nombreUTILS + '_REGION r ON r.ID = s.CODIGO_REGION ' +
+        // 'WHERE PJURIDICA.RUT = ? AND PNATURAL.RUT = ? AND s.ESTADO = 1 AND rl.AUTORIZADO_TRAMITES = 1 AND ts.id in (' + lstTiposServicios.toString() + ')', [rut_empresa, rut_representante])
     },
     findRecorridosByFolioRegionAndTipoServicio: (folio,region, lstTipoServicios) => {
         return ibmdb.query('SELECT RECORRIDO.NOMBRE AS NOMBRE_RECORRIDO, PARADERO_ORIGEN.NOMBRE AS ORIGEN, COMUNA.NOMBRE AS COMUNA_ORIGEN, PARADERO_DESTINO.NOMBRE AS DESTINO, COMUNA_DESTINO.NOMBRE AS COMUNA_DESTINO ' +
@@ -583,23 +600,35 @@ module.exports = {
         return ibmdb.query('SELECT v.PPU, v.TIPO_VEHICULO FROM NULLID.RNT_VEHICULO v  WHERE v.PPU = ?', [ppu])
     },
     findInfoVehiculoParaInscripcion: (ppu) => {
-        return ibmdb.query('SELECT v.PPU,v.TIPO_VEHICULO,vs.ESTADO,tc.id AS ID_CANCELACION,tc.NOMBRE AS TIPO_CANCELACION, ct.NOMBRE AS CATEGORIA, s.CODIGO_REGION ' +
-        'FROM NULLID.RNT_VEHICULO v INNER JOIN NULLID.RNT_VEHICULO_SERVICIO vs ON vs.ID = ( ' +
-        '   SELECT vss.id ' +
-        '    FROM nullid.rnt_vehiculo_servicio VSS INNER JOIN nullid.rnt_servicio SS ON ss.id = vss.id_servicio ' +
-        '    INNER JOIN nullid.rnt_tipo_servicio TSS ON ss.id_tipo_servicio = tss.id ' +
-        '    INNER JOIN nullid.rnt_modalidad Ms ON ms.id = tss.id_modalidad AND ms.nombre <> \'ESPECIAL\' ' +
-        '   WHERE vss.id_vehiculo = v.id ORDER BY vss.fecha_estado DESC, vss.id DESC FETCH FIRST 1 ROWS ONLY ) ' +
-        'INNER JOIN NULLID.RNT_SERVICIO s ON s.ID = vs.ID_SERVICIO ' + 
-        'INNER JOIN NULLID.RNT_TIPO_SERVICIO ts ON ts.id = s.ID_TIPO_SERVICIO ' +
-        'INNER JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO tvs ON tvs.id = ts.ID_TIPO_VEHICULO_SERVICIO ' +
-        'INNER JOIN NULLID.RNT_TIPO_CANCELACION tc ON vs.ID_TIPO_CANCELACION = tc.ID ' +
-        'INNER JOIN NULLID.RNT_CATEGORIA_TRANSPORTE ct ON ct.id = ts.ID_CATEGORIA_TRANSPORTE ' +
-        'WHERE v.PPU = ?',[ppu])
+        let query =" select  V.PPU,  " +
+        "V.tipovehiculo  as TIPO_VEHICULO ,  " +
+        "V.ESTADO_PPU as ESTADO ,  " +
+        "V.ID_TIPO_CANCELACION AS ID_CANCELACION,  " +
+        "V.TIPO_CANCELACION AS TIPO_CANCELACION,   " +
+        "V.CATEGORIA AS CATEGORIA,   " +
+        "V.REGION as CODIGO_REGION ,  " +
+        "V.ID_TIPO_CATEGORIA  " +
+        "from NULLID.RNT_STAT_VEHICULOS_VIEW V   " +
+        "where V.ppu= ?  " 
+        return ibmdb.query(query,[ppu])
+
+        // return ibmdb.query('SELECT v.PPU,v.TIPO_VEHICULO,vs.ESTADO,tc.id AS ID_CANCELACION,tc.NOMBRE AS TIPO_CANCELACION, ct.NOMBRE AS CATEGORIA, s.CODIGO_REGION ' +
+        // 'FROM NULLID.RNT_VEHICULO v INNER JOIN NULLID.RNT_VEHICULO_SERVICIO vs ON vs.ID = ( ' +
+        // '   SELECT vss.id ' +
+        // '    FROM nullid.rnt_vehiculo_servicio VSS INNER JOIN nullid.rnt_servicio SS ON ss.id = vss.id_servicio ' +
+        // '    INNER JOIN nullid.rnt_tipo_servicio TSS ON ss.id_tipo_servicio = tss.id ' +
+        // '    INNER JOIN nullid.rnt_modalidad Ms ON ms.id = tss.id_modalidad AND ms.nombre <> \'ESPECIAL\' ' +
+        // '   WHERE vss.id_vehiculo = v.id ORDER BY vss.fecha_estado DESC, vss.id DESC FETCH FIRST 1 ROWS ONLY ) ' +
+        // 'INNER JOIN NULLID.RNT_SERVICIO s ON s.ID = vs.ID_SERVICIO ' + 
+        // 'INNER JOIN NULLID.RNT_TIPO_SERVICIO ts ON ts.id = s.ID_TIPO_SERVICIO ' +
+        // 'INNER JOIN NULLID.RNT_TIPO_VEHICULO_SERVICIO tvs ON tvs.id = ts.ID_TIPO_VEHICULO_SERVICIO ' +
+        // 'INNER JOIN NULLID.RNT_TIPO_CANCELACION tc ON vs.ID_TIPO_CANCELACION = tc.ID ' +
+        // 'INNER JOIN NULLID.RNT_CATEGORIA_TRANSPORTE ct ON ct.id = ts.ID_CATEGORIA_TRANSPORTE ' +
+        // 'WHERE v.PPU = ?',[ppu])
     },
     findAntiguedadMaximaByTipoVehiculo: (tipoVehiculo,folio,region,tipodeingreso) => {
         let tipoVehiculoFiltrado = ""
-
+    let tipodeingresoFiltrado =tipodeingreso;
         switch(tipoVehiculo) {
             case 'MINIBUS': 
                 tipoVehiculoFiltrado = "MINIBUS"
@@ -665,55 +694,62 @@ module.exports = {
                 break;
         }
 
-        let ModalidaddelServicio = ibmdb.query("select CATEGORIA, TIPOSERVICIO, MODALIDAD,TIPOVEHICULO  from NULLID.RNT_STAT_SERVICIOS_VIEW SV where sv.IDENT_SERVICIO=? and sv.CODIGO_REGION= ?",[folio,region])
-                
-        
+        let ModalidaddelServicio = ibmdb.query("select CATEGORIA, TIPOSERVICIO, MODALIDAD,TIPOVEHICULO  from NULLID.RNT_STAT_SERVICIOS_VIEW SV where sv.IDENT_SERVICIO=? and sv.CODIGO_REGION= ? and sv.CATEGORIA<>'PRIVADO' ",[folio,region])
         if (tipoVehiculo=="AUTOMOVIL")
         {
-                if (ModalidaddelServicio.MODALIDAD=="TAXI COLECTIVO" && tipodeingreso=="RENUEVA TU TAXI")
+        
+
+                if (ModalidaddelServicio[0].MODALIDAD=="TAXI COLECTIVO" && tipodeingresoFiltrado=="RENUEVA TU TAXI")
                         {
-                        reglamentacion = "DTO 212/92 - TTE PUBLICO (TAXI COLECTIVO) > RENUEVA TU TAXI"
+                        //let reglamentacion = "DTO 212/92 - TTE PUBLICO (TAXI COLECTIVO) > RENUEVA TU TAXI"
+                          let idreglamentacion =19
                         }
                 else
-                        {
-                            switch(tipodeingreso) {
+                     {
+      
+                            switch(tipodeingresoFiltrado) 
+                            {
                                 case 'REEMPLAZO POR CONCURSO DE TAXIS': 
-                                    reglamentacion = "DTO 212/92 - LEY 20474/20867 - TTE PUBLICO (TAXIS B/T/E) >REEMPLAZO POR CONCURSO DE TAXIS"
+                                   // idreglamentacion = "DTO 212/92 - LEY 20474/20867 - TTE PUBLICO (TAXIS B/T/E) >REEMPLAZO POR CONCURSO DE TAXIS"
+                                   idreglamentacion =104
                                     break;
                                 case 'RENOVACIÓN DE MATERIAL': 
-                                reglamentacion = "DTO 212/92 - TTE PUBLICO (TAXIS B/T/E) > RENOVACIÓN DE MATERIAL"
+                                    //idreglamentacion = "DTO 212/92 - TTE PUBLICO (TAXIS B/T/E) > RENOVACIÓN DE MATERIAL"
+                                    idreglamentacion =7
                                     break;
                                 case 'RENOVACIÓN POR SINIESTRO': 
-                                reglamentacion = "DTO 212/92 - TTE PUBLICO (TAXIS B/T/E) > RENOVACIÓN POR SINIESTRO"
+                                  // idreglamentacion = "DTO 212/92 - TTE PUBLICO (TAXIS B/T/E) > RENOVACIÓN POR SINIESTRO"
+                                   idreglamentacion =101
                                     break;
                                 default: reglamentacion = ""
                                     break;
                                 }
                             }      
-                            let query ="  SELECT NITEMDAT.VALUE " +
+                       
+                          let query = "  SELECT NITEMDAT.VALUE  " +
                             "  FROM    NULLID.RNT_REGLAMENTACION AS REG  " + 
                             "       LEFT JOIN NULLID.RNT_TIPO_REGLAMENTACION AS TREG ON        TREG.ID = REG.ID_TIPO_REGLAMENTACION  " +
                             "       LEFT JOIN NULLID.RNT_NORMATIVA AS NORM ON      NORM.ID_REGLAMENTACION = REG.ID   " +
-                            "     --LEFT JOIN NULLID.RNT_AUTORIZACION AS AUT ON      AUT.ID_NORMATIVA = NORM.ID  " +
+
                             "       LEFT JOIN NULLID.RNT_NORMATIVA_REGISTRO AS NREG ON      NREG.ID_NORMATIVA = NORM.ID " +
                             "       LEFT JOIN NULLID.RNT_NORMATIVA_ITEM AS NITEM ON       NITEM.ID_NORMATIVA_REGISTRO = NREG.ID   " +
                             "       LEFT JOIN NULLID.RNT_NORMATIVA_ITEM_DATA AS NITEMDAT ON       NITEMDAT.ID_NORMATIVA_ITEM = NITEM.ID  " +
                             " where    NORM.DESCRIPTOR= 'antiguedad_marco_geografico_tipo_vehiculo'      " + 
-                            "  AND NORM.RNT_LABEL = 'Antigüedad de Ingreso por marco geográfico y tipo de vehículo'   " +    
-                            "--AND AUT.ESTADO = 0      " +
+                            //"  AND NORM.RNT_LABEL = 'Antigüedad de Ingreso por marco geográfico y tipo de vehículo'   " +    
                             "  AND NITEM.RNT_KEY = 'antiguedad_maxima'  " +        
-                            "  AND (REG.NOMBRE= ?) " + 
-                        // "   and (REG.ID=7 or REG.NOMBRE='DTO 212/92 - TTE PUBLICO (TAXIS B/T/E) > RENOVACIÓN DE MATERIAL') " + 
-                            " AND EXISTS (SELECT NREG2.id FROM RNT_NORMATIVA_REGISTRO NREG2 " +
-                            "         LEFT OUTER JOIN RNT_NORMATIVA_ITEM NITEM2 ON NITEM2.ID_NORMATIVA_REGISTRO = NREG2.id" +
-                            "         LEFT OUTER JOIN RNT_NORMATIVA_ITEM_DATA NITEMDAT2 ON NITEMDAT2.ID_NORMATIVA_ITEM = NITEM2.id" +
-                            "             WHERE NREG2.id=NREG.id AND NITEM2.rnt_key = 'tipos_vehiculo' AND NITEMDAT2.value =?)   " +    
-                            " AND EXISTS (SELECT NREG3.id FROM RNT_NORMATIVA_REGISTRO NREG3 " +
-                            "          LEFT OUTER JOIN RNT_NORMATIVA_ITEM NITEM3 ON NITEM3.ID_NORMATIVA_REGISTRO = NREG3.id" +
-                            "         LEFT OUTER JOIN RNT_NORMATIVA_ITEM_DATA NITEMDAT3 ON NITEMDAT3.ID_NORMATIVA_ITEM = NITEM3.id    " +      
-                            "         WHERE NREG3.id=NREG.id AND NITEM3.rnt_key = 'marco_geografico' AND NITEMDAT3.value = ?)	" 
-                            let anioPorTipoDeVeviculo = ibmdb.query(query,[reglamentacion,idtipoVehiculoFiltrado])
-                        return anioPorTipoDeVeviculo[0]
+                            //"  AND (REG.NOMBRE='DTO 212/92 - TTE PUBLICO (TAXIS B/T/E) > RENOVACIÓN DE MATERIAL') " + 
+                            "  AND (REG.ID= ? ) " + 
+                            " AND EXISTS (SELECT NREG2.id FROM  NULLID.RNT_NORMATIVA_REGISTRO NREG2 " +
+                            "         LEFT OUTER JOIN  NULLID.RNT_NORMATIVA_ITEM NITEM2 ON NITEM2.ID_NORMATIVA_REGISTRO = NREG2.id" +
+                            "         LEFT OUTER JOIN  NULLID.RNT_NORMATIVA_ITEM_DATA NITEMDAT2 ON NITEMDAT2.ID_NORMATIVA_ITEM = NITEM2.id" +
+                            "             WHERE NREG2.id=NREG.id AND NITEM2.rnt_key = 'tipos_vehiculo' AND NITEMDAT2.\"VALUE\" =?)   " +    
+                            " AND EXISTS (SELECT NREG3.id FROM NULLID.RNT_NORMATIVA_REGISTRO NREG3 " +
+                            "          LEFT OUTER JOIN  NULLID.RNT_NORMATIVA_ITEM NITEM3 ON NITEM3.ID_NORMATIVA_REGISTRO = NREG3.id" +
+                            "         LEFT OUTER JOIN  NULLID.RNT_NORMATIVA_ITEM_DATA NITEMDAT3 ON NITEMDAT3.ID_NORMATIVA_ITEM = NITEM3.id    " +      
+                            "         WHERE NREG3.id=NREG.id AND NITEM3.rnt_key = 'marco_geografico' AND NITEMDAT3.\"VALUE\" = ?)	" 
+                          
+                           let anioPorTipoDeVeviculo = ibmdb.query(query,[idreglamentacion,idtipoVehiculoFiltrado,region])
+                        return anioPorTipoDeVeviculo[0].VALUE
                     
                 //  let anioPorTipoDeVeviculo = ibmdb.query("SELECT NULLID.GET_ANTIGUEDAD_BY_TIPO_VEHICULO (?) AS ANTIGUEDAD FROM \"SYSIBM\".DUAL",[tipoVehiculoFiltrado])
         }
