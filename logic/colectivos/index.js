@@ -13,7 +13,7 @@ module.exports = {
             servicios: []
         }
         let servicios = colectivosRepository.getAutorizacionPorEmpresaAndPersonaTramiteInscripcionTaxiColectivo(id_region,rut_empresa,rut_solicitante,idtramite)
-        if(!Array.isArray(servicios)) {
+        if(!Array.isArray(servicios)  || servicios.length==0) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios

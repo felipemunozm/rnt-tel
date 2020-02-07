@@ -16,7 +16,7 @@ module.exports = {
             servicios: []
         }
         let servicios = taxisRepository.getServiciosVigentesInscritosPorRutResponsable(rut_responsable)
-        if(!Array.isArray(servicios)) {
+        if(!Array.isArray(servicios)  || servicios.length==0) {
             response.estado = 'RECHAZADO'
             response.mensaje = 'Usted no se encuentra habilitado en el Registro Nacional de Transportes para realizar este Trámite, dirígase a la Seremitt mas cercana.'
             delete response.servicios
@@ -62,7 +62,7 @@ module.exports = {
             servicios: []
         }
         let servicios = taxisRepository.getServiciosVigentesInscritosPorRutResponsableAndRutMandatario(rut_responsable, rut_mandatario)
-        if(!Array.isArray(servicios)) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = 'RECHAZADO'
             response.mensaje = 'Usted no se encuentra habilitado en el Registro Nacional de Transportes para realizar este Trámite, dirígase a la Seremitt mas cercana.'
             delete response.servicios
@@ -108,7 +108,7 @@ module.exports = {
             servicios: []
         }
         let servicios = taxisRepository.findServiciosByRepresentanteLegalAndEmpresa(rut_empresa, rut_representante_legal)
-        if(!Array.isArray(servicios)) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = 'RECHAZADO'
             response.mensaje = 'Usted no se encuentra habilitado en el Registro Nacional de Transportes para realizar este Trámite, dirígase a la Seremitt mas cercana.'
             delete response.servicios
@@ -152,7 +152,7 @@ module.exports = {
             servicios: []
         }
         let servicios = taxisRepository.findServiciosByMandatarioAndRepresentanteAndEmpresa(rut_empresa, rut_representante, rut_solicitante)
-        if(!Array.isArray(servicios)) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = 'RECHAZADO'
             response.mensaje = 'Usted no se encuentra habilitado en el Registro Nacional de Transportes para realizar este Trámite, dirígase a la Seremitt mas cercana.'
             delete response.servicios
@@ -202,7 +202,7 @@ module.exports = {
             servicios: []
         }
         let servicios =   taxisRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioTaxis(id_region,rut_representante,rut_solicitante,idtramite)
-        if(!Array.isArray(servicios)) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
@@ -234,7 +234,7 @@ module.exports = {
             servicios: []
         }
         let servicios =   taxisRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicioTaxis(id_region,rut_solicitante,idtramite)
-        if(!Array.isArray(servicios)) {
+        if(!Array.isArray(servicios) || servicios.length==0) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios

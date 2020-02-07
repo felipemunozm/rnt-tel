@@ -13,7 +13,7 @@ module.exports = {
             servicios: []
         }
         let servicios =  privadoRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioPrivado(id_region,rut_representante,rut_solicitante,idtramite)
-        if(!Array.isArray(servicios)) {
+        if(!Array.isArray(servicios)  || servicios.length==0) {
             response.estado = servicios.estado
             response.mensaje = servicios.mensaje
             delete response.servicios
