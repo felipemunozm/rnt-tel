@@ -308,6 +308,8 @@ module.exports = {
 
             try {        
                 let ppu = inputValidarFlota.lstPpuRut[i].ppu
+                let tipoingreso=inputValidarFlota.lstPpuRut[i].tipoingreso
+                let ppu_reemplaza=inputValidarFlota.lstPpuRut[i].ppu_reemplaza
                 let srceiResponse = await commons.consumoServicioRegistroCivil(ppu);
                 let sgprtResponse = await commons.consumoServicioSgprt(ppu);
 
@@ -332,7 +334,9 @@ module.exports = {
                 }
 
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
-                let dataRNT = await taxisRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi,inputValidarFlota.tipoingreso)
+                let dataRNT = await taxisRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi,tipoingreso)
+                let dataRNTSaliente = await taxisRepository.findInscripcionRNTDataSaliente(inputValidarFlota.folio, inputValidarFlota.region,ppu_reemplaza , srceiResponse.return.tipoVehi,tipoingreso)
+              
                 log.trace('DataRNT para PPU ' + ppu + ": " + JSON.stringify(dataRNT))
                 //otra consulta para determinar la Antiguedad Maxima permitida por tipo de vehiculo en el folio donde se desea inscribir
                 log.trace('FechaPRT: ' + sgprtResponse.return.revisionTecnica.fechaVencimiento)
@@ -365,10 +369,27 @@ module.exports = {
                         rutPropietario: inputValidarFlota.lstPpuRut[i].rut != undefined ? inputValidarFlota.lstPpuRut[i].rut : "",
                         regionInscripcion: inputValidarFlota.region != undefined ? inputValidarFlota.region : "",
                         ppu: inputValidarFlota.lstPpuRut[i].ppu != undefined ? inputValidarFlota.lstPpuRut[i].ppu : "",
-                        ppureemplaza: inputValidarFlota.ppureemplaza != undefined ? inputValidarFlota.ppureemplaza : "",
+                      //  ppureemplaza: inputValidarFlota.ppureemplaza != undefined ? inputValidarFlota.ppureemplaza : "",
+                        ppureemplaza: inputValidarFlota.lstPpuRut[i].ppu_reemplaza != undefined ? inputValidarFlota.lstPpuRut[i].ppu_reemplaza : "",
                         fechaSolicitud: (new Date()).getTime()
+                    } ,
+                    rntsaliente: {
+                        estado: dataRNTSaliente.estado != undefined ? dataRNTSaliente.estado : 0,//No Encontrado = 0, Cancelado Definitivo = 3, VIGENTE = 1, Cancelado Temporal = 2 
+                        tipoCancelacion: dataRNTSaliente.tipoCancelacion != undefined ? dataRNTSaliente.tipoCancelacion : "",
+                        id_tipoCancelacion: dataRNTSaliente.id_tipoCancelacion != undefined ? dataRNTSaliente.id_tipoCancelacion : "", // psalas
+                        regionOrigen: dataRNTSaliente.regionOrigen != undefined ? dataRNTSaliente.regionOrigen : inputValidarFlota.region,
+                        antiguedadMaxima: dataRNTSaliente.antiguedadMaxima != undefined ? dataRNTSaliente.antiguedadMaxima : 0,
+                        lstTipoVehiculoPermitidos: dataRNTSaliente.lstTipoVehiculoPermitidos != undefined ? dataRNTSaliente.lstTipoVehiculoPermitidos : ["AUTOMOVIL"],
+                        categoria: dataRNTSaliente.categoria != undefined ? dataRNTSaliente.categoria : "",
+                        id_tipoCategoria: dataRNTSaliente.id_tipoCategoria != undefined ? dataRNTSaliente.id_tipoCategoria : "",
+                        reemplazado_por: dataRNTSaliente.reemplazado_por != undefined ? dataRNTSaliente.reemplazado_por : ""
+                        
                     }
+   
                 }
+                
+       
+
                 log.debug("datosVehiculo PPU: " + datosVehiculo.solicitud.ppu)
                 
                 if (datosVehiculo.registrocivil.tipoVehiculo == "AUTOMOVIL") {
@@ -401,7 +422,7 @@ module.exports = {
                 } else {
                     lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada",listaRechazos: continua.lstRechazos})
                 }
-
+             
                 log.debug("datosVehiculo PPU: " + datosVehiculo.solicitud.ppu)
                 
                 continua.lstRechazos = []
@@ -488,7 +509,7 @@ module.exports = {
                         rutPropietario: inputValidarFlota.lstPpuRut[i].rut != undefined ? inputValidarFlota.lstPpuRut[i].rut : "",
                         regionInscripcion: inputValidarFlota.region != undefined ? inputValidarFlota.region : "",
                         ppu: inputValidarFlota.lstPpuRut[i].ppu != undefined ? inputValidarFlota.lstPpuRut[i].ppu : "",
-                        ppureemplaza: inputValidarFlota.ppureemplaza != undefined ? inputValidarFlota.ppureemplaza : "",
+                        ppureemplaza: inputValidarFlota.lstPpuRut[i].ppu_reemplaza != undefined ? inputValidarFlota.lstPpuRut[i].ppu_reemplaza : "",
                         fechaSolicitud: (new Date()).getTime()
                     }
                 }

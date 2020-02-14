@@ -607,7 +607,7 @@ module.exports = {
         "V.TIPO_CANCELACION AS TIPO_CANCELACION,   " +
         "V.CATEGORIA AS CATEGORIA,   " +
         "V.REGION as CODIGO_REGION ,  " +
-        "V.ID_TIPO_CATEGORIA  " +
+        "V.ID_TIPO_CATEGORIA  ,  V.REEMPLAZADO " +
         "from NULLID.RNT_STAT_VEHICULOS_VIEW V   " +
         "where V.ppu= ?  " 
         return ibmdb.query(query,[ppu])
@@ -702,7 +702,7 @@ module.exports = {
                 if (ModalidaddelServicio[0].MODALIDAD=="TAXI COLECTIVO" && tipodeingresoFiltrado=="RENUEVA TU TAXI")
                         {
                         //let reglamentacion = "DTO 212/92 - TTE PUBLICO (TAXI COLECTIVO) > RENUEVA TU TAXI"
-                          let idreglamentacion =19
+                           idreglamentacion =19
                         }
                 else
                      {

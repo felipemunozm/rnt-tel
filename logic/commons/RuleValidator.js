@@ -32,6 +32,10 @@ module.exports = {
                     documentos.docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
                     //Documentos adicionales opcionales BUSES
                     documentos.docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                } if (tipoValidacion == "TAXIS") {
+                   
+                    documentos.docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
+                                         {codigo:config.documents.V03.code, descripcion: config.documents.V03.description})
                 }
                 
             }else{
@@ -46,23 +50,43 @@ module.exports = {
                         //Documentos adicionales opcionales BUSES
                         documentos.docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
                     }
-                }
-                if(resultadoRutPerteneceComunidad && resultadoComunidad ) {
-                    log.debug("\tRevisando Comunidad")
-                    if (tipoValidacion == "BUSES") {
-                        //Documentos obligatorios
-                        documentos.docs.push({codigo: config.documents.V21.code, descripcion: config.documents.V21.description})
-                        documentos.docs.push({codigo: config.documents.V36.code, descripcion: config.documents.V36.description})
-                        documentos.docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
-                        documentos.docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
-                        //Documentos adicionales opcionales
-                        documentos.docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                    if (tipoValidacion == "TAXIS") {
+                   
+                        documentos.docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
+                                             {codigo:config.documents.V03.code, descripcion: config.documents.V03.description})
                     }
                 }
+                else {
+
+                    if(resultadoRutPerteneceComunidad && resultadoComunidad ) {
+                        log.debug("\tRevisando Comunidad")
+                        if (tipoValidacion == "BUSES") {
+                            //Documentos obligatorios
+                            documentos.docs.push({codigo: config.documents.V21.code, descripcion: config.documents.V21.description})
+                            documentos.docs.push({codigo: config.documents.V36.code, descripcion: config.documents.V36.description})
+                            documentos.docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
+                            documentos.docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
+                            //Documentos adicionales opcionales
+                            documentos.docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                        }
+                        if (tipoValidacion == "TAXIS") {
+                       
+                            documentos.docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
+                                                 {codigo:config.documents.V03.code, descripcion: config.documents.V03.description})
+                        }
+                    } else
+                    {
+                        documentos.continua.estado = false
+                        documentos.continua.lstRechazos.push('Rut Propietario no coincide con Registro Civil')
+
+                    }
+                }
+                
             }
 
-            documentos.docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
-            {codigo:config.documents.V03.code, descripcion: config.documents.V03.description})
+          
+           // documentos.docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
+            //    {codigo:config.documents.V03.code, descripcion: config.documents.V03.description}) 
             
             //VALIDACIÓN DE ANTIGUEDAD
             let validacionAntiguedad = datosVehiculo.rnt.antiguedadMaxima < datosVehiculo.registrocivil.antiguedad ? true : false;
@@ -134,33 +158,45 @@ module.exports = {
             if (tipoValidacion == "TAXIS") {
 
                // datosVehiculo.rnt.estado == 3 ? true : false;
-                if(datosVehiculo.rnt.estado == 3 ) 
+
+                if (datosVehiculo.rnt.estado==1 && datosVehiculo.rnt.tipoCancelacion=='vehiculo Existente en RNT')
                 {
+                    documentos.continua.estado = false
+                    documentos.continua.lstRechazos.push('Rechazo por Existencia en RNT')
+
+                }
+                else if(datosVehiculo.rntsaliente.estado == 3 ) 
+                {
+                    if(datosVehiculo.rntsaliente.reemplazado_por !="" ) 
+                    {
+                        documentos.continua.estado = false
+                        documentos.continua.lstRechazos.push('Rechazo PPU Saliente ya ha sido reemplazada')
+                    }
 
                 }
                 else 
                 {
-                    if(datosVehiculo.rnt.estado == 2 ) 
+                    if(datosVehiculo.rntsaliente.estado == 2 ) 
                     {
-                        let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.id_tipoCancelacion == "7" ? true : false; //psalas traslado
-                        let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.id_tipoCancelacion == "61" ? true : false; //psalas 
-                        let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.id_tipoCategoria != "1" ? true : false; //publico
-                        let resultadoRNTCanceladoTrasladoRegion = datosVehiculo.rnt.regionOrigen != datosVehiculo.solicitud.regionInscripcion ? true : false;
-                        if(!resultadoRNTCanceladoTipoTraslado ) {
-
-                            documentos.continua.estado = false
-                            documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Traslado')
+                        let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rntsaliente.id_tipoCancelacion == "7" ? true : false; //psalas traslado
+                      //para taxis no aplica  let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rntsaliente.id_tipoCancelacion == "61" ? true : false; //psalas 
+                       // let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rntsaliente.id_tipoCategoria != "1" ? true : false; //publico
+                        let resultadoRNTCanceladoTrasladoRegion = datosVehiculo.rntsaliente.regionOrigen != datosVehiculo.solicitud.regionInscripcion ? true : false;
+                        
+                        if(resultadoRNTCanceladoTipoTraslado ) {
+                            if(!resultadoRNTCanceladoTrasladoRegion) {
+                                documentos.continua.estado = false
+                                documentos.continua.lstRechazos.push('Rechazo por Region de tralado PPU Saliente es la misma a la region del servicio al cual se inscribe')
+                              }
+                           
                         }
-                       
-                         if(!resultadoRNTCanceladoTrasladoRegion) {
-                                documentos.continua.estado = false
-                               documentos.continua.lstRechazos.push('Rechazo por Region de tralado es la misma a la region del servicio al cual se inscribe')
-                             }
-                        if(resultadoRNTCanceladoTipoCategoria && !resultadoRNTCanceladoCategoriaAnterior) {
-                                documentos.continua.estado = false
-                                documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
-                            }
-                    
+                         else    
+                              {
+                                    documentos.continua.estado = false
+                                    documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion PPU Saliente')
+                                      
+                               } 
+                                      
                     }
 
                 }

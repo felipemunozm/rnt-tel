@@ -50,29 +50,72 @@ module.exports = {
 
         let vehiculoExiste = await commons.checkVehiculoByPPU(ppu).length > 0 ? true : false
         let antiguedadMaxima = await commons.findAntiguedadMaximaByTipoVehiculo(tipoVehiculoSrcei,folio,region,tipoingreso)
-        if(vehiculoExiste) {
-            //diseñar response con tipos de cancelacion
-
-        //    *****aqui voy **********************************
-       // let v_tipoCancelacion = await commons.findtipo(ppu).length > 0 ? true : false
+        if(!vehiculoExiste) {
+           
      
             //buscar info de vehiculo:
-            let infoRNT = await commons.findInfoVehiculoParaInscripcion(ppu)
+           // let infoRNT = await commons.findInfoVehiculoParaInscripcion(ppu)
             
       
-         //   if (infoRNT[0].ESTADO==2)
-         //   {
-          
               
+            response = {
+                estado: 0,
+                tipoCancelacion: 'vehiculo no existe en RNT' ,
+               // id_tipoCancelacion: infoRNT[0].TIPO_CANCELACION,
+               // regionOrigen: infoRNT[0].CODIGO_REGION,
+                antiguedadMaxima: antiguedadMaxima
+              //  lstTipoVehiculoPermitidos: commons.findLstTipoVehiculoPermitidoByFolioRegion(folio, region),
+               // categoria: infoRNT[0].CATEGORIA ,
+               // id_tipoCategoria:infoRNT[0].ID_TIPO_CATEGORIA
+            }
+       // }
+
+            
+        } else {
+            //diseñar response con vehiculo no encontrado
+            response = {
+                estado: '1',
+                tipoCancelacion: 'vehiculo Existente en RNT',
+                id_tipoCancelacion : undefined,
+                regionOrigen: undefined,
+                antiguedadMaxima:antiguedadMaxima, //psalas
+                lstTipoVehiculoPermitidos: []
+                
+            }
+        }
+
+        return response
+    } ,
+    findInscripcionRNTDataSaliente: async (folio, region, ppu, tipoVehiculoSrcei,tipoingreso) => {
+        let response = {
+            estado: '',
+            tipoCancelacion: '',
+            id_tipoCancelacion:'', 
+            regionOrigen: '',
+            antiguedadMaxima: '',
+            lstTipoVehiculoPermitidos: [],
+            categoria: '' ,
+            id_tipoCategoria:'',
+            reemplazado_por:''
+        }
+
+        let vehiculoExiste = await commons.checkVehiculoByPPU(ppu).length > 0 ? true : false
+       // let antiguedadMaxima = await commons.findAntiguedadMaximaByTipoVehiculo(tipoVehiculoSrcei,folio,region,tipoingreso)
+        if(vehiculoExiste) {
+         
+            //buscar info de vehiculo:
+            let infoRNT = await commons.findInfoVehiculoParaInscripcion(ppu)
+
             response = {
                 estado: infoRNT[0].ESTADO,
                 tipoCancelacion: infoRNT[0].TIPO_CANCELACION,
                 id_tipoCancelacion : infoRNT[0].ID_CANCELACION,
                 regionOrigen: infoRNT[0].CODIGO_REGION,
-                antiguedadMaxima: antiguedadMaxima,
+                antiguedadMaxima: '', 
                 lstTipoVehiculoPermitidos: commons.findLstTipoVehiculoPermitidoByFolioRegion(folio, region),
                 categoria: infoRNT[0].CATEGORIA ,
-                id_tipoCategoria:infoRNT[0].ID_TIPO_CATEGORIA
+                id_tipoCategoria:infoRNT[0].ID_TIPO_CATEGORIA ,
+                reemplazado_por:infoRNT[0].REEMPLAZADO
             }
        // }
 
