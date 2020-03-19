@@ -5,10 +5,10 @@ log4js.configure({
             type: 'stdout',
             layout: {
                 type: 'coloured'
-                //type: 'pattern',
-                //pattern: '%s [%p] %m'
+                    //type: 'pattern',
+                    //pattern: '%s [%p] %m'
             }
-        }    
+        }
     },
     categories: {
         default: {
@@ -21,5 +21,5 @@ log4js.configure({
     pm2InstanceVar: 'INSTANCE_ID'
 })
 const logger = log4js.getLogger()
-logger.level = 'debug'
+logger.level = process.env.LOG_LEVEL
 module.exports = logger

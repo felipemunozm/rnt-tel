@@ -10,7 +10,7 @@ module.exports = {
         //-------------------------------------------------------------------------------------------------------------------
 
         try {
-            documentos = {ppu: datosVehiculo.solicitud.ppu ,docs: [], docsOpcionales: [], continua: {estado: [], lstRechazos: []}}
+            documentos = { ppu: datosVehiculo.solicitud.ppu, docs: [], docsOpcionales: [], continua: { estado: [], lstRechazos: [] } }
             documentos.continua.estado = true
 
             //VALIDACIÓN PROPIETARIO
@@ -19,137 +19,132 @@ module.exports = {
             //revisar meratenencia para agregar documentos a solicitar
             let resultadoMerotenedor = datosVehiculo.solicitud.rutPropietario == datosVehiculo.registrocivil.rutMerotenedor ? true : false;
             let resultadoLeasing = datosVehiculo.registrocivil.leasing == true ? true : false
-                    
+
             //revisar Comunidad para agregar documentos a solicitar
             let resultadoRutPerteneceComunidad = datosVehiculo.registrocivil.rutPropietario.includes(datosVehiculo.solicitud.rutPropietario) ? true : false;
             let resultadoComunidad = datosVehiculo.registrocivil.comunidad == true ? true : false
-                    
+
             if (validacionrutPropietario) {
                 log.debug("\tRevisando Propietario")
                 if (tipoValidacion == "BUSES") {
                     //Documentos obligatorios BUSES
-                    documentos.docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
-                    documentos.docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
-                    //Documentos adicionales opcionales BUSES
-                    documentos.docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
-                } if (tipoValidacion == "TAXIS") {
-                   
-                    documentos.docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
-                                         {codigo:config.documents.V03.code, descripcion: config.documents.V03.description})
+                    documentos.docs.push({ codigo: config.documents.V28.code, descripcion: config.documents.V28.description })
+                    documentos.docs.push({ codigo: config.documents.V35.code, descripcion: config.documents.V35.description })
+                        //Documentos adicionales opcionales BUSES
+                    documentos.docsOpcionales.push({ codigo: config.documents.V40.code, descripcion: config.documents.V40.description })
                 }
-                
-            }else{
-                if(resultadoLeasing && resultadoMerotenedor){
+                if (tipoValidacion == "TAXIS") {
+
+                    documentos.docs.push({ codigo: config.documents.V02.code, descripcion: config.documents.V02.description }, { codigo: config.documents.V03.code, descripcion: config.documents.V03.description })
+                }
+
+            } else {
+                if (resultadoLeasing && resultadoMerotenedor) {
                     log.debug("\tRevisando Merotenedor")
                     if (tipoValidacion == "BUSES") {
                         //Documentos obligatorios BUSES
-                        documentos.docs.push({codigo: config.documents.V03.code, descripcion: config.documents.V03.description})
-                        documentos.docs.push({codigo: config.documents.V05.code, descripcion: config.documents.V05.description})
-                        documentos.docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
-                        documentos.docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
-                        //Documentos adicionales opcionales BUSES
-                        documentos.docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                        documentos.docs.push({ codigo: config.documents.V03.code, descripcion: config.documents.V03.description })
+                        documentos.docs.push({ codigo: config.documents.V05.code, descripcion: config.documents.V05.description })
+                        documentos.docs.push({ codigo: config.documents.V28.code, descripcion: config.documents.V28.description })
+                        documentos.docs.push({ codigo: config.documents.V35.code, descripcion: config.documents.V35.description })
+                            //Documentos adicionales opcionales BUSES
+                        documentos.docsOpcionales.push({ codigo: config.documents.V40.code, descripcion: config.documents.V40.description })
                     }
                     if (tipoValidacion == "TAXIS") {
-                   
-                        documentos.docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
-                                             {codigo:config.documents.V03.code, descripcion: config.documents.V03.description})
-                    }
-                }
-                else {
 
-                    if(resultadoRutPerteneceComunidad && resultadoComunidad ) {
+                        documentos.docs.push({ codigo: config.documents.V02.code, descripcion: config.documents.V02.description }, { codigo: config.documents.V03.code, descripcion: config.documents.V03.description })
+                    }
+                } else {
+
+                    if (resultadoRutPerteneceComunidad && resultadoComunidad) {
                         log.debug("\tRevisando Comunidad")
                         if (tipoValidacion == "BUSES") {
                             //Documentos obligatorios
-                            documentos.docs.push({codigo: config.documents.V21.code, descripcion: config.documents.V21.description})
-                            documentos.docs.push({codigo: config.documents.V36.code, descripcion: config.documents.V36.description})
-                            documentos.docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
-                            documentos.docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
-                            //Documentos adicionales opcionales
-                            documentos.docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                            documentos.docs.push({ codigo: config.documents.V21.code, descripcion: config.documents.V21.description })
+                            documentos.docs.push({ codigo: config.documents.V36.code, descripcion: config.documents.V36.description })
+                            documentos.docs.push({ codigo: config.documents.V28.code, descripcion: config.documents.V28.description })
+                            documentos.docs.push({ codigo: config.documents.V35.code, descripcion: config.documents.V35.description })
+                                //Documentos adicionales opcionales
+                            documentos.docsOpcionales.push({ codigo: config.documents.V40.code, descripcion: config.documents.V40.description })
                         }
                         if (tipoValidacion == "TAXIS") {
-                       
-                            documentos.docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
-                                                 {codigo:config.documents.V03.code, descripcion: config.documents.V03.description})
+
+                            documentos.docs.push({ codigo: config.documents.V02.code, descripcion: config.documents.V02.description }, { codigo: config.documents.V03.code, descripcion: config.documents.V03.description })
                         }
-                    } else
-                    {
+                    } else {
                         documentos.continua.estado = false
                         documentos.continua.lstRechazos.push('Rut Propietario no coincide con Registro Civil')
 
                     }
                 }
-                
+
             }
 
-          
-           // documentos.docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
+
+            // documentos.docs.push({codigo : config.documents.V02.code, descripcion: config.documents.V02.description},
             //    {codigo:config.documents.V03.code, descripcion: config.documents.V03.description}) 
-            
+
             //VALIDACIÓN DE ANTIGUEDAD
             let validacionAntiguedad = datosVehiculo.rnt.antiguedadMaxima < datosVehiculo.registrocivil.antiguedad ? true : false;
 
             if (validacionAntiguedad) {
                 documentos.continua.estado = false
-                documentos.continua.lstRechazos.push('Vehículo rechazado por antigüedad')   
+                documentos.continua.lstRechazos.push('Vehículo rechazado por antigüedad')
             }
-            
+
             //VALIDACIÓN DE SGPRT
-            let validacionResultadoRT = datosVehiculo.sgprt.resultadoRT  == "Aprobada" ? true :false;
+            let validacionResultadoRT = datosVehiculo.sgprt.resultadoRT == "Aprobada" ? true : false;
             let validacionVigenciaRT = datosVehiculo.sgprt.fechaVencimientoRT > datosVehiculo.solicitud.fechaSolicitud ? true : false;
 
             if (!validacionVigenciaRT && !validacionResultadoRT) {
                 if (tipoValidacion == "BUSES") {
                     //Documentos obligatorios
-                    documentos.docs.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description},
-                                {codigo: config.documents.V08.code, descripcion: config.documents.V08.description}) 
-                    //Documentos adicionales opcionales
-                    documentos.docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
-                } 
+                    documentos.docs.push({ codigo: config.documents.V13.code, descripcion: config.documents.V13.description }, { codigo: config.documents.V08.code, descripcion: config.documents.V08.description })
+                        //Documentos adicionales opcionales
+                    documentos.docsOpcionales.push({ codigo: config.documents.V19.code, descripcion: config.documents.V19.description })
+                }
             }
 
             //VALIDACIÓN TIPO DE VEHICULO
             if (tipoValidacion == "BUSES") {
-                let validacionTVNorma = datosVehiculo.rnt.lstTipoVehiculoPermitidos.includes(datosVehiculo.registrocivil.tipoVehiculo) ? true: false;
+                let validacionTVNorma = datosVehiculo.rnt.lstTipoVehiculoPermitidos.includes(datosVehiculo.registrocivil.tipoVehiculo) ? true : false;
                 log.debug("\tRechazo BUS TV NORMA")
                 if (validacionTVNorma) {
                     documentos.continua.estado = false
                     documentos.continua.lstRechazos.push('Rechazo por Tipo Vehiculo en Norma')
                 }
             }
-                
+
             //VALIDACIONES RNT
             //verificar condicion de rechazo por RNT
             // psalas 20-01-2020
-           //Si se encuentra la PPU, debe estar cancelado Definitivo (3). 
-           //En caso de Cancelaciones Temporales (2), puede ser por "Cancelado por Traslado de region", 
-           //y se debe comparar la region de tralado con la region del servicio al cual se inscribe. 
-           //Y si corresponde a "Cancelado por cambio de Categoria", validar que la categoria sea distinta a Público.
+            //Si se encuentra la PPU, debe estar cancelado Definitivo (3). 
+            //En caso de Cancelaciones Temporales (2), puede ser por "Cancelado por Traslado de region", 
+            //y se debe comparar la region de tralado con la region del servicio al cual se inscribe. 
+            //Y si corresponde a "Cancelado por cambio de Categoria", validar que la categoria sea distinta a Público.
 
-           
-           // let resultadoRNTNoEncontrado = datosVehiculo.rnt.estado == 0 ? true : false;
-           // log.debug("\tRechazo " + tipoValidacion + " RNT")
 
-           // if(!resultadoRNTNoEncontrado)  {
+            // let resultadoRNTNoEncontrado = datosVehiculo.rnt.estado == 0 ? true : false;
+            // log.debug("\tRechazo " + tipoValidacion + " RNT")
+
+            // if(!resultadoRNTNoEncontrado)  {
             //    documentos.continua.estado = false
             //    documentos.continua.lstRechazos.push('Rechazo por existir en RNT previamente')
-           // }
+            // }
 
             if (tipoValidacion == "BUSES") {
                 let resultadoRNTCanceladoTraslado = datosVehiculo.rnt.estado == 2 ? true : false;
                 let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.tipoCancelacion == "TRASLADO DE REGIÓN" ? true : false;
                 let resultadoRNTCanceladoTrasladoRegion = datosVehiculo.rnt.regionOrigen == datosVehiculo.solicitud.regionInscripcion ? true : false;
-                if(resultadoRNTCanceladoTraslado && resultadoRNTCanceladoTipoTraslado && resultadoRNTCanceladoTrasladoRegion) {
+                if (resultadoRNTCanceladoTraslado && resultadoRNTCanceladoTipoTraslado && resultadoRNTCanceladoTrasladoRegion) {
                     documentos.continua.estado = false
                     documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Traslado')
                 }
-                    
+
                 let resultadoRNTCanceladoCategoria = datosVehiculo.rnt.estado == 2 ? true : false;
                 let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.tipoCancelacion == "CANCELACIÓN POR CAMBIO DE CATEGORÍA DE TRANSPORTE" ? true : false;
                 let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.categoria != "PÚBLICO" ? true : false;
-                if(resultadoRNTCanceladoCategoria && resultadoRNTCanceladoTipoCategoria && resultadoRNTCanceladoCategoriaAnterior) {
+                if (resultadoRNTCanceladoCategoria && resultadoRNTCanceladoTipoCategoria && resultadoRNTCanceladoCategoriaAnterior) {
                     documentos.continua.estado = false
                     documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
                 }
@@ -157,66 +152,57 @@ module.exports = {
             // psalas 20-01-2020
             if (tipoValidacion == "TAXIS") {
 
-               // datosVehiculo.rnt.estado == 3 ? true : false;
+                // datosVehiculo.rnt.estado == 3 ? true : false;
 
-                if (datosVehiculo.rnt.estado==1 && datosVehiculo.rnt.tipoCancelacion=='vehiculo Existente en RNT')
-                {
+                if (datosVehiculo.rnt.estado == 1 && datosVehiculo.rnt.tipoCancelacion == 'vehiculo Existente en RNT') {
                     documentos.continua.estado = false
                     documentos.continua.lstRechazos.push('Rechazo por Existencia en RNT')
 
-                }
-                else if(datosVehiculo.rntsaliente.estado == 3 ) 
-                {
-                    if(datosVehiculo.rntsaliente.reemplazado_por !="" ) 
-                    {
+                } else if (datosVehiculo.rntsaliente.estado == 3) {
+                    if (datosVehiculo.rntsaliente.reemplazado_por != "") {
                         documentos.continua.estado = false
                         documentos.continua.lstRechazos.push('Rechazo PPU Saliente ya ha sido reemplazada')
                     }
 
-                }
-                else 
-                {
-                    if(datosVehiculo.rntsaliente.estado == 2 ) 
-                    {
+                } else {
+                    if (datosVehiculo.rntsaliente.estado == 2) {
                         let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rntsaliente.id_tipoCancelacion == "7" ? true : false; //psalas traslado
-                      //para taxis no aplica  let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rntsaliente.id_tipoCancelacion == "61" ? true : false; //psalas 
-                       // let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rntsaliente.id_tipoCategoria != "1" ? true : false; //publico
+                        //para taxis no aplica  let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rntsaliente.id_tipoCancelacion == "61" ? true : false; //psalas 
+                        // let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rntsaliente.id_tipoCategoria != "1" ? true : false; //publico
                         let resultadoRNTCanceladoTrasladoRegion = datosVehiculo.rntsaliente.regionOrigen != datosVehiculo.solicitud.regionInscripcion ? true : false;
-                        
-                        if(resultadoRNTCanceladoTipoTraslado ) {
-                            if(!resultadoRNTCanceladoTrasladoRegion) {
+
+                        if (resultadoRNTCanceladoTipoTraslado) {
+                            if (!resultadoRNTCanceladoTrasladoRegion) {
                                 documentos.continua.estado = false
                                 documentos.continua.lstRechazos.push('Rechazo por Region de tralado PPU Saliente es la misma a la region del servicio al cual se inscribe')
-                              }
-                           
+                            }
+
+                        } else {
+                            documentos.continua.estado = false
+                            documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion PPU Saliente')
+
                         }
-                         else    
-                              {
-                                    documentos.continua.estado = false
-                                    documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion PPU Saliente')
-                                      
-                               } 
-                                      
+
                     }
 
                 }
 
-              //  let resultadoRNTCanceladoTraslado = datosVehiculo.rnt.estado == 2 ? true : false;
-              //  let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.tipoCancelacion == "TRASLADO DE REGIÓN" ? true : false;
-                
-                
-               
-           
+                //  let resultadoRNTCanceladoTraslado = datosVehiculo.rnt.estado == 2 ? true : false;
+                //  let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.tipoCancelacion == "TRASLADO DE REGIÓN" ? true : false;
 
-               
-               // let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.tipoCancelacion == "CANCELACIÓN POR CAMBIO DE CATEGORÍA DE TRANSPORTE" ? true : false;
-             //  let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.id_tipoCancelacion == "61" ? true : false; //psalas 
-            //   let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.categoria != "PÚBLICO" ? true : false;
-             //  let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.id_categoria != "1" ? true : false;
-             //   if(resultadoRNTCanceladoCategoria && resultadoRNTCanceladoTipoCategoria && resultadoRNTCanceladoCategoriaAnterior) {
-             //       documentos.continua.estado = false
-             //       documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
-              //  }
+
+
+
+
+
+                // let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.tipoCancelacion == "CANCELACIÓN POR CAMBIO DE CATEGORÍA DE TRANSPORTE" ? true : false;
+                //  let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rnt.id_tipoCancelacion == "61" ? true : false; //psalas 
+                //   let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.categoria != "PÚBLICO" ? true : false;
+                //  let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rnt.id_categoria != "1" ? true : false;
+                //   if(resultadoRNTCanceladoCategoria && resultadoRNTCanceladoTipoCategoria && resultadoRNTCanceladoCategoriaAnterior) {
+                //       documentos.continua.estado = false
+                //       documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
+                //  }
             }
         } catch (e) {
             log.error("\tError buscando rechazo: " + e)
@@ -227,7 +213,7 @@ module.exports = {
 
         return documentos;
     },
-    consumoServicioSgprt: async (ppu) => {
+    consumoServicioSgprt: async(ppu) => {
         let sgprtResponse = [];
         let gases = false;
 
@@ -241,57 +227,49 @@ module.exports = {
                 log.debug('respuesta de gases no existe en sgprtResponse: ' + error)
                 if (sgprtResponse.return.tipoVehiculo == "BUS") {
                     gases = false;
-                }else{
+                } else {
                     gases = sgprtResponse.return.revisionGases.revisionGas.length != undefined && sgprtResponse.return.revisionGases.revisionGas.length > 2 ? true : false;
                 }
             }
-            
+
             log.trace('sgprtResponse: ' + JSON.stringify(sgprtResponse))
-            if (!gases) {
-                 //Documentos obligatorios
-                 sgprtResponse.return.docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
-                 //Documentos adicionales opcionales
-                 sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
-                 sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
-                 sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
-            }
-            else if (sgprtResponse.return.status === false || sgprtResponse.return.revisionTecnica.fechaVencimiento === undefined) {
+            if (!gases || (sgprtResponse.return.status === false || sgprtResponse.return.revisionTecnica.fechaVencimiento === undefined)) {
                 //Documentos obligatorios
-                sgprtResponse.return.docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
-                //Documentos adicionales opcionales
-                sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
-                sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
-                sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
+                sgprtResponse.return.docs.push({ codigo: config.documents.V11.code, descripcion: config.documents.V11.description })
+                    //Documentos adicionales opcionales
+                sgprtResponse.return.docsOpcionales.push({ codigo: config.documents.V13.code, descripcion: config.documents.V13.description })
+                sgprtResponse.return.docsOpcionales.push({ codigo: config.documents.V08.code, descripcion: config.documents.V08.description })
+                sgprtResponse.return.docsOpcionales.push({ codigo: config.documents.V19.code, descripcion: config.documents.V19.description })
             }
         } catch (e) {
             log.debug("\tError en: " + e)
-            //Documentos obligatorios
-            sgprtResponse.return.docs.push({codigo: config.documents.V11.code, descripcion: config.documents.V11.description})
-            //Documentos adicionales opcionales
-            sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V13.code, descripcion: config.documents.V13.description})
-            sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V08.code, descripcion: config.documents.V08.description})
-            sgprtResponse.return.docsOpcionales.push({codigo: config.documents.V19.code, descripcion: config.documents.V19.description})
+                //Documentos obligatorios
+            sgprtResponse.return.docs.push({ codigo: config.documents.V11.code, descripcion: config.documents.V11.description })
+                //Documentos adicionales opcionales
+            sgprtResponse.return.docsOpcionales.push({ codigo: config.documents.V13.code, descripcion: config.documents.V13.description })
+            sgprtResponse.return.docsOpcionales.push({ codigo: config.documents.V08.code, descripcion: config.documents.V08.description })
+            sgprtResponse.return.docsOpcionales.push({ codigo: config.documents.V19.code, descripcion: config.documents.V19.description })
         }
 
         return sgprtResponse;
     },
-    consumoServicioRegistroCivil: async (ppu) => {
+    consumoServicioRegistroCivil: async(ppu) => {
         let srceiResponse = []
 
         try {
             srceiResponse = await services.getPPUSRCeI(ppu)
             srceiResponse.return.docs = [];
             srceiResponse.return.docsOpcionales = [];
-            if(srceiResponse.return.status === false) {
+            if (srceiResponse.return.status === false) {
                 //Documentos obligatorios
-                srceiResponse.return.docs.push({codigo: config.documents.V12.code, descripcion: config.documents.V12.description})
-                srceiResponse.return.docs.push({codigo: config.documents.V23.code, descripcion: config.documents.V23.description})
-                srceiResponse.return.docs.push({codigo: config.documents.V39.code, descripcion: config.documents.V39.description})
-                //Documentos adicionales Obligatorios
-                srceiResponse.return.docs.push({codigo: config.documents.V28.code, descripcion: config.documents.V28.description})
-                srceiResponse.return.docs.push({codigo: config.documents.V35.code, descripcion: config.documents.V35.description})
-                //Documentos adicionales opcionales
-                srceiResponse.return.docsOpcionales.push({codigo: config.documents.V40.code, descripcion: config.documents.V40.description})
+                srceiResponse.return.docs.push({ codigo: config.documents.V12.code, descripcion: config.documents.V12.description })
+                srceiResponse.return.docs.push({ codigo: config.documents.V23.code, descripcion: config.documents.V23.description })
+                srceiResponse.return.docs.push({ codigo: config.documents.V39.code, descripcion: config.documents.V39.description })
+                    //Documentos adicionales Obligatorios
+                srceiResponse.return.docs.push({ codigo: config.documents.V28.code, descripcion: config.documents.V28.description })
+                srceiResponse.return.docs.push({ codigo: config.documents.V35.code, descripcion: config.documents.V35.description })
+                    //Documentos adicionales opcionales
+                srceiResponse.return.docsOpcionales.push({ codigo: config.documents.V40.code, descripcion: config.documents.V40.description })
             }
         } catch (error) {
             log.debug("\tError en: " + error)

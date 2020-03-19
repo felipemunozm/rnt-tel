@@ -21,17 +21,20 @@
   },
   "homepage": "https://github.com/felipemunozm/rnt-tel#readme",
   "dependencies": {
-    "ibm_db": "^2.6.1",
-    "json-rules-engine": "^4.1.0",
-    "koa": "^2.8.1",
+    "dotenv": "^8.2.0",
+    "ibm_db": "^2.6.4",
+    "json-rules-engine": "^5.0.3",
+    "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
-    "koa-router": "^7.4.0",
+    "koa-router": "^8.0.8",
     "koa-static": "^5.0.0",
-    "log4js": "^5.1.0",
-    "soap": "^0.29.0"
+    "lodash": "^4.17.15",
+    "log4js": "^6.1.2",
+    "npm-check-updates": "^4.0.4",
+    "soap": "^0.31.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.2.1"
+    "mocha": "^7.1.1"
   }
 }
