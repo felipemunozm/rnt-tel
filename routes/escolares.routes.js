@@ -72,7 +72,7 @@ router.get('/regiones/:ID_REGION/personas/:RUT_SOLICITANTE', {
 router.get('/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', {
     meta: {
         swagger: {
-            summary: 'Validar mandatario',
+            summary: 'Validar Mandatario Autorizado',
             description: '',
             tags: ['escolares']
         }
@@ -98,8 +98,23 @@ router.get('/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLI
 
 })
 
-router.get('/tipos_servicios', (ctx) => {
-    ctx.body = { test: ctx.url }
+router.get('/tipos_servicios', {
+    meta: {
+        swagger: {
+            summary: 'Solicitudes',
+            description: '',
+            tags: ['escolares']
+        }
+    },
+    validate: {
+
+    },
+    handler: [
+        commonMiddleware,
+        (ctx) => {
+            ctx.body = { test: ctx.url }
+        }
+    ]
 })
 
 router.post('/ppus/validaciones', {
@@ -123,9 +138,24 @@ router.post('/ppus/validaciones', {
     ]
 })
 
-router.post('/solicitudes', (ctx) => {
-    ctx.body = { test: ctx.url }
+router.post('/solicitudes', {
+    meta: {
+        swagger: {
+            summary: 'solicitudes',
+            description: '',
+            tags: ['escolares']
+        }
+    },
+    validate: {
+
+    },
+    handler: [
+        commonMiddleware,
+        (ctx) => {
+            ctx.body = { test: ctx.url }
+        }
+    ]
 })
 
 
-module.exports = router.middleware()
+module.exports = router
