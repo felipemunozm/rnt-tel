@@ -6,10 +6,10 @@ const JoiSchemas = require('../model/models.joi')
 const commonMiddleware = require('./routes.commons').commonMiddleware
 
 const router = Router()
-router.prefix('/escolares/servicios')
+// router.prefix('/escolares/servicios') no funciona cuando se usa app.route(router.routes)
 
 //psalas empresa
-router.get('/regiones/:ID_REGION/empresas/:RUT_EMPRESA/representante/:RUT_SOLICITANTE', {
+router.get('/escolares/servicios/regiones/:ID_REGION/empresas/:RUT_EMPRESA/representante/:RUT_SOLICITANTE', {
     meta: {
         swagger: {
             summary: 'Validar Empresa Autorizada',
@@ -25,7 +25,9 @@ router.get('/regiones/:ID_REGION/empresas/:RUT_EMPRESA/representante/:RUT_SOLICI
         },
         output: {
             200: {
-                body: Joi.array().items(JoiSchemas.RespServiciosAutorizadosJoi)
+                body: JoiSchemas.RespServiciosAutorizadosJoi.keys({ 
+                     estado :Joi.required()
+                })
             }
         }
     },
@@ -38,7 +40,7 @@ router.get('/regiones/:ID_REGION/empresas/:RUT_EMPRESA/representante/:RUT_SOLICI
 })
 
 //psalas persona 
-router.get('/regiones/:ID_REGION/personas/:RUT_SOLICITANTE', {
+router.get('/escolares/servicios/regiones/:ID_REGION/personas/:RUT_SOLICITANTE', {
     meta: {
         swagger: {
             summary: 'Validar Persona Autorizada',
@@ -69,7 +71,7 @@ router.get('/regiones/:ID_REGION/personas/:RUT_SOLICITANTE', {
 })
 
 //psalas persona mandatario
-router.get('/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', {
+router.get('/escolares/servicios/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLICITANTE', {
     meta: {
         swagger: {
             summary: 'Validar Mandatario Autorizado',
@@ -98,7 +100,7 @@ router.get('/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/mandatarios/:RUT_SOLI
 
 })
 
-router.get('/tipos_servicios', {
+router.get('/escolares/servicios/tipos_servicios', {
     meta: {
         swagger: {
             summary: 'Solicitudes',
@@ -117,7 +119,7 @@ router.get('/tipos_servicios', {
     ]
 })
 
-router.post('/ppus/validaciones', {
+router.post('/escolares/servicios/ppus/validaciones', {
     meta: {
         swagger: {
             summary: 'Validar flota',
@@ -138,7 +140,7 @@ router.post('/ppus/validaciones', {
     ]
 })
 
-router.post('/solicitudes', {
+router.post('/escolares/servicios/solicitudes', {
     meta: {
         swagger: {
             summary: 'solicitudes',
