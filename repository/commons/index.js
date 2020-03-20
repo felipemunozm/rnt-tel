@@ -789,5 +789,18 @@ module.exports = {
         } catch (error) {
             log.debug("Exeption al ejecutar query findServiciosByCategoriaTransporte " + error);
         }
+    },
+    findReglamentacionByIdTipoServicio: (idtiposervicio) => {
+        try {
+            return ibmdb.query(" select " +
+            "SUBSTR(R.nombre,INSTR(R.nombre, '>' )+1,LENGTH(R.nombre)) as Reglamentacion" +
+            
+            " from NULLID.RNT_REGLAMENTACION_TIPO_SERVICIO RT " +
+            "            inner join NULLID.RNT_REGLAMENTACION R on R.ID=RT.REGLAMENTACION_ID " +
+            "            where TIPO_SERVICIO_ID= ? " +
+            "            and R.ID_REGLAMENTACION_DE_QUE_DEPENDE is not null", [idtiposervicio])
+        } catch (error) {
+            log.debug("Exeption al ejecutar query findReglamentacionByIdTipoServicio " + error);
+        }
     }
 }
