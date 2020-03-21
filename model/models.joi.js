@@ -15,16 +15,87 @@ const TipoServicioJoi = Joi.object({
     CATEGORIA_NOMBRE: Joi.string()
 })
 
-const SolicitudServicioJoi = Joi.object({
-    rut_solicitante: RutJoi.required(),
-    rut_responsable: RutJoi.required(),
-    folio: Joi.number().optional(),
-    region: IdJoi,
-    lstPpuRut: Joi.array().items({ rut: RutJoi, ppu: PPUJoi }).example(new Array([{ rut: '1234567-0', ppu: 'XD3456' }, { rut: '12345678-K', ppu: 'AKPF09' }])),
-    CantidadRecorridos: Joi.number()
-})
+class SolicitudServicioItemFlota {
+    rut;
+    ppu;
 
+    static joi() {
+        return Joi.object({ rut: RutJoi, ppu: PPUJoi })
+    }
+}
 
+class SolicitudServicio {
+    /** @type string */
+    rut_solicitante;
+    /** @type string */
+    rut_responsable;
+    /** @type string */
+    folio;
+    /** @type string */
+    region;
+    /** @type SolicitudServicioItemFlota[] */
+    lstPpuRut;
+    /** @type number */
+    CantidadRecorridos;
+
+    static joi() {
+        return Joi.object({
+            rut_solicitante: RutJoi.required(),
+            rut_responsable: RutJoi.required(),
+            folio: Joi.number().optional(),
+            region: IdJoi,
+            lstPpuRut: Joi.array().items(SolicitudServicioItemFlota.joi())
+                .example(new Array([{ rut: '1234567-0', ppu: 'XD3456' }, { rut: '12345678-K', ppu: 'AKPF09' }])),
+            CantidadRecorridos: Joi.number()
+        })
+    }
+}
+
+class ServicioAutorizado {
+    /** @type number */
+    ID_CATEGORIA;
+    /** @type number */
+    ID_TIPO_SERICIO;
+    /** @type string */
+    categoria;
+    /** @type string */
+    tipo_servicio;
+    /** @type string */
+    tipovehiculo;
+    /** @type string */
+    modalidad;
+    /** @type string */
+    tiposervicio;
+
+    static joi() {
+        return Joi.object({
+            ID_CATEGORIA: IdJoi.label('Id Categoría'),
+            ID_TIPO_SERICIO: IdJoi.label('Id Tipo Servicio'),
+            categoria: Joi.string().label('Categoría'),
+            tipo_servicio: Joi.string().label('Área servicio'),
+            tipovehiculo: Joi.string().label('Tipo Vehículo'),
+            modalidad: Joi.string().label('Modalidad'),
+            tiposervicio: Joi.string().label('tipoServicio').description('Nombre servicio compuesto: {Area Servicio} {Tipo Vehiculo} {Modalidad}')
+        })
+    }
+}
+
+class ServiciosAutorizadosRespuesta {
+    /** @type string */
+    estado;
+    /** @type string */
+    mensaje;
+    /** @type ServicioAutorizado[] */
+    servicios;
+
+    static joi() {
+        return Joi.object({
+            estado: Joi.string(),
+            mensaje: Joi.string(),
+            servicios: Joi.array().items(ServicioAutorizado.joi())
+        })
+    }
+}
 
 const ServicioAutorizadoJoi = Joi.object({
     ID_CATEGORIA: IdJoi.label('Id Categoría'),
@@ -34,12 +105,12 @@ const ServicioAutorizadoJoi = Joi.object({
     tipovehiculo: Joi.string().label('Tipo Vehículo'),
     modalidad: Joi.string().label('Modalidad'),
     tiposervicio: Joi.string().label('tipoServicio').description('Nombre servicio compuesto: {Area Servicio} {Tipo Vehiculo} {Modalidad}')
-}).label('Servicio autorizado')
+})
 
-const RespServiciosAutorizadosJoi = Joi.object({
+const ServiciosAutorizadosRespuestaJoi = Joi.object({
     estado: Joi.string(),
     mensaje: Joi.string(),
-    servicios: Joi.array().items(ServicioAutorizadoJoi)
+    servicios: Joi.array().items(ServicioAutorizado.joi().description('la descrip')).label('Servicios autorizados')
 })
 
 
@@ -62,16 +133,23 @@ const SolicitudServicioRespuestaJoi = Joi.object({
     listaFlotaValidada: Joi.array().items(ItemFlota),
     listaFlotaRechazada: Joi.array().items(ItemFlotaRechazo),
     monto: Joi.number().integer().label('Costo en documentos').description('Consto asociado por concepto de documentos para efectuar el proceso')
-}).description('Un objeto con el resultado de la validación de los datos para el Trámite y los items de la Flota especificada')
+})
 
 const CategoriaServicioJoi = Joi.string().valid(['BUSES', 'COLECTIVOS', 'PRIVADO', 'TAXIS', 'ESCOLARES'])
 
 module.exports = {
-    RutJoi,
-    IdJoi,
-    CodigoRegionJoi,
+    /** Definiciones puras Joi */
+    joi: {
+        RutJoi,
+        IdJoi,
+        CodigoRegionJoi,
 
-    RespServiciosAutorizadosJoi,
-    ServicioAutorizadoJoi
+        SolicitudServicioRespuestaJoi
+    },
 
+    /** Definiciones de clases que entregan, usando .joi(), la definicion Joi */
+    models: {
+        ServiciosAutorizadosRespuesta,
+        SolicitudServicio
+    }
 }

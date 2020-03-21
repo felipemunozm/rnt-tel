@@ -1,7 +1,8 @@
 const SwaggerAPI = require('koa-joi-router-docs').SwaggerAPI
 const Joi = require('koa-joi-router').Joi
 const pckg = require('../package.json')
-const JoiSchemas = require('../model/models.joi')
+const JoiSchemas = require('../model/models.joi').joi
+const Models = require('../model/models.joi').models
 const Path = require('path')
 
 module.exports = {
@@ -60,7 +61,10 @@ module.exports = {
                 { name: 'escolares', description: 'Trámites para escolares' }
             ],
             // pass `definitions` if you need schema references
-            definitions: JoiSchemas
+            // definitions: {
+            //     ...JoiSchemas,
+            //     ServiciosAutorizadosRespuesta: Models.ServiciosAutorizadosRespuesta.joi()
+            // }
         }, {
             defaultResponses: {
                 200: {
