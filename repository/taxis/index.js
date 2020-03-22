@@ -72,11 +72,12 @@ module.exports = {
 
             
         } else {
-            //diseñar response con vehiculo no encontrado
+             //buscar info de vehiculo:
+             let infoRNT = await commons.findInfoVehiculoParaInscripcion(ppu)
             response = {
-                estado: '1',
-                tipoCancelacion: 'vehiculo Existente en RNT',
-                id_tipoCancelacion : undefined,
+                estado: infoRNT[0].ESTADO,
+                tipoCancelacion: infoRNT[0].TIPO_CANCELACION,
+                id_tipoCancelacion : infoRNT[0].TIPO_CANCELACION,
                 regionOrigen: undefined,
                 antiguedadMaxima:antiguedadMaxima, //psalas
                 lstTipoVehiculoPermitidos: []

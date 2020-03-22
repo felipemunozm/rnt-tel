@@ -310,6 +310,14 @@ module.exports = {
                 let ppu = inputValidarFlota.lstPpuRut[i].ppu
                 let tipoingreso=inputValidarFlota.lstPpuRut[i].tipoingreso
                 let ppu_reemplaza=inputValidarFlota.lstPpuRut[i].ppu_reemplaza
+                //valida datos listas
+                if (ppu==="" ||ppu===undefined ||tipoingreso==="" ||tipoingreso===undefined ||ppu_reemplaza==="" || ppu_reemplaza===undefined)
+                {
+                    continua.estado = false
+                    continua.lstRechazos.push('Falta Datos Requeridos para validación de PPU')
+                }
+               else {
+
                 let srceiResponse = await commons.consumoServicioRegistroCivil(ppu);
                 let sgprtResponse = await commons.consumoServicioSgprt(ppu);
 
@@ -415,12 +423,19 @@ module.exports = {
                 }   
                 
                 //--------------------------------------------------------------------------------------------------------------------
-                
+            } //valida datos listas
                 //se revisa si procede la PPU para añadirla a lista de flota validada
                 if(continua.estado === true) {
                     lstFlotaValidada.push({ppu: datosVehiculo.solicitud.ppu,validacion: true, documentosAdjuntar: docs, documentosOpcionales: docsOpcionales})
                 } else {
-                    lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada",listaRechazos: continua.lstRechazos})
+                    if (datosVehiculo===undefined)
+                    {
+                        lstFlotaRechazada.push({ppu: "",validacion: false, mensaje: "PPU Rechazada",listaRechazos: continua.lstRechazos})
+                    }
+                    else{
+                        lstFlotaRechazada.push({ppu: datosVehiculo.solicitud.ppu,validacion: false, mensaje: "PPU Rechazada",listaRechazos: continua.lstRechazos})
+                    }
+                   
                 }
              
                 log.debug("datosVehiculo PPU: " + datosVehiculo.solicitud.ppu)
@@ -429,11 +444,30 @@ module.exports = {
                 continua.estado = true
                 docs = []
                 docsOpcionales = []
+              
             } catch (e) {
                 log.error("Error en logica de negocio: " + e)
             }    
         }
-        let monto = (inputValidarFlota.CantidadRecorridos * lstFlotaValidada.length ) * 530 + (790-530) //se cobra al primero 790 y todos los demas 530
+        let monto=0
+        if (lstFlotaValidada.length===0 || lstFlotaValidada.undefined==true )
+        {
+            monto=0
+        }
+        else
+        {
+           // if (datosVehiculo.solicitud.tipo_servicio==='TAXIS')
+           // {
+                monto = (inputValidarFlota.CantidadRecorridos * lstFlotaValidada.length ) * 790 //se cobra al primero 790 y todos los demas 530
+           // }
+           // if (datosVehiculo.solicitud.tipo_servicio==='COLECTIVO')
+           // {
+          //      monto = (inputValidarFlota.CantidadRecorridos * lstFlotaValidada.length ) * 530 + (790-530) //se cobra al primero 790 y todos los demas 530
+          //  }
+            
+            
+       
+        }
         let response = {listaFlotaValidada: lstFlotaValidada, listaFlotaRechazada: lstFlotaRechazada, monto: monto}
         return response
     },

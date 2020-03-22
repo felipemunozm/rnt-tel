@@ -159,47 +159,51 @@ module.exports = {
 
                // datosVehiculo.rnt.estado == 3 ? true : false;
 
-                if (datosVehiculo.rnt.estado==1 && datosVehiculo.rnt.tipoCancelacion=='vehiculo Existente en RNT')
+                if (datosVehiculo.rnt.estado !=2 && datosVehiculo.rnt.estado!=0)
                 {
                     documentos.continua.estado = false
                     documentos.continua.lstRechazos.push('Rechazo por Existencia en RNT')
 
                 }
-                else if(datosVehiculo.rntsaliente.estado == 3 ) 
+                
+               if(datosVehiculo.rntsaliente.estado == 3 ) 
                 {
                     if(datosVehiculo.rntsaliente.reemplazado_por !="" ) 
                     {
                         documentos.continua.estado = false
                         documentos.continua.lstRechazos.push('Rechazo PPU Saliente ya ha sido reemplazada')
                     }
-
-                }
-                else 
-                {
-                    if(datosVehiculo.rntsaliente.estado == 2 ) 
+                    if(datosVehiculo.rntsaliente.id_tipoCancelacion != "17" ) 
                     {
-                        let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rntsaliente.id_tipoCancelacion == "7" ? true : false; //psalas traslado
-                      //para taxis no aplica  let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rntsaliente.id_tipoCancelacion == "61" ? true : false; //psalas 
-                       // let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rntsaliente.id_tipoCategoria != "1" ? true : false; //publico
-                        let resultadoRNTCanceladoTrasladoRegion = datosVehiculo.rntsaliente.regionOrigen != datosVehiculo.solicitud.regionInscripcion ? true : false;
-                        
-                        if(resultadoRNTCanceladoTipoTraslado ) {
-                            if(!resultadoRNTCanceladoTrasladoRegion) {
-                                documentos.continua.estado = false
-                                documentos.continua.lstRechazos.push('Rechazo por Region de tralado PPU Saliente es la misma a la region del servicio al cual se inscribe')
-                              }
-                           
-                        }
-                         else    
-                              {
-                                    documentos.continua.estado = false
-                                    documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion PPU Saliente')
-                                      
-                               } 
-                                      
+                        documentos.continua.estado = false
+                        documentos.continua.lstRechazos.push('Rechazo PPU Saliente por Tipo de Cancelación')}
                     }
+              //  else 
+             //   {
+              //      if(datosVehiculo.rntsaliente.estado == 2 ) 
+              //      {
+              //          let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rntsaliente.id_tipoCancelacion == "7" ? true : false; //psalas traslado
+              //        //para taxis no aplica  let resultadoRNTCanceladoTipoCategoria = datosVehiculo.rntsaliente.id_tipoCancelacion == "61" ? true : false; //psalas 
+              //         // let resultadoRNTCanceladoCategoriaAnterior = datosVehiculo.rntsaliente.id_tipoCategoria != "1" ? true : false; //publico
+              //          let resultadoRNTCanceladoTrasladoRegion = datosVehiculo.rntsaliente.regionOrigen != datosVehiculo.solicitud.regionInscripcion ? true : false;
+                        
+              //          if(resultadoRNTCanceladoTipoTraslado ) {
+              //              if(!resultadoRNTCanceladoTrasladoRegion) {
+              //                  documentos.continua.estado = false
+              //                  documentos.continua.lstRechazos.push('Rechazo por Region de tralado PPU Saliente es la misma a la region del servicio al cual se inscribe')
+             //                 }
+                           
+             //           }
+             //            else    
+             //                 {
+              //                      documentos.continua.estado = false
+             //                       documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion PPU Saliente')
+                                      
+             //                  } 
+                                      
+             //       }
 
-                }
+            //    }
 
               //  let resultadoRNTCanceladoTraslado = datosVehiculo.rnt.estado == 2 ? true : false;
               //  let resultadoRNTCanceladoTipoTraslado = datosVehiculo.rnt.tipoCancelacion == "TRASLADO DE REGIÓN" ? true : false;
@@ -222,7 +226,7 @@ module.exports = {
             log.error("\tError buscando rechazo: " + e)
             log.debug("\tError buscando rechazo: " + e)
             documentos.continua.estado = false
-            documentos.continua.lstRechazos.push('Rechazo por Tipo de Cancelacion Cambio Categoria')
+            documentos.continua.lstRechazos.push("Error Consulta RC/SGPRT")
         }
 
         return documentos;

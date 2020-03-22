@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const router = new Router()
 const log = require('../../../log')
 const  logicTaxis = require('../../../logic/taxis')
-const InputValidarFlota = require('../../../model/InputValidaFlota')
+
 
 
 //psalas empresa

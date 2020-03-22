@@ -721,6 +721,14 @@ module.exports = {
                                   // idreglamentacion = "DTO 212/92 - TTE PUBLICO (TAXIS B/T/E) > RENOVACIÓN POR SINIESTRO"
                                    idreglamentacion =101
                                     break;
+                                case 'REINCORPORACIÓN': 
+                                    // idreglamentacion = "DTO 212/92 - TTE PUBLICO (TAXIS B/T/E) > REINCORPORACIÓN"
+                                     idreglamentacion =6
+                                      break;
+                                case 'REINCORPORACIÓN CONCURSO DE TAXIS': 
+                                      // idreglamentacion = "DTO 212/92 - LEY 20474/20867 - TTE PUBLICO (TAXIS B/T/E) >REINCORPORACIÓN CONCURSO DE TAXIS"
+                                       idreglamentacion =161
+                                        break;   
                                 default: reglamentacion = ""
                                     break;
                                 }
@@ -793,7 +801,7 @@ module.exports = {
     findReglamentacionByIdTipoServicio: (idtiposervicio) => {
         try {
             return ibmdb.query(" select " +
-            "SUBSTR(R.nombre,INSTR(R.nombre, '>' )+1,LENGTH(R.nombre)) as Reglamentacion" +
+            "trim(SUBSTR(R.nombre,INSTR(R.nombre, '>' )+1,LENGTH(R.nombre))) as Reglamentacion" +
             
             " from NULLID.RNT_REGLAMENTACION_TIPO_SERVICIO RT " +
             "            inner join NULLID.RNT_REGLAMENTACION R on R.ID=RT.REGLAMENTACION_ID " +
