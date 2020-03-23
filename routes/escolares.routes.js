@@ -1,12 +1,14 @@
 const Router = require('koa-joi-router')
 const Joi = Router.Joi
 const log = require('../log')
-const logicEscolares = require('../logic/escolar')
-const JoiSchemas = require('../model/models.joi')
+const logicEscolares = require('../logic/escolares.logic')
+const JoiSchemas = require('../model/models.joi').joi
+const Models = require('../model/models.joi').models
 const commonMiddleware = require('./routes.commons').commonMiddleware
 
+
 const router = Router()
-// router.prefix('/escolares/servicios') no funciona cuando se usa app.route(router.routes)
+    // router.prefix('/escolares/servicios') no funciona cuando se usa app.route(router.routes)
 
 //psalas empresa
 router.get('/escolares/servicios/regiones/:ID_REGION/empresas/:RUT_EMPRESA/representante/:RUT_SOLICITANTE', {
@@ -25,8 +27,8 @@ router.get('/escolares/servicios/regiones/:ID_REGION/empresas/:RUT_EMPRESA/repre
         },
         output: {
             200: {
-                body: JoiSchemas.RespServiciosAutorizadosJoi.keys({ 
-                     estado :Joi.required()
+                body: Models.ServiciosAutorizadosRespuesta.joi().keys({
+                    estado: Joi.required()
                 })
             }
         }
@@ -44,7 +46,7 @@ router.get('/escolares/servicios/regiones/:ID_REGION/personas/:RUT_SOLICITANTE',
     meta: {
         swagger: {
             summary: 'Validar Persona Autorizada',
-            description: '',
+            description: 'Entrega un listado de los servicios autorizados',
             tags: ['escolares']
         }
     },
@@ -55,7 +57,7 @@ router.get('/escolares/servicios/regiones/:ID_REGION/personas/:RUT_SOLICITANTE',
         },
         output: {
             200: {
-                body: Joi.array().items(JoiSchemas.RespServiciosAutorizadosJoi)
+                body: Models.ServiciosAutorizadosRespuesta.joi()
             }
         }
     },
@@ -87,7 +89,7 @@ router.get('/escolares/servicios/regiones/:ID_REGION/personas/:RUT_RESPONSABLE/m
         },
         output: {
             200: {
-                body: Joi.array().items(JoiSchemas.RespServiciosAutorizadosJoi)
+                body: Models.ServiciosAutorizadosRespuesta.joi()
             }
         }
     },
@@ -128,14 +130,18 @@ router.post('/escolares/servicios/ppus/validaciones', {
         }
     },
     validate: {
-
+        type: 'json',
+        body: Models.SolicitudServicio.joi(),
+        output: {
+            200: {
+                body: JoiSchemas.SolicitudServicioRespuestaJoi
+            }
+        }
     },
     handler: [
         commonMiddleware,
         async(ctx) => {
-            let inputParams = ctx.request.body
-            let inputValidarServicios = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.CantidadRecorridos)
-            ctx.body = await logicEscolares.InputValidarServiciosFlota(inputValidarServicios)
+            ctx.body = await logicEscolares.validarServiciosFlota(ctx.request.body)
         }
     ]
 })
