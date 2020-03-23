@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="498e5e93-11ae-4fb1-ba2b-3f0fc08805d7" activeEnvironment="Default" name="RNT-TEL : Registro civil" resourceRoot="" soapui-version="5.5.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="b8e616ea-9011-4b83-b882-dbd7517cd839" wsaVersion="NONE" name="PPUService_API_TramitesSoap12Binding" type="wsdl" bindingName="{http://webServices}PPUService_API_TramitesSoap12Binding" soapVersion="1_2" anonymous="optional" definition="http://ws.mtt.cl/services/PPUService_API_Tramites?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://ws.mtt.cl/services/PPUService_API_Tramites.PPUService_API_TramitesHttpSoap12Endpoint</con:endpoint></con:endpoints><con:operation id="2ed0a458-f669-4a3d-b981-e7e82d6648fa" isOneWay="false" action="urn:getPlaca" name="getPlaca" bindingOperationName="getPlaca" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="b7713ce1-75f1-429b-99d4-66fabe7a10f8" wsaVersion="NONE" name="PPUService_API_TramitesSoap11Binding" type="wsdl" bindingName="{http://webServices}PPUService_API_TramitesSoap11Binding" soapVersion="1_1" anonymous="optional" definition="http://ws.mtt.cl/services/PPUService_API_Tramites?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://ws.mtt.cl/services/PPUService_API_Tramites?wsdl"><con:part><con:url>http://ws.mtt.cl/services/PPUService_API_Tramites?wsdl</con:url><con:content><![CDATA[<wsdl:definitions targetNamespace="http://webServices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ax2523="http://ppu.srcei.mtt.gob.cl/xsd" xmlns:ns="http://webServices" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:ax2518="http://net.java/xsd" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax2519="http://io.java/xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>PPUService</wsdl:documentation>
+  <wsdl:types>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://net.java/xsd" xmlns:ax2520="http://io.java/xsd">
+      <xs:import namespace="http://io.java/xsd"/>
+      <xs:complexType name="MalformedURLException">
+        <xs:complexContent>
+          <xs:extension base="ax2520:IOException">
+            <xs:sequence/>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://webServices" xmlns:ax2521="http://net.java/xsd" xmlns:ax2522="http://io.java/xsd" xmlns:ax2524="http://ppu.srcei.mtt.gob.cl/xsd">
+      <xs:import namespace="http://net.java/xsd"/>
+      <xs:import namespace="http://io.java/xsd"/>
+      <xs:import namespace="http://ppu.srcei.mtt.gob.cl/xsd"/>
+      <xs:element name="PPUServiceMalformedURLException">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="MalformedURLException" nillable="true" type="ax2521:MalformedURLException"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="PPUServiceIOException">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="IOException" nillable="true" type="ax2522:IOException"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getPlaca">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="ppu" nillable="true" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getPlacaResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax2523:Placa"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://io.java/xsd">
+      <xs:complexType name="IOException">
+        <xs:sequence/>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://ppu.srcei.mtt.gob.cl/xsd">
+      <xs:complexType name="Placa">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="aaFabric" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="cancelacion" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="chasis" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="cid" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="color" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="encargo" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="limita" nillable="true" type="ax2523:Limita"/>
+          <xs:element minOccurs="0" name="marca" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="modelo" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="motor" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="patente" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="propieAanter" nillable="true" type="ax2523:PropieAanter"/>
+          <xs:element minOccurs="0" name="propieActual" nillable="true" type="ax2523:PropieActual"/>
+          <xs:element minOccurs="0" name="seguro" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="serie" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="subinsc" nillable="true" type="ax2523:Subinsc"/>
+          <xs:element minOccurs="0" name="tipoCombust" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="tipoVehi" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="valPBV" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="vin" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Limita">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="itemLimita" nillable="true">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" name="titulo" type="xs:string"/>
+                <xs:element minOccurs="0" name="documento" type="xs:string"/>
+                <xs:element minOccurs="0" name="naturaleza" type="xs:string"/>
+                <xs:element minOccurs="0" name="comuna" type="xs:string"/>
+                <xs:element minOccurs="0" name="causa" type="xs:string"/>
+                <xs:element minOccurs="0" name="ACausa" type="xs:string"/>
+                <xs:element minOccurs="0" name="fechaDoc" type="xs:string"/>
+                <xs:element minOccurs="0" name="autorizante" type="xs:string"/>
+                <xs:element minOccurs="0" name="acreedor" type="xs:string"/>
+                <xs:element minOccurs="0" name="repertorio" type="xs:string"/>
+                <xs:element minOccurs="0" name="numReper" type="xs:string"/>
+                <xs:element minOccurs="0" name="fecReper" type="xs:string"/>
+                <xs:element minOccurs="0" name="empty" type="xs:boolean"/>
+                <xs:element minOccurs="0" name="tenedores">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element maxOccurs="unbounded" minOccurs="0" name="itemTenedores" nillable="true">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element minOccurs="0" name="nombres" type="xs:string"/>
+                            <xs:element minOccurs="0" name="rut" type="xs:string"/>
+                            <xs:element minOccurs="0" name="empty" type="xs:boolean"/>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="PropieAanter">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="itemPropieaanter" nillable="true">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" name="propant">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element maxOccurs="unbounded" minOccurs="0" name="itemPropant" nillable="true">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element minOccurs="0" name="nombres" type="xs:string"/>
+                            <xs:element minOccurs="0" name="rut" type="xs:string"/>
+                          </xs:sequence>
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+                <xs:element minOccurs="0" name="oficina" type="xs:string"/>
+                <xs:element minOccurs="0" name="nro" type="xs:string"/>
+                <xs:element minOccurs="0" name="fecha" type="xs:string"/>
+                <xs:element minOccurs="0" name="empty" type="xs:boolean"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="PropieActual">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="fecAquis" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="fecha" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="nro" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="oficina" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="propact" nillable="true" type="ax2523:Propact"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Propact">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="itemPropact" nillable="true">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" name="nombres" type="xs:string"/>
+                <xs:element minOccurs="0" name="rut" type="xs:string"/>
+                <xs:element minOccurs="0" name="calle" type="xs:string"/>
+                <xs:element minOccurs="0" name="nro" type="xs:string"/>
+                <xs:element minOccurs="0" name="restdom" type="xs:string"/>
+                <xs:element minOccurs="0" name="comuna" type="xs:string"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Subinsc">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="itemSubinsc" nillable="true">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" name="nombreSub" type="xs:string"/>
+                <xs:element minOccurs="0" name="detalle" type="xs:string"/>
+                <xs:element minOccurs="0" name="empty" type="xs:boolean"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getPlacaRequest">
+    <wsdl:part name="parameters" element="ns:getPlaca"/>
+  </wsdl:message>
+  <wsdl:message name="getPlacaResponse">
+    <wsdl:part name="parameters" element="ns:getPlacaResponse"/>
+  </wsdl:message>
+  <wsdl:message name="PPUServiceIOException">
+    <wsdl:part name="parameters" element="ns:PPUServiceIOException"/>
+  </wsdl:message>
+  <wsdl:message name="PPUServiceMalformedURLException">
+    <wsdl:part name="parameters" element="ns:PPUServiceMalformedURLException"/>
+  </wsdl:message>
+  <wsdl:portType name="PPUService_API_TramitesPortType">
+    <wsdl:operation name="getPlaca">
+      <wsdl:input message="ns:getPlacaRequest" wsaw:Action="urn:getPlaca"/>
+      <wsdl:output message="ns:getPlacaResponse" wsaw:Action="urn:getPlacaResponse"/>
+      <wsdl:fault message="ns:PPUServiceIOException" name="PPUServiceIOException" wsaw:Action="urn:getPlacaPPUServiceIOException"/>
+      <wsdl:fault message="ns:PPUServiceMalformedURLException" name="PPUServiceMalformedURLException" wsaw:Action="urn:getPlacaPPUServiceMalformedURLException"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PPUService_API_TramitesSoap11Binding" type="ns:PPUService_API_TramitesPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <wsdl:operation name="getPlaca">
+      <soap:operation soapAction="urn:getPlaca" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="PPUServiceIOException">
+        <soap:fault use="literal" name="PPUServiceIOException"/>
+      </wsdl:fault>
+      <wsdl:fault name="PPUServiceMalformedURLException">
+        <soap:fault use="literal" name="PPUServiceMalformedURLException"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="PPUService_API_TramitesSoap12Binding" type="ns:PPUService_API_TramitesPortType">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <wsdl:operation name="getPlaca">
+      <soap12:operation soapAction="urn:getPlaca" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="PPUServiceIOException">
+        <soap12:fault use="literal" name="PPUServiceIOException"/>
+      </wsdl:fault>
+      <wsdl:fault name="PPUServiceMalformedURLException">
+        <soap12:fault use="literal" name="PPUServiceMalformedURLException"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="PPUService_API_TramitesHttpBinding" type="ns:PPUService_API_TramitesPortType">
+    <http:binding verb="POST"/>
+    <wsdl:operation name="getPlaca">
+      <http:operation location="getPlaca"/>
+      <wsdl:input>
+        <mime:content type="text/xml" part="parameters"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content type="text/xml" part="parameters"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PPUService_API_Tramites">
+    <wsdl:port name="PPUService_API_TramitesHttpSoap11Endpoint" binding="ns:PPUService_API_TramitesSoap11Binding">
+      <soap:address location="http://ws.mtt.cl/services/PPUService_API_Tramites.PPUService_API_TramitesHttpSoap11Endpoint"/>
+    </wsdl:port>
+    <wsdl:port name="PPUService_API_TramitesHttpSoap12Endpoint" binding="ns:PPUService_API_TramitesSoap12Binding">
+      <soap12:address location="http://ws.mtt.cl/services/PPUService_API_Tramites.PPUService_API_TramitesHttpSoap12Endpoint"/>
+    </wsdl:port>
+    <wsdl:port name="PPUService_API_TramitesHttpEndpoint" binding="ns:PPUService_API_TramitesHttpBinding">
+      <http:address location="http://ws.mtt.cl/services/PPUService_API_Tramites.PPUService_API_TramitesHttpEndpoint"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://ws.mtt.cl/services/PPUService_API_Tramites.PPUService_API_TramitesHttpSoap11Endpoint</con:endpoint></con:endpoints><con:operation id="57bd2472-4b0a-4ba1-b299-0d77e013ad31" isOneWay="false" action="urn:getPlaca" name="getPlaca" bindingOperationName="getPlaca" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="739671db-a22d-477d-9294-e7831c4f4c6d" name="KHSX62 - CENTROPUERTO"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://ws.mtt.cl/services/PPUService_API_Tramites.PPUService_API_TramitesHttpSoap11Endpoint</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://webServices">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <web:getPlaca>\r
+         <!--Optional:-->\r
+         <ppu>KHSX62</ppu>\r
+      </web:getPlaca>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:getPlaca"/><con:wsrmConfig version="1.2"/></con:call><con:call id="0e07d7e9-a32b-4268-9c61-9d35ddf6442a" name="BPJG68 - PARTICULAR"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://ws.mtt.cl/services/PPUService_API_Tramites.PPUService_API_TramitesHttpSoap11Endpoint</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://webServices">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <web:getPlaca>\r
+         <!--Optional:-->\r
+         <ppu>BPJG68</ppu>\r
+      </web:getPlaca>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:getPlaca"/><con:wsrmConfig version="1.2"/></con:call><con:call id="9469f1bf-13ff-4527-9d34-399e34f4a435" name="BJFB14 - TRANSANTIAGO"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://ws.mtt.cl/services/PPUService_API_Tramites.PPUService_API_TramitesHttpSoap11Endpoint</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://webServices">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <web:getPlaca>\r
+         <!--Optional:-->\r
+         <ppu>BJFB14</ppu>\r
+      </web:getPlaca>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:getPlaca"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>

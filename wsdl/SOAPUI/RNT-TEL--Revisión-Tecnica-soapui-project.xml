@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="c7978bca-1757-478b-8234-678be60f3208" activeEnvironment="Default" name="RNT-TEL- Revisión Tecnica" resourceRoot="" soapui-version="5.5.0" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="2772ee95-32a2-44b2-b473-06f0c3572b18" wsaVersion="NONE" name="ConsultaRevisionTecnica_API_TramitesSoap12Binding" type="wsdl" bindingName="{http://consultarevisiontecnica.mtt.cl}ConsultaRevisionTecnica_API_TramitesSoap12Binding" soapVersion="1_2" anonymous="optional" definition="http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites.ConsultaRevisionTecnica_API_TramitesHttpSoap12Endpoint</con:endpoint></con:endpoints><con:operation id="463d8ed4-3750-49e6-b07c-43bdec497641" isOneWay="false" action="urn:consultaRevisionTecnica" name="consultaRevisionTecnica" bindingOperationName="consultaRevisionTecnica" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false"><con:settings/></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="4f89d946-9b63-49a1-820a-055f561360c2" wsaVersion="NONE" name="ConsultaRevisionTecnica_API_TramitesSoap11Binding" type="wsdl" bindingName="{http://consultarevisiontecnica.mtt.cl}ConsultaRevisionTecnica_API_TramitesSoap11Binding" soapVersion="1_1" anonymous="optional" definition="http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites?wsdl"><con:part><con:url>http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites?wsdl</con:url><con:content><![CDATA[<wsdl:definitions targetNamespace="http://consultarevisiontecnica.mtt.cl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ax2469="http://registros.revtec.sgprt.mtt.cl/xsd" xmlns:ns="http://consultarevisiontecnica.mtt.cl" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>consultaRevisionTecnica</wsdl:documentation>
+  <wsdl:types>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://registros.revtec.sgprt.mtt.cl/xsd">
+      <xs:complexType name="DatosRevisionTecnica">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="anoFabricacion" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="0" name="cantAsientos" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="0" name="cantEjes" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="0" name="capKg" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="0" name="capM3" nillable="true" type="xs:double"/>
+          <xs:element minOccurs="0" name="capToneladas" nillable="true" type="xs:double"/>
+          <xs:element minOccurs="0" name="codTipoCarroceria" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="codigoMarca" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="codigoTipoCombustible" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="codigoTipoSello" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="codigoTipoServicio" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="codigoTipoVehiculo" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="codtipoCertificacion" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="eje1" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="eje2" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="fechaConsulta" nillable="true" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="marca" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="marcaCarroceria" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="modelo" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="numeroChasis" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="numeroMotor" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="pbv" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="0" name="potencia" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="0" name="ppu" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="ppuDv" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="revisionTecnica" nillable="true" type="ax2469:Revision"/>
+          <xs:element minOccurs="0" name="revisionesGases" nillable="true" type="ax2469:RevisionesGases"/>
+          <xs:element minOccurs="0" name="tara" nillable="true" type="xs:int"/>
+          <xs:element minOccurs="0" name="tipoCarroceria" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="tipoCombustible" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="tipoSello" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="tipoServicio" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="tipoVehiculo" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="traccion" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="vin" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Revision">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="codigoPrt" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="comunaPrt" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="direccionPrt" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="fechaRevision" nillable="true" type="xs:date"/>
+          <xs:element minOccurs="0" name="fechaVencimiento" nillable="true" type="xs:date"/>
+          <xs:element minOccurs="0" name="idCrt" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="mensaje" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="numeroCertificado" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="regionPrt" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="resultado" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RevisionesGases">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="revisionGas" nillable="true" type="ax2469:Revision"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://consultarevisiontecnica.mtt.cl" xmlns:ax2470="http://registros.revtec.sgprt.mtt.cl/xsd">
+      <xs:import namespace="http://registros.revtec.sgprt.mtt.cl/xsd"/>
+      <xs:element name="consultaRevisionTecnica">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="ppu" nillable="true" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="consultaRevisionTecnicaResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="return" nillable="true" type="ax2469:DatosRevisionTecnica"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="consultaRevisionTecnicaRequest">
+    <wsdl:part name="parameters" element="ns:consultaRevisionTecnica"/>
+  </wsdl:message>
+  <wsdl:message name="consultaRevisionTecnicaResponse">
+    <wsdl:part name="parameters" element="ns:consultaRevisionTecnicaResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="ConsultaRevisionTecnica_API_TramitesPortType">
+    <wsdl:operation name="consultaRevisionTecnica">
+      <wsdl:input message="ns:consultaRevisionTecnicaRequest" wsaw:Action="urn:consultaRevisionTecnica"/>
+      <wsdl:output message="ns:consultaRevisionTecnicaResponse" wsaw:Action="urn:consultaRevisionTecnicaResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ConsultaRevisionTecnica_API_TramitesSoap11Binding" type="ns:ConsultaRevisionTecnica_API_TramitesPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <wsdl:operation name="consultaRevisionTecnica">
+      <soap:operation soapAction="urn:consultaRevisionTecnica" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ConsultaRevisionTecnica_API_TramitesSoap12Binding" type="ns:ConsultaRevisionTecnica_API_TramitesPortType">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <wsdl:operation name="consultaRevisionTecnica">
+      <soap12:operation soapAction="urn:consultaRevisionTecnica" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ConsultaRevisionTecnica_API_TramitesHttpBinding" type="ns:ConsultaRevisionTecnica_API_TramitesPortType">
+    <http:binding verb="POST"/>
+    <wsdl:operation name="consultaRevisionTecnica">
+      <http:operation location="consultaRevisionTecnica"/>
+      <wsdl:input>
+        <mime:content type="text/xml" part="parameters"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content type="text/xml" part="parameters"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ConsultaRevisionTecnica_API_Tramites">
+    <wsdl:port name="ConsultaRevisionTecnica_API_TramitesHttpSoap11Endpoint" binding="ns:ConsultaRevisionTecnica_API_TramitesSoap11Binding">
+      <soap:address location="http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites.ConsultaRevisionTecnica_API_TramitesHttpSoap11Endpoint"/>
+    </wsdl:port>
+    <wsdl:port name="ConsultaRevisionTecnica_API_TramitesHttpSoap12Endpoint" binding="ns:ConsultaRevisionTecnica_API_TramitesSoap12Binding">
+      <soap12:address location="http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites.ConsultaRevisionTecnica_API_TramitesHttpSoap12Endpoint"/>
+    </wsdl:port>
+    <wsdl:port name="ConsultaRevisionTecnica_API_TramitesHttpEndpoint" binding="ns:ConsultaRevisionTecnica_API_TramitesHttpBinding">
+      <http:address location="http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites.ConsultaRevisionTecnica_API_TramitesHttpEndpoint"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites.ConsultaRevisionTecnica_API_TramitesHttpSoap11Endpoint</con:endpoint></con:endpoints><con:operation id="164708f7-9465-40e3-8dad-17a9a2719a1b" isOneWay="false" action="urn:consultaRevisionTecnica" name="consultaRevisionTecnica" bindingOperationName="consultaRevisionTecnica" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="bfc04f34-85c8-4be6-9f54-f15bc5fdb51e" name="BPJG68 - Particular"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites.ConsultaRevisionTecnica_API_TramitesHttpSoap11Endpoint</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:con="http://consultarevisiontecnica.mtt.cl">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <con:consultaRevisionTecnica>\r
+         <!--Optional:-->\r
+         <ppu>BPJG68</ppu>\r
+      </con:consultaRevisionTecnica>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:consultaRevisionTecnica"/><con:wsrmConfig version="1.2"/></con:call><con:call id="299ec609-11bb-4a3f-8a4c-add7b62dfc17" name="BJFB14 - TRANSANTIAGO"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites.ConsultaRevisionTecnica_API_TramitesHttpSoap11Endpoint</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:con="http://consultarevisiontecnica.mtt.cl">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <con:consultaRevisionTecnica>\r
+         <!--Optional:-->\r
+         <ppu>BJFB14</ppu>\r
+      </con:consultaRevisionTecnica>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:consultaRevisionTecnica"/><con:wsrmConfig version="1.2"/></con:call><con:call id="557232b6-33cb-406f-b42d-5c1f80d5dea7" name="KHSX62 - CENTROPUERTO"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://ws.mtt.cl/services/ConsultaRevisionTecnica_API_Tramites.ConsultaRevisionTecnica_API_TramitesHttpSoap11Endpoint</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:con="http://consultarevisiontecnica.mtt.cl">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <con:consultaRevisionTecnica>\r
+         <!--Optional:-->\r
+         <ppu>KHSX62</ppu>\r
+      </con:consultaRevisionTecnica>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:consultaRevisionTecnica"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>
