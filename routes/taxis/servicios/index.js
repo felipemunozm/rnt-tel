@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const router = new Router()
 const log = require('../../../log')
 const  logicTaxis = require('../../../logic/taxis')
-
+const InputValidarFlota = require('../../../model/InputValidaFlotaTaxis')
 
 
 //psalas empresa
@@ -37,10 +37,23 @@ router.get('/tipos_servicios', (ctx) => {
 router.post('/ppus/validaciones', async (ctx) => {
     log.trace(JSON.stringify(ctx.request.body))
     let inputParams = ctx.request.body
-    let inputValidarServicios = new InputValidarFlota(inputParams.rut_solicitante, inputParams.rut_responsable, inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.CantidadRecorridos)
-    log.trace("inputParameters: " + JSON.stringify(inputValidarServicios))
-    ctx.body = await logicTaxis.InputValidarServiciosFlota(inputValidarServicios)
-    log.debug("Saliendo de Routes")
+    let tempfolio=inputParams.folio=== undefined ? true:(inputParams.folio===""?true:false)
+    let tempregion =inputParams.region=== undefined ? true:(inputParams.region===""?true:false)
+    let tempCantidadRecorridos=inputParams.CantidadRecorridos=== undefined ? true:(inputParams.CantidadRecorridos===""?true:false)
+    let templistappu =false
+    
+    if(!Array.isArray(inputParams.lstPpuRut) || inputParams.lstPpuRut.length==0)
+    {templistappu=true}
+
+    if (!tempfolio && !tempregion && !tempCantidadRecorridos &&!templistappu) {
+
+        let inputValidarFlota = new InputValidarFlota(inputParams.folio, inputParams.region, inputParams.lstPpuRut, inputParams.CantidadRecorridos,"")
+        log.trace("inputParameters: " + JSON.stringify(inputValidarFlota))
+        ctx.body = await taxisLogic.validarFlota(inputValidarFlota)
+        log.debug("Saliendo de Routes")
+    }else{
+        ctx.body = {mensaje:'Faltan parametros requeridos' ,estado:'RECHAZADO'}
+      }
 })
 
 router.post('/solicitudes', (ctx) => {
