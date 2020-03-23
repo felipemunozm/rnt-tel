@@ -1,114 +1,15 @@
-const commonsRepository = require("../repository/commons")
 const log = require('../log')
 const helper = require('./helper.logic')
 const commons = require('./commons/RuleValidator')
 const SolicitudServicio = require('../model/models.joi').models.SolicitudServicio
+const registroCivil = require('../services/registro-civil.service')
 
 module.exports = {
-
-    /**
-     * @param {string} tipoVehiculo
-     * @param {string} codigoRegion
-     * @param {string} rutRepresentante
-     * @param {string} rutSolicitante
-     */
-    getAutorizadoPorEmpresaAndSolicitanteInscripcionServicioEscolar: (tipoVehiculo, codigoRegion, rutRepresentante, rutSolicitante) => {
-        let idtramite = helper.idTramitePorTipoVehiculo(tipoVehiculo)
-        let response = {
-            estado: '',
-            mensaje: '',
-            servicios: []
-        }
-        let servicios = commonsRepository.getAutorizadoPorEmpresaAndSolicitanteInscripcionServicio(codigoRegion, rutRepresentante, rutSolicitante, idtramite)
-        if (!Array.isArray(servicios) || servicios.length == 0) {
-            response.estado = servicios.estado
-            response.mensaje = servicios.mensaje
-            delete response.servicios
-            return response
-        } else {
-            response.estado = 'APROBADO'
-            response.mensaje = 'Habilitado en el Registro Nacional de Transportes'
-            servicios.forEach((servicioDB) => {
-                response.servicios.push({
-                    ID_TIPO_SERVICIO: servicioDB.ID_TIPO_SERVICIO,
-                    tiposervicio: servicioDB.TIPOSERVICIO
-                })
-            });
-            if (response.servicios.length == 0) {
-                delete response.servicios
-            }
-            return response
-
-        }
-
-    },
-    //psalas persona - solicitante
-    getAutorizadoPorPersonaParaTramiteInscripcionServicioEscolar: (id_region, rut_solicitante) => {
-        let idtramite = configs.rntTramitesMap.escolares.IdsTramites[0]
-        let response = {
-            estado: '',
-            mensaje: '',
-            servicios: []
-        }
-        let servicios = commonsRepository.getAutorizadoPorPersonaParaTramiteInscripcionServicio(id_region, rut_solicitante, idtramite)
-        if (!Array.isArray(servicios) || servicios.length == 0) {
-            response.estado = servicios.estado
-            response.mensaje = servicios.mensaje
-            delete response.servicios
-            return response
-        } else {
-            response.estado = 'APROBADO'
-            response.mensaje = 'Habilitado en el Registro Nacional de Transportes'
-            servicios.forEach((servicioDB) => {
-                response.servicios.push({
-                    ID_TIPO_SERVICIO: servicioDB.ID_TIPO_SERVICIO,
-                    tiposervicio: servicioDB.TIPOSERVICIO
-                })
-            });
-            if (response.servicios.length == 0) {
-                delete response.servicios
-            }
-            return response
-
-        }
-
-    },
-    //psalas persona - mandatario
-    getAutorizadoPorPersonaMandatarioParaTramiteInscripcionServicioEscolar: (id_region, RUT_RESPONSABLE, rut_solicitante) => {
-        let idtramite = configs.rntTramitesMap.escolares.IdsTramites[0]
-        let response = {
-            estado: '',
-            mensaje: '',
-            servicios: []
-        }
-        let servicios = commonsRepository.serviciosInscripcionAutorizadosPorMandatario(id_region, RUT_RESPONSABLE, rut_solicitante, idtramite)
-        if (!Array.isArray(servicios) || servicios.length == 0) {
-            response.estado = servicios.estado
-            response.mensaje = servicios.mensaje
-            delete response.servicios
-            return response
-        } else {
-            response.estado = 'APROBADO'
-            response.mensaje = 'Habilitado en el Registro Nacional de Transportes'
-            servicios.forEach((servicioDB) => {
-                response.servicios.push({
-                    ID_TIPO_SERVICIO: servicioDB.ID_TIPO_SERVICIO,
-                    tiposervicio: servicioDB.TIPOSERVICIO
-                })
-            });
-            if (response.servicios.length == 0) {
-                delete response.servicios
-            }
-            return response
-
-        }
-    },
-
     /**
      *  @param {SolicitudServicio} inputValidarFlota
      */
     validarFlota: async(inputValidarFlota) => {
-        let tipoValidacion = "BUSES";
+        let tipoValidacion = "ESCOLARES";
         let continua = { estado: true, lstRechazos: [] }
         let docs = []
         let docsOpcionales = []
@@ -117,24 +18,24 @@ module.exports = {
         let lstFlotaRechazada = []
 
         for (let i = 0; i < inputValidarFlota.lstPpuRut[i].length; i++) {
-            //implementar como extraer data para llenar objeto para evaluar condiciones
+            const itemFlota = inputValidarFlota.lstPpuRut[i]
+                //implementar como extraer data para llenar objeto para evaluar condiciones
             continua.lstRechazos = []
             continua.estado = true
             docs = []
             docsOpcionales = []
 
-            let ppu = inputValidarFlota.lstPpuRut[i].ppu
-            let srceiResponse = await commons.consumoServicioRegistroCivil(ppu);
-            let sgprtResponse = await commons.consumoServicioSgprt(ppu);
+            let srcei = await registroCivil.obtenerDatos(itemFlota.ppu);
+            let sgprtResponse = await commons.consumoServicioSgprt(itemFlota.ppu);
 
             //Recorre los documentos obtenidos de registro civil
-            for (let index = 0; index < srceiResponse.return.docs.length; index++) {
-                docs.push(srceiResponse.return.docs[index]);
+            for (let index = 0; index < srcei.docs.length; index++) {
+                docs.push(srcei.docs[index]);
             }
 
             //Recorre los documentos Opcionales obtenidos de registro civil
-            for (let index = 0; index < srceiResponse.return.docsOpcionales.length; index++) {
-                docsOpcionales.push(srceiResponse.return.docsOpcionales[index]);
+            for (let index = 0; index < srcei.docsOpcionales.length; index++) {
+                docsOpcionales.push(srcei.docsOpcionales[index]);
             }
 
             //Recorre los documentos obtenidos obtenidos de sgprt
@@ -147,20 +48,13 @@ module.exports = {
                 docsOpcionales.push(sgprtResponse.return.docsOpcionales[index]);
             }
             //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
-            let dataRNT = await busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi)
+            let dataRNT = await busesRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srcei.tipoVehi)
             log.trace('DataRNT para PPU ' + ppu + ": " + JSON.stringify(dataRNT))
                 //otra consulta para determinar la Antiguedad Maxima permitida por tipo de vehiculo en el folio donde se desea inscribir
             log.trace('FechaPRT: ' + sgprtResponse.return.revisionTecnica.fechaVencimiento)
+
             datosVehiculo = {
-                registrocivil: {
-                    rutPropietario: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? srceiUtils.getArrayPropietarioComunidad(srceiResponse.return.propieActual.propact.itemPropact) : srceiResponse.return.propieActual.propact.itemPropact[0].rut,
-                    antiguedad: (srceiResponse.return.aaFabric > (new Date()).getFullYear()) ? 0 : (Number((new Date()).getFullYear()) - Number(srceiResponse.return.aaFabric)),
-                    tipoVehiculo: srceiResponse.return.tipoVehi != undefined ? srceiResponse.return.tipoVehi : "",
-                    leasing: srceiUtils.determinarLeasing(srceiResponse.return.limita) != undefined ? srceiUtils.determinarLeasing(srceiResponse.return.limita) : "",
-                    rutMerotenedor: srceiUtils.getRutMerotenedor(srceiResponse.return.limita) != undefined ? srceiUtils.getRutMerotenedor(srceiResponse.return.limita) : "",
-                    comunidad: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? true : false,
-                    status: srceiResponse.return.status != undefined ? srceiResponse.return.status : ""
-                },
+                registrocivil: srcei,
                 sgprt: {
                     resultadoRT: (sgprtResponse.return.revisionTecnica.resultado == 'A' && sgprtResponse.return.revisionesGases.revisionGas[sgprtResponse.return.revisionesGases.revisionGas.length - 1].resultado == 'A') ? 'Aprobada' : 'Rechazada',
                     fechaVencimientoRT: sgprtResponse.return.revisionTecnica.fechaVencimiento.getTime() != undefined ? sgprtResponse.return.revisionTecnica.fechaVencimiento : 0
@@ -174,10 +68,10 @@ module.exports = {
                     categoria: dataRNT.categoria != undefined ? dataRNT.categoria : ""
                 },
                 solicitud: {
-                    rutPropietario: inputValidarFlota.lstPpuRut[i].rut != undefined ? inputValidarFlota.lstPpuRut[i].rut : "",
-                    regionInscripcion: inputValidarFlota.region != undefined ? inputValidarFlota.region : "",
-                    ppu: inputValidarFlota.lstPpuRut[i].ppu != undefined ? inputValidarFlota.lstPpuRut[i].ppu : "",
-                    ppureemplaza: inputValidarFlota.ppureemplaza != undefined ? inputValidarFlota.ppureemplaza : "",
+                    rutPropietario: itemFlota.rut,
+                    regionInscripcion: inputValidarFlota.region,
+                    ppu: itemFlota.ppu,
+                    // ppureemplaza: inputValidarFlota.ppureemplaza != undefined ? inputValidarFlota.ppureemplaza : "",
                     fechaSolicitud: (new Date()).getTime()
                 }
             }
@@ -215,13 +109,15 @@ module.exports = {
             continua.lstRechazos = []
             continua.estado = true
         }
-        let monto = (inputValidarFlota.cantidadRecorridos * lstFlotaValidada.length) * 530 + (790 - 530) //se cobra al primero 790 y todos los demas 530
-        let response = { listaFlotaValidada: lstFlotaValidada, listaFlotaRechazada: lstFlotaRechazada, monto: monto }
-        return response
+        return {
+            listaFlotaValidada: lstFlotaValidada,
+            listaFlotaRechazada: lstFlotaRechazada,
+            monto: helper.costoTramite(inputValidarFlota.cantidadRecorridos * lstFlotaValidada.length)
+        }
     },
 
     /**
-     * @param {InputValidaFlota} inputValidarFlota
+     * @param {SolicitudServicio} inputValidarFlota
      */
     validarServiciosFlota: async(inputValidarFlota) => {
         let tipoValidacion = "ESCOLARES";
@@ -245,14 +141,16 @@ module.exports = {
                 let srceiResponse = await commons.consumoServicioRegistroCivil(ppu);
                 let sgprtResponse = await commons.consumoServicioSgprt(ppu);
 
+                const srcei = srceiResponse.return;
+
                 //Recorre los documentos obtenidos de registro civil
-                for (let index = 0; index < srceiResponse.return.docs.length; index++) {
-                    docs.push(srceiResponse.return.docs[index]);
+                for (let index = 0; index < srcei.docs.length; index++) {
+                    docs.push(srcei.docs[index]);
                 }
 
                 //Recorre los documentos Opcionales obtenidos de registro civil
-                for (let index = 0; index < srceiResponse.return.docsOpcionales.length; index++) {
-                    docsOpcionales.push(srceiResponse.return.docsOpcionales[index]);
+                for (let index = 0; index < srcei.docsOpcionales.length; index++) {
+                    docsOpcionales.push(srcei.docsOpcionales[index]);
                 }
 
                 //Recorre los documentos obtenidos obtenidos de sgprt
@@ -265,19 +163,19 @@ module.exports = {
                     docsOpcionales.push(sgprtResponse.return.docsOpcionales[index]);
                 }
                 //para datos RNT, se necesitan las consultas por PPU, para determinar si existe o no y los estados del vehiculo, la region de origen del PPU y la categoria de transporte ne caso de existir.
-                let dataRNT = await taxisRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srceiResponse.return.tipoVehi)
+                let dataRNT = await taxisRepository.findInscripcionRNTData(inputValidarFlota.folio, inputValidarFlota.region, ppu, srcei.tipoVehi)
                 log.trace('DataRNT para PPU ' + ppu + ": " + JSON.stringify(dataRNT))
                     //otra consulta para determinar la Antiguedad Maxima permitida por tipo de vehiculo en el folio donde se desea inscribir
                 log.trace('FechaPRT: ' + sgprtResponse.return.revisionTecnica.fechaVencimiento)
                 datosVehiculo = {
                     registrocivil: {
-                        rutPropietario: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? srceiUtils.getArrayPropietarioComunidad(srceiResponse.return.propieActual.propact.itemPropact) : srceiResponse.return.propieActual.propact.itemPropact[0].rut,
-                        antiguedad: (srceiResponse.return.aaFabric > (new Date()).getFullYear()) ? 0 : (Number((new Date()).getFullYear()) - Number(srceiResponse.return.aaFabric)),
-                        tipoVehiculo: srceiResponse.return.tipoVehi != undefined ? srceiResponse.return.tipoVehi : "",
-                        leasing: srceiUtils.determinarLeasing(srceiResponse.return.limita) != undefined ? srceiUtils.determinarLeasing(srceiResponse.return.limita) : "",
-                        rutMerotenedor: srceiUtils.getRutMerotenedor(srceiResponse.return.limita) != undefined ? srceiUtils.getRutMerotenedor(srceiResponse.return.limita) : "",
-                        comunidad: srceiResponse.return.propieActual.propact.itemPropact.length > 1 ? true : false,
-                        status: srceiResponse.return.status != undefined ? srceiResponse.return.status : ""
+                        rutPropietario: srcei.propieActual.propact.itemPropact.length > 1 ? srceiUtils.getArrayPropietarioComunidad(srcei.propieActual.propact.itemPropact) : srcei.propieActual.propact.itemPropact[0].rut,
+                        antiguedad: (srcei.aaFabric > (new Date()).getFullYear()) ? 0 : (Number((new Date()).getFullYear()) - Number(srcei.aaFabric)),
+                        tipoVehiculo: srcei.tipoVehi != undefined ? srcei.tipoVehi : "",
+                        leasing: srceiUtils.determinarLeasing(srcei.limita) != undefined ? srceiUtils.determinarLeasing(srcei.limita) : "",
+                        rutMerotenedor: srceiUtils.getRutMerotenedor(srcei.limita) != undefined ? srceiUtils.getRutMerotenedor(srcei.limita) : "",
+                        comunidad: srcei.propieActual.propact.itemPropact.length > 1 ? true : false,
+                        status: srcei.status != undefined ? srcei.status : ""
                     },
                     sgprt: {
                         resultadoRT: (sgprtResponse.return.revisionTecnica.resultado == 'A' && sgprtResponse.return.revisionesGases.revisionGas[sgprtResponse.return.revisionesGases.revisionGas.length - 1].resultado == 'A') ? 'Aprobada' : 'Rechazada',

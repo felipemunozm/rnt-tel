@@ -8,6 +8,11 @@
  */
 module.exports = {
     env: 'default',
+    /** valores de documentos pre-establecidos */
+    costoDocumentos: {
+        primero: 790,
+        siguientes: 530
+    },
     rntTramitesMap: {
         buses: {
             IdsTramites: []

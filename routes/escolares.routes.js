@@ -131,12 +131,19 @@ router.post('/escolares/servicios/ppus/validaciones', {
     },
     validate: {
         type: 'json',
-        body: Models.SolicitudServicio.joi(),
+        body: Models.SolicitudServicio.joi().example({
+            rut_solicitante: '11111111-1',
+            rut_responsable: '22222222-2',
+            region: '08',
+            lstPpuRut: [{ rut: '1234567-0', ppu: 'XD3456' }, { rut: '12345678-K', ppu: 'AKPF09' }],
+            CantidadRecorridos: 0
+        }),
         output: {
             200: {
-                body: JoiSchemas.SolicitudServicioRespuestaJoi
+                body: Models.ValidacionFlotaRespuesta.joi()
             }
-        }
+        },
+        continueOnError: true
     },
     handler: [
         commonMiddleware,
@@ -165,5 +172,14 @@ router.post('/escolares/servicios/solicitudes', {
     ]
 })
 
+const srcei = require('../services/registro-civil.service')
+router.get('/srcei/:ppu', async(ctx) => {
+    try {
+        ctx.body = await srcei.obtenerDatos(ctx.params.ppu)
+    } catch (error) {
+
+    }
+
+})
 
 module.exports = router
